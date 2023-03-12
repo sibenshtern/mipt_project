@@ -24,6 +24,7 @@ struct ErrorValue {
 
 class Instrument {
 public:
+    Instrument() : Instrument(ErrorType::Absolute, 0) {};
     Instrument(ErrorType, double);
     Instrument(ErrorType, QList<double>);
     Instrument(Instrument &) = default;
