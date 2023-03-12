@@ -1,40 +1,42 @@
 #include "variable_data.h"
 
-VariableData::VariableData(QString fullNaming, QString shortNaming, Instrument instrument)
-        : m_fullNaming(fullNaming),
-          m_shortNaming(shortNaming),
-          m_instrument(instrument) {
+VariableData::VariableData(QString &fullName, QString &shortName, Instrument &instrument)
+        : instrument{instrument} {
+    if (full_name.isEmpty())
+        throw std::invalid_argument("full name cannot be empty");
+    if (short_name.isEmpty())
+        throw std::invalid_argument("short name cannot be empty");
+    this->full_name = fullName;
+    this->short_name = shortName;
+};
+
+VariableData::VariableData(QString &full_name, QString &short_name, Instrument &instrument, QList<double> &measurements)
+        : VariableData(full_name, short_name, instrument) {
+    this->measurements = measurements;
+};
+
+void VariableData::ChangeFullName(QString &fullName) {
+    if (fullName.isEmpty())
+        throw std::invalid_argument("full name cannot be empty");
+    full_name = fullName;
 }
 
-QList<double> &VariableData::measurements() {
-    return m_measurements;
+void VariableData::ChangeShortName(QString &shortName) {
+    if (shortName.isEmpty())
+        throw std::invalid_argument("short name cannot be empty");
+    short_name = shortName;
 }
 
-QList<double> &VariableData::error() {
-    return m_error;
+void VariableData::ChangeInstrument(Instrument &inst) {
+    instrument = inst;
 }
 
-QString VariableData::fullNaming() const {
-    return m_fullNaming;
+void VariableData::ChangeMeasurement(int measurement_index, double measurement) {
+    if (measurement_index < 0 || measurement_index > measurements.size())
+        throw std::range_error("measurement index must be greater than zero and lower than measurements count");
+    measurements[measurement_index] = measurement;
 }
 
-QString VariableData::shortNaming() const {
-    return m_shortNaming;
-}
-
-Instrument VariableData::instrument() const {
-    return m_instrument;
-}
-
-double VariableData::error(double measurement) const {
-    double error = 0.0;
-    switch (m_instrument.errorType()) {
-        case ErrorType::Absolute:
-            error = m_instrument.value();
-            break;
-        case ErrorType::Relative:
-            error = measurement * m_instrument.value();
-            break;
-    }
-    return error;
+void VariableData::ChangeMeasurements(QList<double> &new_measurements) {
+    measurements = new_measurements;
 }
