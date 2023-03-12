@@ -1,10 +1,26 @@
 #include "instrument.h"
 
+ErrorValue::ErrorValue(ErrorValue &error_value) : _type{error_value._type} {
+    if (error_value._type == Single)
+        value = error_value.value;
+    else if (error_value._type == Multiple)
+        list = error_value.list;
+};
+
+ErrorValue &ErrorValue::operator=(const ErrorValue &error_value) {
+    _type = error_value._type;
+    if (_type == Single)
+        value = error_value.value;
+    else if (_type == Multiple)
+        list = error_value.list;
+    return *this;
+}
+
 Instrument::Instrument(ErrorType type, double value)
-        : type{type}, error{value} {}
+        : type{type}, error{value} {};
 
 Instrument::Instrument(ErrorType type, QList<double> list)
-        : type{type}, error{list} {}
+        : type{type}, error{list} {};
 
 void Instrument::ChangeValue(double new_value) {
     if (new_value < 0)
@@ -13,7 +29,7 @@ void Instrument::ChangeValue(double new_value) {
         throw std::logic_error("Can't change single value in calculated error");
 
     error.value = new_value;
-}
+};
 
 void Instrument::ChangeValue(QList<double> list) {
     for (size_t i = 0; i < list.size(); ++i)
@@ -23,4 +39,4 @@ void Instrument::ChangeValue(QList<double> list) {
         throw std::logic_error("Can't change list of error in single value error");
 
     error.list = list;
-}
+};
