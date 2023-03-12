@@ -1,19 +1,19 @@
 #include "variable_data.h"
 
 VariableData::VariableData(QString &fullName, QString &shortName, Instrument &instrument)
-        : instrument{instrument} {
-    if (full_name.isEmpty())
-        throw std::invalid_argument("full name cannot be empty");
-    if (short_name.isEmpty())
-        throw std::invalid_argument("short name cannot be empty");
-    this->full_name = fullName;
-    this->short_name = shortName;
-};
+        : full_name{fullName}, short_name{shortName}, instrument{instrument} {};
 
 VariableData::VariableData(QString &full_name, QString &short_name, Instrument &instrument, QList<double> &measurements)
         : VariableData(full_name, short_name, instrument) {
     this->measurements = measurements;
 };
+
+VariableData::VariableData(const VariableData &data) {
+    full_name = data.full_name;
+    short_name = data.short_name;
+    instrument = data.instrument;
+    measurements = data.measurements;
+}
 
 void VariableData::ChangeFullName(QString &fullName) {
     if (fullName.isEmpty())

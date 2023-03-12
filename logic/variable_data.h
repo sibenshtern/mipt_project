@@ -8,15 +8,20 @@
 
 class VariableData {
 public:
+    VariableData() = default;
     VariableData(QString &full_name, QString &short_name, Instrument &instrument);
     VariableData(QString &full_name, QString &short_name, Instrument &instrument,
                  QList<double> &measurements);
+    VariableData(const VariableData &);
 
     void ChangeFullName(QString &);
     void ChangeShortName(QString &);
     void ChangeInstrument(Instrument &);
     void ChangeMeasurement(int, double);
     void ChangeMeasurements(QList<double> &);
+
+    QString GetFullName() { return full_name; }
+    QString GetShortName() { return short_name; }
 
 //    void error(int measurement);
 private:
