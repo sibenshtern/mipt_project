@@ -1,59 +1,74 @@
 #include "manager.h"
 
-void Manager::addVariable(VariableData variable) {
-    m_variables.append(variable);
-}
-
-void Manager::deleteVariable(int index) {
-    if (index < 0 || index >= m_variables.size()) {
-        return; // Invalid index.
+Manager::Manager(QList<VariableData> &variables, QList<VariableData> &calculated)
+        : variables{variables}, calculated{calculated} {
+    for (auto variable : variables) {
+        int measurements_size = variable.GetMeasurements().size();
+        if (measurements_size > _max_measurements_count)
+            _max_measurements_count = measurements_size;
     }
-    m_variables.removeAt(index);
+};
+
+void Manager::AddVariable() {
+    variables.push_back(VariableData());
+    // TODO: rewrite this with interaction with Models
 }
 
-void Manager::addMeasurementRow(int variableIndex, double measurement) {
-    if (variableIndex < 0 || variableIndex >= m_variables.size()) {
-        return; // Invalid variable index.
+void Manager::AddVariable(VariableData &variable) {
+    variables.push_back(variable);
+    // TODO: rewrite this with interaction with Models
+}
+
+VariableData &Manager::GetVariable(int index) {
+    if (index < 0 || index >= variables.size())
+        throw std::invalid_argument("Wrong index");
+
+    return variables[index];
+}
+
+VariableData &Manager::GetVariable(QString &name) {
+    for (int i = 0; i < variables.size(); ++i) {
+        if (variables[i].GetFullName() == name || variables[i].GetShortName() == name)
+            return variables[i];
+    }
+    throw std::invalid_argument("No variable with name: " + name.toStdString());
+}
+
+void Manager::DeleteVariable(int index) {
+    if (index < 0 || index >= variables.size())
+        throw std::invalid_argument("Wrong index");
+    variables.erase(variables.begin() + index);
+}
+
+void Manager::DeleteVariable(QString &name) {
+    for (int i = 0; i < variables.size(); ++i)
+        if (variables[i].GetFullName() == name || variables[i].GetShortName() == name) {
+            variables.erase(variables.begin() + i);
+            return;
+        }
+    throw std::invalid_argument("No variable with name: " + name.toStdString());
+}
+
+void Manager::AddMeasurementRow() {
+    for (auto variable : variables)
+        variable.AddMeasurement(0);
+    // TODO: interaction with Models
+}
+
+void Manager::RemoveMeasurementRow(int index) {
+
+    if (index < 0 || index >= _max_measurements_count)
+        throw std::invalid_argument("Wrong index");
+
+    for (auto variable : variables) {
+        variable.DeleteMeasurement(index);
     }
 
-    VariableData &variable = m_variables[variableIndex];
-    QList<double> &measurements = variable.measurements();
-    QList<double> &error = variable.error();
-
-    measurements.append(measurement);
-    error.append(variable.error(measurement));
+    // TODO: interaction with Models
 }
 
-void Manager::removeMeasurementRow(int variableIndex, int measurementIndex) {
-    if (variableIndex < 0 || variableIndex >= m_variables.size()) {
-        return; // Invalid variable index.
-    }
+void Manager::AddCalculated(VariableData &variable) {
+    calculated.push_back(variable);
 
-    VariableData &variable = m_variables[variableIndex];
-    QList<double> &measurements = variable.measurements();
-    QList<double> &error = variable.error();
-
-    if (measurementIndex < 0 || measurementIndex >= measurements.size()) {
-        return; // Invalid measurement index.
-    }
-
-    measurements.removeAt(measurementIndex);
-    error.removeAt(measurementIndex);
+    // TODO: interaction with Models
 }
-
-void Manager::clearCalculated() {
-    m_calculated.clear();
-}
-
-void Manager::addCalculated(VariableData variable) {
-    m_calculated.append(variable);
-}
-
-QList<VariableData> Manager::variables() const {
-    return m_variables;
-}
-
-QList<VariableData> Manager::calculated() const {
-    return m_calculated;
-}
-

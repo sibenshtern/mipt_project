@@ -20,8 +20,12 @@ public:
     void ChangeMeasurement(int, double);
     void ChangeMeasurements(QList<double> &);
 
+    void AddMeasurement(double measurement);
+    void DeleteMeasurement(int index);
+
     QString GetFullName() { return full_name; }
     QString GetShortName() { return short_name; }
+    QList<double> GetMeasurements() const { return measurements; }
 
 //    void error(int measurement);
 private:
