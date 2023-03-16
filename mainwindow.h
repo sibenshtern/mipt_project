@@ -3,9 +3,9 @@
 
 #include <QMainWindow>
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
-QT_END_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
 
 class MainWindow : public QMainWindow
 {
@@ -16,7 +16,19 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pushButton_8_clicked();
+    void OpenGraphPage();
+    void OpenDataPage();
+    void OpenReportPage();
+
+    void on_LoadButton_clicked();
+
+    void on_AddVariableButton_clicked();
+
+    void on_RemoveVariable_clicked();
+
+    void on_AddMeasurementButton_clicked();
+
+    void on_RemoveMeasurementButton_clicked();
 
 private:
     Ui::MainWindow *ui;
