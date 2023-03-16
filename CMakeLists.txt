@@ -18,7 +18,6 @@ find_package(Qt5 COMPONENTS Widgets REQUIRED)
 add_executable(DAFELab
     mainwindow.ui
     mainwindow.cpp
-    main.cpp
-        logic/manager.cpp logic/manager.h logic/variable_data.cpp logic/variable_data.h logic/instrument.cpp logic/instrument.h models/measurementmodel.cpp models/measurementmodel.h)
+    main.cpp logic/instrument.cpp logic/variable_data.cpp logic/manager.cpp models/measurement_model.cpp)
 
 target_link_libraries(DAFELab Qt5::Widgets)
