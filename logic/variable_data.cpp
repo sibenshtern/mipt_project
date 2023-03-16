@@ -1,12 +1,7 @@
 #include "variable_data.h"
 
-VariableData::VariableData(QString &fullName, QString &shortName, Instrument &instrument)
-        : full_name{fullName}, short_name{shortName}, instrument{instrument} {};
-
-VariableData::VariableData(QString &full_name, QString &short_name, Instrument &instrument, QList<double> &measurements)
-        : VariableData(full_name, short_name, instrument) {
-    this->measurements = measurements;
-};
+VariableData::VariableData(QString fullName, QString shortName, Instrument &instrument)
+        : full_name{std::move(fullName)}, short_name{std::move(shortName)}, instrument{instrument} {};
 
 VariableData::VariableData(const VariableData &data) {
     full_name = data.full_name;
@@ -56,4 +51,10 @@ void VariableData::DeleteMeasurement(int index) {
         auto error = instrument.GetError();
         error.list.erase(error.list.begin() + index);
     }
+}
+
+double VariableData::GetMeasurement(int index) const {
+    if (index < 0 || index >= measurements.size())
+        throw std::invalid_argument("Wrong index");
+    return measurements[index];
 }

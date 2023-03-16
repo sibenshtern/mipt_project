@@ -1,11 +1,13 @@
-#ifndef MANAGER_H
-#define MANAGER_H
+#pragma once
 
 #include <QList>
 #include <QModelIndex>  // temporary solution TODO: remove QModelIndex include
 
 #include "variable_data.h"
-#include "../models/measurementmodel.h"
+#include "../models/measurement_model.h"
+
+
+class MeasurementModel;
 
 class Manager {
 public:
@@ -13,7 +15,9 @@ public:
     Manager(QList<VariableData> &variables, QList<VariableData> &calculated);
 
     void AddVariable();
-    void AddVariable(VariableData &variable);
+
+    template<typename T>
+    void AddVariable(T&& variable);
 
     VariableData &GetVariable(int index);
     VariableData &GetVariable(QString &name);
@@ -26,6 +30,9 @@ public:
 
     void ClearCalculated() { calculated.clear(); };
     void AddCalculated(VariableData &variable);
+
+    int GetMeasurementsCount() const { return _max_measurements_count; }
+    int GetVariablesCount() const { return variables.size() + calculated.size(); }
 private:
     QList<VariableData> variables;
     QList<VariableData> calculated;
@@ -35,4 +42,9 @@ private:
     int _max_measurements_count {0};
 };
 
-#endif // MANAGER_H
+template<typename T>
+void Manager::AddVariable(T&& variable) {
+    variables.push_back(variable);
+    _max_measurements_count = std::max(_max_measurements_count, variable.GetMeasurements().size());
+    // TODO: rewrite this with interaction with Models
+}

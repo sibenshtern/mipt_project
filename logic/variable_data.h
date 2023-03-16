@@ -1,5 +1,4 @@
-#ifndef VARIABLEDATA_H
-#define VARIABLEDATA_H
+#pragma once
 
 #include <QList>
 #include <QString>
@@ -9,9 +8,10 @@
 class VariableData {
 public:
     VariableData() = default;
-    VariableData(QString &full_name, QString &short_name, Instrument &instrument);
-    VariableData(QString &full_name, QString &short_name, Instrument &instrument,
-                 QList<double> &measurements);
+    VariableData(QString full_name, QString short_name, Instrument &instrument);
+    template<typename T, typename P>
+    VariableData(QString full_name, QString short_name, T&& instrument,
+                 P&& measurements);
     VariableData(const VariableData &);
 
     void ChangeFullName(QString &);
@@ -26,8 +26,7 @@ public:
     QString GetFullName() { return full_name; }
     QString GetShortName() { return short_name; }
     QList<double> GetMeasurements() const { return measurements; }
-
-//    void error(int measurement);
+    double GetMeasurement(int index) const;
 private:
     QList<double> measurements;
     QString full_name;
@@ -35,4 +34,8 @@ private:
     Instrument instrument;
 };
 
-#endif // VARIABLEDATA_H
+template<typename T, typename P>
+VariableData::VariableData(QString full_name, QString short_name, T&& instrument, P&& measurements)
+        : VariableData(full_name, short_name, instrument) {
+    this->measurements = measurements;
+};

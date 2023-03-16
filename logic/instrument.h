@@ -1,5 +1,4 @@
-#ifndef INSTRUMENT_H
-#define INSTRUMENT_H
+#pragma once
 
 #include <QList>
 #include <stdexcept>
@@ -14,7 +13,7 @@ struct ErrorValue {
     ErrorValue(ErrorValue &);
     ErrorValue &operator=(const ErrorValue &);
 
-    ~ErrorValue() { list.~QList(); }
+    ~ErrorValue() { if (_type == Multiple) list.~QList(); }
     union {
         QList<double> list;
         double value;
@@ -39,5 +38,3 @@ private:
     ErrorType type;
     ErrorValue error;
 };
-
-#endif  // INSTRUMENT_H
