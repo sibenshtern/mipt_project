@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.20)
 
 project(DAFELab VERSION 1.0.0 LANGUAGES CXX)
 
@@ -13,11 +13,19 @@ if(CMAKE_VERSION VERSION_LESS "3.7.0")
     set(CMAKE_INCLUDE_CURRENT_DIR ON)
 endif()
 
-find_package(Qt5 COMPONENTS Widgets REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 
 add_executable(DAFELab
     mainwindow.ui
     mainwindow.cpp
-    main.cpp logic/instrument.cpp logic/variable_data.cpp logic/manager.cpp models/measurement_model.cpp)
+    main.cpp
 
-target_link_libraries(DAFELab Qt5::Widgets)
+    logic/instrument.cpp
+    logic/variable_data.cpp
+    logic/manager.cpp
+
+    models/measurement_model.cpp
+)
+
+target_link_libraries(DAFELab Qt${QT_VERSION_MAJOR}::Widgets)
