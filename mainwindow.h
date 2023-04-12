@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include "logic/readers.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -32,5 +34,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    StrategyIOCSV reader;
+    MeasurementModel *measurement_model{nullptr};
 };
 #endif // MAINWINDOW_H

@@ -1,50 +1,46 @@
-#pragma once
+#ifndef DAFELAB_MANAGER_H
+#define DAFELAB_MANAGER_H
+
 
 #include <QList>
-#include <QModelIndex>  // temporary solution TODO: remove QModelIndex include
+#include <QGlobalStatic>
 
 #include "variable_data.h"
-#include "../models/measurement_model.h"
-
+#include "../models/measurementmodel.h"
 
 class MeasurementModel;
 
 class Manager {
 public:
     Manager() = default;
-    Manager(QList<VariableData> &variables, QList<VariableData> &calculated);
 
-    void AddVariable();
+    QList<VariableData> calculated;
+    QList<VariableData> variables;
 
-    template<typename T>
-    void AddVariable(T&& variable);
+    VariableData &GetVariable(QString &);
 
-    VariableData &GetVariable(int index);
-    VariableData &GetVariable(QString &name);
+    void AddVariable(VariableData &);
+    void AddMeasurement();
 
-    void DeleteVariable(int index);
-    void DeleteVariable(QString &name);
+    void DeleteVariable(int);
+    void DeleteCalculated(int);
 
-    void AddMeasurementRow();
-    void RemoveMeasurementRow(int index);
+    void DeleteVariable(QString &);
+    void DeleteCalculated(QString &);
 
     void ClearCalculated() { calculated.clear(); };
-    void AddCalculated(VariableData &variable);
 
-    int GetMeasurementsCount() const { return _max_measurements_count; }
-    int GetVariablesCount() const { return variables.size() + calculated.size(); }
+    int GetMeasurementsCount();
+    int GetVariablesCount() const;
+
+    MeasurementModel *measurement_model{nullptr};
+
+    static Manager *instance();
 private:
-    QList<VariableData> variables;
-    QList<VariableData> calculated;
+    int max_variables_measurements{0};
 
-    MeasurementModel *measurement_model {nullptr};
-
-    int _max_measurements_count {0};
+    int max_calculated_measurements{0};
 };
 
-template<typename T>
-void Manager::AddVariable(T&& variable) {
-    variables.push_back(variable);
-    _max_measurements_count = std::max(_max_measurements_count, variable.GetMeasurements().size());
-    // TODO: rewrite this with interaction with Models
-}
+
+#endif //DAFELAB_MANAGER_H

@@ -1,41 +1,53 @@
-#pragma once
+#ifndef DAFELAB_VARIABLE_DATA_H
+#define DAFELAB_VARIABLE_DATA_H
 
-#include <QList>
 #include <QString>
+#include <QColor>
+#include <utility>
 #include <stdexcept>
+
 #include "instrument.h"
+
+
+struct Visual {
+    int width = 5;
+    bool visible = true;
+    QString line_type = "solid";
+    QString point_type = "circle";
+    QColor color = "green";
+};
 
 class VariableData {
 public:
     VariableData() = default;
-    VariableData(QString full_name, QString short_name, Instrument &instrument);
-    template<typename T, typename P>
-    VariableData(QString full_name, QString short_name, T&& instrument,
-                 P&& measurements);
+
+    template<typename I>
+    VariableData(QString, QString, I&&);
+
+    template<typename I, typename M>
+    VariableData(QString, QString, I&&, M&&);
+
     VariableData(const VariableData &);
 
-    void ChangeFullName(QString &);
-    void ChangeShortName(QString &);
-    void ChangeInstrument(Instrument &);
-    void ChangeMeasurement(int, double);
-    void ChangeMeasurements(QList<double> &);
+    double Error(int);
 
-    void AddMeasurement(double measurement);
-    void DeleteMeasurement(int index);
+    double &operator[](int);
 
-    QString GetFullName() { return full_name; }
-    QString GetShortName() { return short_name; }
-    QList<double> GetMeasurements() const { return measurements; }
-    double GetMeasurement(int index) const;
-private:
     QList<double> measurements;
     QString full_name;
     QString short_name;
     Instrument instrument;
+    Visual visual;
 };
 
-template<typename T, typename P>
-VariableData::VariableData(QString full_name, QString short_name, T&& instrument, P&& measurements)
+template<typename I>
+VariableData::VariableData(QString full_name, QString short_name, I&& instrument)
+        : full_name{std::move(full_name)}, short_name{std::move(short_name)}, instrument{instrument} {}
+
+template<typename I, typename M>
+VariableData::VariableData(QString full_name, QString short_name, I&& instrument, M&& measurements)
         : VariableData(full_name, short_name, instrument) {
-    this->measurements = measurements;
-};
+            this->measurements = measurements;
+        }
+
+#endif //DAFELAB_VARIABLE_DATA_H
