@@ -35,6 +35,6 @@ private slots:
 private:
     Ui::MainWindow *ui;
     StrategyIOCSV reader;
-    MeasurementModel *measurement_model{nullptr};
+    DataModel *data_model{nullptr};
 };
 #endif // MAINWINDOW_H

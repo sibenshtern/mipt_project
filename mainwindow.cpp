@@ -14,11 +14,11 @@ MainWindow::MainWindow(QWidget *parent)
     ui->menubar->addAction(graph_action);
     ui->menubar->addAction(report_action);
 
-    measurement_model = new MeasurementModel{};
-    Manager::instance()->measurement_model = measurement_model;
+    data_model = new DataModel{};
+    Manager::instance()->data_model = data_model;
     Manager::instance()->variables.push_back(VariableData{"123", "123", Instrument{}, QList<double>{1, 2, 3, 4}});
 
-    ui->MainTable->setModel(measurement_model);
+    ui->MainTable->setModel(data_model);
 }
 
 void MainWindow::OpenGraphPage() {
@@ -47,6 +47,8 @@ void MainWindow::on_LoadButton_clicked()
 
 void MainWindow::on_AddVariableButton_clicked()
 {
+    Manager::instance()->variables.push_back(VariableData{Manager::instance()->GetMeasurementsCount()});
+    data_model->insertColumn(Manager::instance()->GetVariablesCount() - 1);
     return;
 }
 
@@ -61,7 +63,7 @@ void MainWindow::on_RemoveVariable_clicked()
 void MainWindow::on_AddMeasurementButton_clicked()
 {
     Manager::instance()->AddMeasurement();
-    measurement_model->insertRow(Manager::instance()->GetMeasurementsCount());
+    data_model->insertRow(Manager::instance()->GetMeasurementsCount());
     return;
 }
 

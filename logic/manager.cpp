@@ -1,12 +1,14 @@
 #include "manager.h"
 
+#include <iostream>
+
 VariableData &Manager::GetVariable(QString &name) {
     for (auto &variable: variables)
-        if (variable.full_name == name)
+        if (variable.naming.full == name || variable.naming.alias == name)
             return variable;
 
     for (auto &calculate : calculated)
-        if (calculate.full_name == name)
+        if (calculate.naming.full == name || calculate.naming.alias == name)
             return calculate;
 
     throw std::invalid_argument("No (calculated) variable with name " + name.toStdString());
@@ -15,19 +17,25 @@ VariableData &Manager::GetVariable(QString &name) {
 void Manager::AddVariable(VariableData &data) {
     int measurement_count = GetMeasurementsCount();
 
-    variables.append(data);
+    variables.push_back(data);
 
     int rows_count = std::max(0, data.measurements.size() - measurement_count);
     for (int i = 0; i < rows_count; ++i) {
-        measurement_model->insertRow(measurement_count + i);
+        data_model->insertRow(measurement_count + i);
     }
 
-    measurement_model->insertColumn(GetVariablesCount());
+    data_model->insertColumn(GetVariablesCount());
 
-    measurement_count = GetMeasurementsCount();
-    for (auto &variable : variables) {
-        for (int j = 0; j < std::max(0, measurement_count - variable.measurements.size()); ++j)
+    int tmp = measurement_count - variables.back().measurements.size();
+
+    for (auto& variable : variables) {
+        int variable_size = variable.measurements.size();
+        for (int i = 0; i < GetMeasurementsCount() - variable_size; ++i)
             variable.measurements.push_back(0);
+    }
+
+    for (int i = 0; i < tmp; ++i) {
+        variables.back().measurements.push_back(0);
     }
 }
 
@@ -53,7 +61,7 @@ void Manager::DeleteCalculated(int index) {
 
 void Manager::DeleteVariable(QString &full_name) {
     for (int i = 0; i < variables.size(); ++i)
-        if (variables[i].full_name == full_name) {
+        if (variables[i].naming.full == full_name) {
             variables.erase(variables.begin() + i);
             return;
         }
@@ -63,7 +71,7 @@ void Manager::DeleteVariable(QString &full_name) {
 
 void Manager::DeleteCalculated(QString &full_name) {
     for (int i = 0; i < calculated.size(); ++i)
-        if (calculated[i].full_name == full_name) {
+        if (calculated[i].naming.alias == full_name) {
             calculated.erase(calculated.begin() + i);
             return;
         }

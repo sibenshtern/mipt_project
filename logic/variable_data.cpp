@@ -22,8 +22,15 @@ double &VariableData::operator[](int index) {
 }
 
 VariableData::VariableData(const VariableData &data) {
-    full_name = data.full_name;
-    short_name = data.short_name;
+    naming.full = data.naming.full;
+    naming.alias = data.naming.alias;
     instrument = data.instrument;
     measurements = data.measurements;
+}
+
+VariableData::VariableData(int n) {
+    naming.full = "";
+    naming.alias = "";
+    instrument = Instrument{};
+    measurements = QVector<double>(n, 0).toList();
 }

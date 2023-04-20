@@ -6,9 +6,9 @@
 #include <QGlobalStatic>
 
 #include "variable_data.h"
-#include "../models/measurementmodel.h"
+#include "../models/datamodel.h"
 
-class MeasurementModel;
+class DataModel;
 
 class Manager {
 public:
@@ -20,6 +20,7 @@ public:
     VariableData &GetVariable(QString &);
 
     void AddVariable(VariableData &);
+    void AddVariable();
     void AddMeasurement();
 
     void DeleteVariable(int);
@@ -33,7 +34,7 @@ public:
     int GetMeasurementsCount();
     int GetVariablesCount() const;
 
-    MeasurementModel *measurement_model{nullptr};
+    DataModel *data_model{nullptr};
 
     static Manager *instance();
 private:

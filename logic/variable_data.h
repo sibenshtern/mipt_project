@@ -20,6 +20,7 @@ struct Visual {
 class VariableData {
 public:
     VariableData() = default;
+    VariableData(int n);
 
     template<typename I>
     VariableData(QString, QString, I&&);
@@ -34,15 +35,17 @@ public:
     double &operator[](int);
 
     QList<double> measurements;
-    QString full_name;
-    QString short_name;
+    struct {
+        QString full;
+        QString alias;
+    } naming;
     Instrument instrument;
     Visual visual;
 };
 
 template<typename I>
 VariableData::VariableData(QString full_name, QString short_name, I&& instrument)
-        : full_name{std::move(full_name)}, short_name{std::move(short_name)}, instrument{instrument} {}
+        : naming{std::move(full_name), std::move(short_name)}, instrument{instrument} {}
 
 template<typename I, typename M>
 VariableData::VariableData(QString full_name, QString short_name, I&& instrument, M&& measurements)

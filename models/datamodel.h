@@ -7,10 +7,9 @@
 
 class Manager;
 
-class MeasurementModel : public QAbstractTableModel {
+class DataModel : public QAbstractTableModel {
 public:
-    explicit MeasurementModel() = default;
-    void addVariable(const VariableData &variableData);
+    explicit DataModel() = default;
 private:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
