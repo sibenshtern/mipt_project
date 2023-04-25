@@ -10,9 +10,16 @@ MainWindow::MainWindow(QWidget *parent)
     connect(data_action, SIGNAL(triggered()), this, SLOT(OpenDataPage()));
     connect(graph_action, SIGNAL(triggered()), this, SLOT(OpenGraphPage()));
     connect(report_action, SIGNAL(triggered()), this, SLOT(OpenReportPage()));
+    connect(ui->LoadButton, SIGNAL(clicked()), this, SLOT(load()));
     ui->menubar->addAction(data_action);
     ui->menubar->addAction(graph_action);
     ui->menubar->addAction(report_action);
+
+    auto data_menu = new QMenu("Data", this);
+    auto load_action = new QAction("Load", data_menu);
+    data_menu->addAction(load_action);
+
+    ui->menubar->addMenu(data_menu);
 
     data_model = new DataModel{};
     Manager::instance()->data_model = data_model;
@@ -36,14 +43,19 @@ MainWindow::~MainWindow() {
     delete ui;
 }
 
-void MainWindow::on_LoadButton_clicked()
-{
-    reader.load();
-    ui->MainTable->viewport()->repaint();
-    return;
+void MainWindow::save() {
+    QFile file("data.csv");
+    file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice:: Truncate);
+    file.write(csv_reader.save().toUtf8());
 }
 
-
+void MainWindow::load()
+{
+    QString file_name = QFileDialog::getOpenFileName(nullptr,
+                                                     "Open File", "$HOME", "CSV File (*csv)");
+    csv_reader.load(file_name);
+    ui->MainTable->viewport()->repaint();
+}
 
 void MainWindow::on_AddVariableButton_clicked()
 {
@@ -51,8 +63,6 @@ void MainWindow::on_AddVariableButton_clicked()
     data_model->insertColumn(Manager::instance()->GetVariablesCount() - 1);
     return;
 }
-
-
 
 void MainWindow::on_RemoveVariable_clicked()
 {
