@@ -15,14 +15,29 @@ int DataModel::columnCount(const QModelIndex &parent) const {
 QVariant DataModel::data(const QModelIndex &index, int role) const {
     if (role == Qt::DisplayRole) {
         QString answer;
-        try {
-            answer = QString::number(Manager::instance()->variables[index.column()][index.row()]);
-        } catch (std::range_error &error) {
-            answer = "";
-        }
-//        std::cout << answer.toStdString() << " ";
+        std::cout << "DataModel::data(row, column): " << index.row() << " " << index.column() << "\n";
+        if (index.column() < Manager::instance()->variables.size())
+            try {
+                answer = QString::number(Manager::instance()->variables[index.column()][index.row()]);
+            } catch (std::range_error &error) {
+                answer = "";
+            }
         return {answer};
     }
+    return {};
+}
+
+QVariant DataModel::headerData(int section, Qt::Orientation orientation, int role) const {
+    if (role == Qt::DisplayRole)
+        if (orientation == Qt::Horizontal) {
+            std::cout << "DataModel::headerData(section): " << section << "\n";
+            if (section < Manager::instance()->variables.size())
+                return Manager::instance()->variables[section].naming.alias;
+            else
+                return {""};
+        } else if (orientation == Qt::Vertical) {
+            return {section + 1};
+        }
     return {};
 }
 
@@ -50,7 +65,7 @@ Qt::ItemFlags DataModel::flags(const QModelIndex &index) const {
 }
 
 bool DataModel::insertColumns(int column, int count, const QModelIndex &parent) {
-    beginInsertColumns(QModelIndex{}, column, column);
+    beginInsertColumns(QModelIndex{}, column, column + count - 1);
     endInsertColumns();
     return true;
 }
@@ -60,4 +75,17 @@ bool DataModel::insertRows(int row, int count, const QModelIndex &parent) {
     std::cerr << Manager::instance()->GetMeasurementsCount();
     endInsertRows();
     return true;
+}
+
+bool DataModel::removeRows(int row, int count, const QModelIndex &parent) {
+    beginRemoveRows(parent, row, row + count - 1);
+    endRemoveRows();
+    return true;
+}
+
+bool DataModel::removeColumns(int column, int count, const QModelIndex &parent) {
+    beginRemoveColumns(parent, column, column + count - 1);
+    endRemoveColumns();
+    return true;
+
 }
