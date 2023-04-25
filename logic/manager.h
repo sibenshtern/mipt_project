@@ -20,7 +20,6 @@ public:
     VariableData &GetVariable(QString &);
 
     void AddVariable(VariableData &);
-    void AddVariable();
     void AddMeasurement();
 
     void DeleteVariable(int);
@@ -30,6 +29,7 @@ public:
     void DeleteCalculated(QString &);
 
     void ClearCalculated() { calculated.clear(); };
+    void Clear();
 
     int GetMeasurementsCount();
     int GetVariablesCount() const;

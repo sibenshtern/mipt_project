@@ -25,6 +25,7 @@ void Manager::AddVariable(VariableData &data) {
     }
 
     data_model->insertColumn(GetVariablesCount());
+    std::cout << "Manager::AddVariable(columb inserted flag): " << "true" << "\n";
 
     int tmp = measurement_count - variables.back().measurements.size();
 
@@ -50,6 +51,7 @@ void Manager::DeleteVariable(int index) {
         throw std::range_error("Wrong index");
 
     variables.erase(variables.begin() + index);
+    data_model->removeRow(index);
 }
 
 void Manager::DeleteCalculated(int index) {
@@ -63,6 +65,7 @@ void Manager::DeleteVariable(QString &full_name) {
     for (int i = 0; i < variables.size(); ++i)
         if (variables[i].naming.full == full_name) {
             variables.erase(variables.begin() + i);
+            data_model->removeRow(i);
             return;
         }
 
@@ -73,6 +76,7 @@ void Manager::DeleteCalculated(QString &full_name) {
     for (int i = 0; i < calculated.size(); ++i)
         if (calculated[i].naming.alias == full_name) {
             calculated.erase(calculated.begin() + i);
+
             return;
         }
 
@@ -94,6 +98,13 @@ int Manager::GetMeasurementsCount() {
 
 int Manager::GetVariablesCount() const {
     return variables.size() + calculated.size();
+}
+
+void Manager::Clear() {
+    variables.clear();
+    calculated.clear();
+    max_variables_measurements = 0;
+    max_calculated_measurements = 0;
 }
 
 Q_GLOBAL_STATIC(Manager, manager);

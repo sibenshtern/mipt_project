@@ -1,9 +1,8 @@
-#include "readers.h"
+#include "io.h"
 
-// TODO: remove std::cout
-void StrategyIOCSV::load() {
-    QString file_name = QFileDialog::getOpenFileName(nullptr,
-            "Open File", "$HOME", "CSV File (*csv)");
+void IOCSV::load(QString file_name) {
+    auto manager = Manager::instance();
+
     QFile csv(file_name);
 
     if (!csv.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -13,8 +12,15 @@ void StrategyIOCSV::load() {
     boost::escaped_list_separator<char> separator{'\\', ';', '\n'};
     QTextStream in(&csv);
 
+    for (int i = manager->GetVariablesCount() - 1; i >= 0; i--)
+        manager->data_model->removeColumn(i);
+
+    for (int i = manager->GetMeasurementsCount() - 1; i >= 0; i--)
+        manager->data_model->removeRow(i);
+
+    Manager::instance()->Clear();
+
     QList<VariableData> variables;
-    int variables_count = 0;
     while (!in.atEnd()) {
         std::string line = in.readLine().toStdString();
         Tokenizer tokenizer(line, separator);
@@ -25,16 +31,10 @@ void StrategyIOCSV::load() {
                 QString name{token.data()};
                 variables.append(VariableData{name, name, Instrument{}});
             }
-            variables_count = (int)tokens.size();
-        } else {
-            std::cout << "Variable count: " << variables_count << " - ";
-            std::cout << tokens.size() << ": ";
-            for (int i = 0; i < tokens.size(); i++) {
-                std::cout << QString{tokens[i].c_str()}.toDouble() << " ";
+        } else
+            for (int i = 0; i < tokens.size(); i++)
                 variables[i].measurements.push_back(QString{tokens[i].c_str()}.toDouble());
-            }
-            std::cout << '\n';
-        }
+
     }
 
     for (auto& variable : variables) {
@@ -42,6 +42,3 @@ void StrategyIOCSV::load() {
     }
 }
 
-void StrategyIOCSV::save() {
-
-};

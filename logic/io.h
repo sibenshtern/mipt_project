@@ -1,5 +1,5 @@
-#ifndef DAFELAB_READERS_H
-#define DAFELAB_READERS_H
+#ifndef DAFELAB_IO_H
+#define DAFELAB_IO_H
 
 #include <vector>
 #include <string>
@@ -15,19 +15,19 @@
 
 #include "../logic/manager.h"
 
-class StrategyIO {
+class IO {
 public:
-    virtual void load() = 0;
-    virtual void save() = 0;
+    virtual void load(QString file_name) = 0;
+    virtual QString save() = 0;
 };
 
-class StrategyIOCSV : public StrategyIO {
+class IOCSV : public IO {
 public:
-    virtual void load() override;
-    virtual void save() override;
+    void load(QString file_name) override;
+    QString save() override {};
 private:
     typedef boost::tokenizer<boost::escaped_list_separator<char>> Tokenizer;
 };
 
 
-#endif //DAFELAB_READERS_H
+#endif //DAFELAB_IO_H
