@@ -18,7 +18,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="dataPage">
        <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -119,31 +119,18 @@
       <widget class="QWidget" name="GraphPage">
        <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
-         <widget class="QGraphicsView" name="graphicsView_2"/>
-        </item>
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout">
-          <item>
-           <widget class="QGraphicsView" name="GraphicView"/>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_6">
-            <property name="sizeConstraint">
-             <enum>QLayout::SetDefaultConstraint</enum>
-            </property>
-            <item>
-             <widget class="QLineEdit" name="FormulaEdit"/>
-            </item>
-            <item>
-             <widget class="QPushButton" name="FormulaAddButton">
-              <property name="text">
-               <string>PushButton</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
+         <widget class="QCustomPlot" name="PlotWidget" native="true">
+          <widget class="QTableView" name="VisualTable">
+           <property name="geometry">
+            <rect>
+             <x>90</x>
+             <y>340</y>
+             <width>931</width>
+             <height>291</height>
+            </rect>
+           </property>
+          </widget>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -159,7 +146,7 @@
      <x>0</x>
      <y>0</y>
      <width>1028</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
@@ -169,6 +156,14 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QCustomPlot</class>
+   <extends>QWidget</extends>
+   <header>qcustomplot.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

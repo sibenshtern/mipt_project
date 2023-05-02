@@ -3,7 +3,11 @@
 
 #include <QMainWindow>
 
-#include "logic/io.h"
+//#include "logic/readers.h"
+#include "models/datamodel.h"
+#include "models/visualmodel.h"
+#include "comboboxdelegate.h"
+#include "colordelegate.h"
 
 namespace Ui {
 class MainWindow;
@@ -22,8 +26,7 @@ private slots:
     void OpenDataPage();
     void OpenReportPage();
 
-    void save();
-    void load();
+    void on_LoadButton_clicked();
 
     void on_AddVariableButton_clicked();
 
@@ -35,7 +38,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    IOCSV csv_reader;
+//    StrategyIOCSV reader;
     DataModel *data_model{nullptr};
+    VisualModel *visual_model{nullptr};
 };
 #endif // MAINWINDOW_H
