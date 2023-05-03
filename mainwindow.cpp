@@ -2,7 +2,6 @@
 #include "ui_mainwindow.h"
 
 
-
 MainWindow::MainWindow(QWidget *parent)
         : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
@@ -26,15 +25,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->MainTable->setModel(data_model);
     ui->VisualTable->setModel(visual_model);
-    QStandardItem* item0 = new QStandardItem(true);
+    auto* item0 = new QStandardItem(true);
     item0->setCheckable(true);
     item0->setCheckState(Qt::Checked);
     item0->setText("some text");
     QStringList PointTypes = (QStringList() << "None" << "C" << "Dotted");
     QStringList LineTypes = (QStringList() << "Solid" << "Dashed" << "Dotted");
-    ColorDelegate* PlotColorDelegate = new ColorDelegate(parent);
-    ComboBoxDelegate* PointTypeDelegate = new ComboBoxDelegate(PointTypes, parent);
-    ComboBoxDelegate* LineTypeDelegate = new ComboBoxDelegate(LineTypes, parent);
+    auto* PlotColorDelegate = new ColorDelegate(parent);
+    auto* PointTypeDelegate = new ComboBoxDelegate(PointTypes, parent);
+    auto* LineTypeDelegate = new ComboBoxDelegate(LineTypes, parent);
     ui->VisualTable->setItemDelegateForColumn(5, PointTypeDelegate);
     ui->VisualTable->setItemDelegateForColumn(2, LineTypeDelegate);
     ui->VisualTable->setItemDelegateForColumn(3, PlotColorDelegate);
@@ -62,7 +61,7 @@ void MainWindow::on_LoadButton_clicked()
 {
 //    reader.load();
 //    ui->MainTable->viewport()->repaint();
-      return;
+    return;
 }
 
 
@@ -94,4 +93,3 @@ void MainWindow::on_RemoveMeasurementButton_clicked()
 {
     return;
 }
-

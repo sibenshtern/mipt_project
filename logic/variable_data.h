@@ -5,17 +5,11 @@
 #include <QColor>
 #include <utility>
 #include <stdexcept>
+#include <QMap>
+#include "../qcustomplot.h"
 
 #include "instrument.h"
 
-
-struct Visual {
-    int width = 5;
-    bool visible = true;
-    QString line_type = "solid";
-    QString point_type = "circle";
-    QColor color = "green";
-};
 
 class VariableData {
 public:
@@ -40,7 +34,23 @@ public:
         QString alias;
     } naming;
     Instrument instrument;
-    Visual visual;
+    struct Visual {
+        int width {5};
+        bool visible {true};
+        QColor color {"green"};
+        QString line_type {""};
+        QString point_type {""};
+        QMap<QString, Qt::PenStyle> line_types = {
+                {"Solid", Qt::SolidLine},
+                {"Dashed", Qt::DashLine},
+                {"Dotted", Qt::DotLine}
+        };
+        QMap<QString, QCPScatterStyle> point_types = {
+                {"None", QCPScatterStyle::ssNone},
+                {"C", QCPScatterStyle::ssCross},
+                {"dotted", QCPScatterStyle::ssCircle}
+        };
+    } visual;
 };
 
 template<typename I>

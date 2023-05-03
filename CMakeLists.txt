@@ -13,8 +13,8 @@ if(CMAKE_VERSION VERSION_LESS "3.7.0")
     set(CMAKE_INCLUDE_CURRENT_DIR ON)
 endif()
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets PrintSupport REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets PrintSupport REQUIRED)
 
 add_executable(DAFELab
     mainwindow.ui
@@ -28,6 +28,11 @@ add_executable(DAFELab
     logic/io.cpp
 
     models/datamodel.cpp
+    models/visualmodel.cpp
+    colordelegate.cpp
+    comboboxdelegate.cpp
+    logic/odf.cpp
+    qcustomplot.cpp
 )
 
 target_link_libraries(DAFELab Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::PrintSupport)

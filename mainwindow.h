@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 //#include "logic/readers.h"
+#include "qcustomplot.h"
 #include "models/datamodel.h"
 #include "models/visualmodel.h"
 #include "comboboxdelegate.h"
