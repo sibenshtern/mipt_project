@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1028</width>
+    <width>628</width>
     <height>901</height>
    </rect>
   </property>
@@ -14,11 +14,11 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout_4">
+   <layout class="QHBoxLayout" name="horizontalLayout_10">
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="dataPage">
        <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -117,24 +117,65 @@
        </layout>
       </widget>
       <widget class="QWidget" name="GraphPage">
-       <layout class="QHBoxLayout" name="horizontalLayout_5">
-        <item>
-         <widget class="QCustomPlot" name="PlotWidget" native="true">
-          <widget class="QTableView" name="VisualTable">
-           <property name="geometry">
-            <rect>
-             <x>90</x>
-             <y>340</y>
-             <width>931</width>
-             <height>291</height>
-            </rect>
-           </property>
-          </widget>
-         </widget>
-        </item>
-       </layout>
+       <widget class="QCustomPlot" name="PlotWidget" native="true">
+        <property name="geometry">
+         <rect>
+          <x>340</x>
+          <y>1</y>
+          <width>621</width>
+          <height>631</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QTableView" name="VisualTable">
+        <property name="geometry">
+         <rect>
+          <x>-10</x>
+          <y>0</y>
+          <width>341</width>
+          <height>841</height>
+         </rect>
+        </property>
+       </widget>
       </widget>
-      <widget class="QWidget" name="page"/>
+      <widget class="QWidget" name="ReportPage">
+       <widget class="QTextBrowser" name="textBrowser">
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>50</y>
+          <width>551</width>
+          <height>231</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="AddGraphButton">
+        <property name="geometry">
+         <rect>
+          <x>80</x>
+          <y>290</y>
+          <width>80</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Add Graph</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="ExportToODFButton">
+        <property name="geometry">
+         <rect>
+          <x>480</x>
+          <y>290</y>
+          <width>80</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Export To ODF</string>
+        </property>
+       </widget>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -145,7 +186,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1028</width>
+     <width>628</width>
      <height>21</height>
     </rect>
    </property>
