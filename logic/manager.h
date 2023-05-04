@@ -7,6 +7,7 @@
 
 #include "variable_data.h"
 #include "../models/datamodel.h"
+#include "utils.hpp"
 
 class DataModel;
 
@@ -18,6 +19,7 @@ public:
     QList<VariableData> variables;
 
     VariableData &GetVariable(QString &);
+    RawData GetRawData(QString &);
 
     void AddVariable(VariableData &);
     void AddMeasurement();
