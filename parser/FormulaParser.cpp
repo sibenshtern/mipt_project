@@ -66,7 +66,7 @@ double FormulaParser::eval(Expression e) {
             //auto args = [&](int i) { return eval(e.args.at(i)); };
             boost::filesystem::path lib_path(".");          // argv[1] contains path to directory with our plugin library
             boost::shared_ptr<plugin_api> plugin = nullptr; 
-            std::string plugin_name = "my_plugin_" + e.function;
+            std::string plugin_name = "plugin_" + e.function;
             plugin = dll::import_symbol<plugin_api>(lib_path / plugin_name, "plugin", dll::load_mode::append_decorations);
             return plugin->calculate(args);
             throw std::runtime_error("Unknown function");
