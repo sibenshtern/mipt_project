@@ -7,7 +7,7 @@
 
 #include "variable_data.h"
 #include "../models/datamodel.h"
-#include "plots/plotscatter.h"
+#include "../plots/plotscatter.h"
 
 class DataModel;
 

@@ -1,8 +1,8 @@
 #ifndef PLOT_H
 #define PLOT_H
 #include <QWidget>
-#include <logic/variable_data.h>
-#include "qcustomplot.h"
+#include "../logic/variable_data.h"
+#include "../qcustomplot.h"
 
 class Plot: public QWidget
 {

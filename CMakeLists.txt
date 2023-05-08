@@ -13,21 +13,30 @@ if(CMAKE_VERSION VERSION_LESS "3.7.0")
     set(CMAKE_INCLUDE_CURRENT_DIR ON)
 endif()
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets PrintSupport REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets PrintSupport REQUIRED)
 
 add_executable(DAFELab
-    mainwindow.ui
-    mainwindow.cpp
-        
-    main.cpp
+        mainwindow.ui
+        mainwindow.cpp
 
-    logic/instrument.cpp
-    logic/variable_data.cpp
-    logic/manager.cpp
-    logic/io.cpp
+        main.cpp
 
-    models/datamodel.cpp
-)
+        logic/instrument.cpp
+        logic/variable_data.cpp
+        logic/manager.cpp
+        logic/io.cpp
 
-target_link_libraries(DAFELab Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::PrintSupport)
+        models/datamodel.cpp
+        models/visualmodel.cpp
+        comboboxdelegate.cpp
+        colordelegate.cpp
+        qcustomplot.cpp
+        plots/plotscatter.cpp
+        plots/plothist.cpp
+        plots/plotchoice.cpp
+        plots/plot.h
+        parser/FormulaParser.cpp
+        )
+
+target_link_libraries(DAFELab Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::PrintSupport /usr/lib/x86_64-linux-gnu/libboost_filesystem.a)

@@ -1,9 +1,9 @@
 #ifndef PLOTCHOICE_H
 #define PLOTCHOICE_H
 #include <QDialog>
-#include <logic/variable_data.h>
+#include "../logic/variable_data.h"
 #include "plot.h"
-#include "logic/manager.h"
+#include "../logic/manager.h"
 
 class PlotChoiceOptionsDialog: public QDialog
 {

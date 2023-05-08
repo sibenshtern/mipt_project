@@ -1,9 +1,9 @@
 #ifndef PLOTHIST_H
 #define PLOTHIST_H
 #include <QWidget>
-#include <logic/variable_data.h>
+#include "../logic/variable_data.h"
 #include "plot.h"
-#include "logic/manager.h"
+#include "../logic/manager.h"
 #include <QDialog>
 
 class PlotHistOptionsDialog : public QDialog

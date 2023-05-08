@@ -1,9 +1,9 @@
 #ifndef PLOTSCATTER_H
 #define PLOTSCATTER_H
 #include <QWidget>
-#include <logic/variable_data.h>
+#include "../logic/variable_data.h"
 #include "plot.h"
-#include "logic/manager.h"
+#include "../logic/manager.h"
 #include <QDialog>
 
 class PlotScatterOptionsDialog : public QDialog
