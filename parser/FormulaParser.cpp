@@ -65,34 +65,38 @@ void FormulaParser::parse(std::string input_t){
 
 void FormulaParser::Equality(Expression first, Expression second) {
     auto visitor = boost::make_overloaded_function(
-        [](double x) -> std::vector<double> { throw std::runtime_error("You cannot assign anything to a number"); },
+        [](double x) -> void { throw std::runtime_error("You cannot assign anything to a number"); },
 
-        [&](const UnaryExpression& first) -> std::vector <double> {
+        [&](const UnaryExpression& first) ->  void {
             throw std::runtime_error("You cannot assign anything to a unary operation");
         },
-        [&](const FunctionCall& first) -> std::vector<double> {
-           //save function
+        [&](const FunctionCall& first) -> void {
+           return;
         },
-        [&](const BinaryExpression& first) -> std::vector<double> {
-            throw std::runtime_error("You cannot assign anything to a binary operation");
-        }  
-        ,
-        [&](const VariableExpression &first) -> std::vector<double> {
+        [&](const BinaryExpression& first) -> void {
+            Equality(first.first, second);
+        },
+        [&](const VariableExpression &first) -> void {
             auto data = eval(second);
             if (data.size() > 1) throw std::runtime_error("You can't assign multiple values to a constant");
             constants[first.name] = data[0];
+            return;
         },
-        [&](const IndexExpression &first) -> std::vector<double> {
+        [&](const IndexExpression &first) -> void {
             auto data = eval(second);
-            auto manager_data = Manager::instance()->GetVariable(QString{first.name.c_str()});
+            std::cout << data;
+            auto &manager_data = Manager::instance()->GetVariable(QString{first.name.c_str()});
+            std::cout << first.args.size() << " " <<  data.size();
+            qInfo() << manager_data.measurements;
             if (first.args.size() == 1 && data.size() == 1){
-                manager_data[first.args[0]] = data[0];
+                manager_data.measurements[first.args[0]] = data[0];
             }  // manager.return_variable(e.name, e.args.at(0));
-            if (first.args.size() == 2 && first.args[0] - first.args[1] == data.size()) {
+            else if (first.args.size() == 2 && first.args[1] - first.args[0] + 1 == data.size()) {
                 for (int item = first.args[0]; item <= first.args[1]; item++)
-                    manager_data[first.args[item]] = data[item];
+                    manager_data.measurements[item] = data[item];
             }
-            throw std::runtime_error("Too much indexes");
+            else throw std::runtime_error("Too much indexes");
+            return;
         });
     boost::apply_visitor(visitor, first);
 }
@@ -149,14 +153,15 @@ std::vector<double> FormulaParser::eval(Expression e) {
             auto manager_data = Manager::instance()->GetRawData(QString{e.name.c_str()});
 
             if (e.args.size() == 1 && !manager_data.measurements.empty()) return std::vector<double>{manager_data.measurements[e.args[0]]}; // manager.return_variable(e.name, e.args.at(0));
-            if (e.args.size() == 2 && manager_data.measurements.size() >= 2) {
-                if (e.args[0] - e.args[1] < 0) throw std::runtime_error("Wrong indexes");
+            else if (e.args.size() == 2 && manager_data.measurements.size() >= 2) {
+                qInfo() << e.args;
+                // if (e.args[1] - e.args[0] < 0) throw std::runtime_error("Wrong indexes");
                 for (int item = e.args[0]; item <= e.args[1]; item++) {
                         data.push_back(manager_data.measurements[item]);
                     }
                     return data;
             }
-            throw std::runtime_error("Too much indexes");
+            throw std::runtime_error("Too much indexes1");
         },
         [&](const BinaryExpression& e) -> std::vector<double> {   
             auto a = eval(e.first);
