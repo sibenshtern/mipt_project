@@ -19,8 +19,8 @@ public:
     QList<VariableData> calculated;
     QList<VariableData> variables;
 
-    VariableData &GetVariable(QString &);
-    RawData GetRawData(QString &);
+    VariableData &GetVariable(const QString &);
+    RawData GetRawData(const QString &);
 
     void AddVariable(VariableData &);
     void AddMeasurement();

@@ -171,7 +171,7 @@ private:
     double return_variable(std::string name);
     void load_constants(std::string path);
     //Expression preParse(const char* input);
-    void FormulaParser::Equality(Expression first, Expression second);
+    void Equality(Expression first, Expression second);
 
 public:
     FormulaParser() { load_constants(path);};

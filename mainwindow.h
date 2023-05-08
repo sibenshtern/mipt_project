@@ -11,6 +11,8 @@
 #include "plots/plotscatter.h"
 #include "plots/plothist.h"
 #include "plots/plotchoice.h"
+#include "parser/FormulaParser.hpp"
+
 namespace Ui {
 class MainWindow;
 }
@@ -39,9 +41,10 @@ private slots:
     void on_RemoveMeasurementButton_clicked();
 
     void plotOptions();
+    void AddFormula();
 private:
     Ui::MainWindow *ui;
-//    StrategyIOCSV reader;
+    FormulaParser parser;
     DataModel *data_model{nullptr};
     VisualModel *visual_model{nullptr};
 };

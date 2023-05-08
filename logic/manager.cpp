@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-VariableData &Manager::GetVariable(QString &name) {
+VariableData &Manager::GetVariable(const QString &name) {
     for (auto &variable: variables)
         if (variable.naming.full == name || variable.naming.alias == name)
             return variable;
@@ -14,7 +14,7 @@ VariableData &Manager::GetVariable(QString &name) {
     throw std::invalid_argument("No (calculated) variable with name " + name.toStdString());
 }
 
-RawData Manager::GetRawData(QString &name) {
+RawData Manager::GetRawData(const QString &name) {
     auto variable = GetVariable(name);
     std::vector<double> errors(variable.measurements.size());
 

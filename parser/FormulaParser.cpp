@@ -1,5 +1,6 @@
 #include "FormulaParser.hpp"
 #include "operands.hpp"
+#include "../logic/manager.h"
 
 typedef boost::tokenizer<boost::escaped_list_separator<char>> Tokenizer;
 equality_op_t::equality_op_t(){
@@ -56,14 +57,13 @@ void FormulaParser::parse(std::string input_t){
         Node secondNode = Node(s_result);
 
         if (f_ok && first_token == f_end && s_ok && second_token == s_end) Equality(f_result, s_result);
-        //throw std::runtime_error(std::string("Failed at: `") + first + "`");
-        std::cout << "FormulaParser::parse(exp) : " << exp << "\n";
+        // throw std::runtime_error(std::string("Failed at: `") + first + "`");
+        // std::cout << "FormulaParser::parse(exp) : " << exp << "\n";
     }
     else throw std::runtime_error("To much equality");
 }
 
-void FormulaParser::Equality(Expression first, Expression second) { 
-
+void FormulaParser::Equality(Expression first, Expression second) {
     auto visitor = boost::make_overloaded_function(
         [](double x) -> std::vector<double> { throw std::runtime_error("You cannot assign anything to a number"); },
 
@@ -84,7 +84,7 @@ void FormulaParser::Equality(Expression first, Expression second) {
         },
         [&](const IndexExpression &first) -> std::vector<double> {
             auto data = eval(second);
-            std::vector<double> &manager_data = manager.getRowData(first.name);
+            auto manager_data = Manager::instance()->GetVariable(QString{first.name.c_str()});
             if (first.args.size() == 1 && data.size() == 1){
                 manager_data[first.args[0]] = data[0];
             }  // manager.return_variable(e.name, e.args.at(0));
@@ -94,7 +94,7 @@ void FormulaParser::Equality(Expression first, Expression second) {
             }
             throw std::runtime_error("Too much indexes");
         });
-    return boost::apply_visitor(visitor, first, second);
+    boost::apply_visitor(visitor, first);
 }
 
 std::vector<double> FormulaParser::eval_binary(BinaryExpression::op_t op, std::vector<double> a, std::vector<double> b) { 
@@ -146,13 +146,13 @@ std::vector<double> FormulaParser::eval(Expression e) {
             throw std::runtime_error("Unknown variable");
         },
         [&](const IndexExpression &e) -> std::vector<double> {
-            std::vector<double> &manager_data = manager.getRowData(e.name);
+            auto manager_data = Manager::instance()->GetRawData(QString{e.name.c_str()});
 
-            if (e.args.size() == 1 && manager_data.size() >= 1) return std::vector<double>{manager_data[e.args[0]]}; // manager.return_variable(e.name, e.args.at(0));
-            if (e.args.size() == 2 && manager_data.size() >= 2) {
+            if (e.args.size() == 1 && !manager_data.measurements.empty()) return std::vector<double>{manager_data.measurements[e.args[0]]}; // manager.return_variable(e.name, e.args.at(0));
+            if (e.args.size() == 2 && manager_data.measurements.size() >= 2) {
                 if (e.args[0] - e.args[1] < 0) throw std::runtime_error("Wrong indexes");
                 for (int item = e.args[0]; item <= e.args[1]; item++) {
-                        data.push_back(manager_data[item]);
+                        data.push_back(manager_data.measurements[item]);
                     }
                     return data;
             }
