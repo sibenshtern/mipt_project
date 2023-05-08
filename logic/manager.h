@@ -7,6 +7,7 @@
 
 #include "variable_data.h"
 #include "../models/datamodel.h"
+#include "plots/plotscatter.h"
 
 class DataModel;
 
@@ -35,6 +36,7 @@ public:
     int GetVariablesCount() const;
 
     DataModel *data_model{nullptr};
+    Plot* plot{nullptr};
 
     static Manager *instance();
 private:
