@@ -3,6 +3,8 @@
 #include <QDebug>
 
 
+
+
 int VisualModel::rowCount(const QModelIndex &parent) const {
     return Manager::instance()->GetVariablesCount();
 }
@@ -13,16 +15,18 @@ int VisualModel::columnCount(const QModelIndex &parent) const {
 
 Qt::ItemFlags VisualModel::flags(const QModelIndex &index) const {
     Qt::ItemFlags default_flags {Qt::ItemIsSelectable, Qt::ItemIsEditable, Qt::ItemIsEnabled};
-
-    switch (index.column()) {
-        case 0:
-        case 1:
-        case 2:
-        case 3:
-        case 4:
-        case 5:
-            return default_flags;
-    }
+    switch (index.column())
+    {
+    case 1:
+        return default_flags | Qt::ItemIsUserCheckable;
+    case 0:
+        return Qt::ItemIsEnabled;
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+         return default_flags;
+}
 }
 
 QVariant VisualModel::data(const QModelIndex &index, int role) const {
@@ -30,7 +34,10 @@ QVariant VisualModel::data(const QModelIndex &index, int role) const {
     switch (index.column())
        {
         case 0:
-            return QVariant("Name of variable");
+        if (role == Qt::DisplayRole)
+            return QVariant(Manager::instance()->variables[variable].naming.full);
+        else
+            return QVariant();
        case 1:
         if (role == Qt::CheckStateRole)
            return QVariant(Manager::instance()->variables[variable].visual.visible);
@@ -47,16 +54,19 @@ QVariant VisualModel::data(const QModelIndex &index, int role) const {
           else
               return QVariant();
        case 4:
+        if (role == Qt::DisplayRole)
            return QVariant(Manager::instance()->variables[variable].visual.width);
+        else
+            return QVariant();
+        break;
        case 5:
+        if (role == Qt::DisplayRole)
            return QVariant(Manager::instance()->variables[variable].visual.point_type);
+           else
+               return QVariant();
         }
 }
 
-// TODO: remove std::cout
-//QVariant VisualModel::data(const QModelIndex &index, int role) const {
-//    return {};
-//}
 
 bool VisualModel::setData(const QModelIndex &index, const QVariant &value, int role)
 
@@ -65,49 +75,44 @@ bool VisualModel::setData(const QModelIndex &index, const QVariant &value, int r
     int variable = index.row();
     switch(option)
     {
-    if (role == Qt::EditRole)
     case 1:
-        Manager::instance()->variables[0].visual.visible = !(Manager::instance()->variables[variable].visual.visible);
+        Manager::instance()->variables[variable].visual.visible = !(Manager::instance()->variables[variable].visual.visible);
+        Manager::instance()->plot->draw(plot_field);
+        plot_field->replot();
         emit dataChanged(index, index);
         return true;
-        break;
     case 2:
+    {
         Manager::instance()->variables[variable].visual.line_type = value.toString();
+        Manager::instance()->plot->draw(plot_field);
+        plot_field->replot();
         emit dataChanged(index, index);
         return true;
-        break;
+    }
     case 3:
-        Manager::instance()->variables[variable].visual.color = value.toString();
+    {
+        Manager::instance()->variables[variable].visual.color = value.value<QColor>();
+        Manager::instance()->plot->draw(plot_field);
+        plot_field->replot();
         emit dataChanged(index, index);
         return true;
-        break;
-
+    }
     case 4:
+    {
         Manager::instance()->variables[variable].visual.width = value.toInt();
+        Manager::instance()->plot->draw(plot_field);
+        plot_field->replot();
         emit dataChanged(index, index);
         return true;
-        break;
+    }
     case 5:
+    {
         Manager::instance()->variables[variable].visual.point_type = value.toString();
+        Manager::instance()->plot->draw(plot_field);
+        plot_field->replot();
         emit dataChanged(index, index);
         return true;
-        break;
+    }
     }
 
 }
-
-//Qt::ItemFlags DataModel::flags(const QModelIndex &index) const {
-//    return {Qt::ItemIsSelectable, Qt::ItemIsEditable, Qt::ItemIsEnabled};
-//}
-
-//bool DataModel::insertColumns(int column, int count, const QModelIndex &parent) {
-//    beginInsertColumns(QModelIndex{}, column, column);
-//    endInsertColumns();
-//    return true;
-//}
-
-//bool DataModel::insertRows(int row, int count, const QModelIndex &parent) {
-//    beginInsertRows(parent, row, row + count - 1);
-//    std::cerr << Manager::instance()->GetMeasurementsCount();
-//    endInsertRows();
-//    return true;

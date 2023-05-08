@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>628</width>
+    <width>629</width>
     <height>901</height>
    </rect>
   </property>
@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_10">
+   <layout class="QHBoxLayout" name="horizontalLayout_4">
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
@@ -117,64 +117,58 @@
        </layout>
       </widget>
       <widget class="QWidget" name="GraphPage">
-       <widget class="QCustomPlot" name="PlotWidget" native="true">
-        <property name="geometry">
-         <rect>
-          <x>340</x>
-          <y>1</y>
-          <width>621</width>
-          <height>631</height>
-         </rect>
-        </property>
-       </widget>
-       <widget class="QTableView" name="VisualTable">
-        <property name="geometry">
-         <rect>
-          <x>-10</x>
-          <y>0</y>
-          <width>341</width>
-          <height>841</height>
-         </rect>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QSplitter" name="splitter">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <widget class="QWidget" name="TableWidget" native="true">
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item>
+             <widget class="QTableView" name="VisualTable"/>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="ParserLayout">
+              <item>
+               <widget class="QLineEdit" name="lineEdit"/>
+              </item>
+              <item>
+               <widget class="QPushButton" name="AddFormulaButton">
+                <property name="text">
+                 <string>Add Formula</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QCustomPlot" name="PlotWidget" native="true"/>
+         </widget>
+        </item>
+       </layout>
       </widget>
-      <widget class="QWidget" name="ReportPage">
-       <widget class="QTextBrowser" name="textBrowser">
-        <property name="geometry">
-         <rect>
-          <x>50</x>
-          <y>50</y>
-          <width>551</width>
-          <height>231</height>
-         </rect>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="AddGraphButton">
-        <property name="geometry">
-         <rect>
-          <x>80</x>
-          <y>290</y>
-          <width>80</width>
-          <height>22</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Add Graph</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="ExportToODFButton">
-        <property name="geometry">
-         <rect>
-          <x>480</x>
-          <y>290</y>
-          <width>80</width>
-          <height>22</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Export To ODF</string>
-        </property>
-       </widget>
+      <widget class="QWidget" name="page">
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <widget class="QWidget" name="widget" native="true"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="AddTextBlockButton">
+          <property name="text">
+           <string>Add Text Block</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="AddGraphButton">
+          <property name="text">
+           <string>Add Graph</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
@@ -186,7 +180,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>628</width>
+     <width>629</width>
      <height>21</height>
     </rect>
    </property>
