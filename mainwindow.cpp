@@ -15,22 +15,22 @@ MainWindow::MainWindow(QWidget *parent)
     ui->menubar->addAction(data_action);
     ui->menubar->addAction(graph_action);
     ui->menubar->addAction(report_action);
-//    auto* ps = new PlotScatter;
-//    ps->draw(ui->PlotWidget);
 
     data_model = new DataModel{};
     visual_model = new VisualModel{};
     Manager::instance()->data_model = data_model;
-//    Manager::instance()->graphs = ui->PlotWidget; //
-    Manager::instance()->variables.push_back(VariableData{"123", "123", Instrument{}, QList<double>{1, 2, 3, 4}});
-
+    Manager::instance()->variables.push_back(VariableData{"123", "123", Instrument{}, QList<double>{1, 2, 2, 3, 4, 4, 4, 5, 6, 6, 7}});
+    Manager::instance()->variables.push_back(VariableData{"345", "345", Instrument{}, QList<double>{1, 3, 7, 4, 15, 5, 6, 6, 7}});
+    Manager::instance()->plot = new PlotChoice(QMap<QString, Plot*> {
+    {"Scatter Plot", new PlotScatter()},
+    {"Histogramm Plot", new PlotHist()}
+    });
+    Manager::instance()->plot->draw(ui->PlotWidget);
     ui->MainTable->setModel(data_model);
+    ui->VisualTable->setEditTriggers(QAbstractItemView::AllEditTriggers);
     ui->VisualTable->setModel(visual_model);
-    QStandardItem* item0 = new QStandardItem(true);
-    item0->setCheckable(true);
-    item0->setCheckState(Qt::Checked);
-    item0->setText("some text");
-    QStringList PointTypes = (QStringList() << "None" << "C" << "Dotted");
+    visual_model->plot_field = ui->PlotWidget;
+    QStringList PointTypes = (QStringList() << "None" << "Cross" << "Circle");
     QStringList LineTypes = (QStringList() << "Solid" << "Dashed" << "Dotted");
     ColorDelegate* PlotColorDelegate = new ColorDelegate(parent);
     ComboBoxDelegate* PointTypeDelegate = new ComboBoxDelegate(PointTypes, parent);
@@ -38,10 +38,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->VisualTable->setItemDelegateForColumn(5, PointTypeDelegate);
     ui->VisualTable->setItemDelegateForColumn(2, LineTypeDelegate);
     ui->VisualTable->setItemDelegateForColumn(3, PlotColorDelegate);
-
-
-
+    connect(ui->GraphSettingsButton, SIGNAL(clicked()), this, SLOT(plotOptions()));
 }
+
+void MainWindow::plotOptions()
+{
+       Manager::instance()->plot->options();
+}
+
 
 void MainWindow::OpenGraphPage() {
     ui->stackedWidget->setCurrentIndex(1);

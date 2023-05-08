@@ -18,7 +18,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="dataPage">
        <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -125,6 +125,13 @@
           </property>
           <widget class="QWidget" name="TableWidget" native="true">
            <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item>
+             <widget class="QPushButton" name="GraphSettingsButton">
+              <property name="text">
+               <string>plots</string>
+              </property>
+             </widget>
+            </item>
             <item>
              <widget class="QTableView" name="VisualTable"/>
             </item>

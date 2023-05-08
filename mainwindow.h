@@ -8,7 +8,9 @@
 #include "models/visualmodel.h"
 #include "comboboxdelegate.h"
 #include "colordelegate.h"
-
+#include "plots/plotscatter.h"
+#include "plots/plothist.h"
+#include "plots/plotchoice.h"
 namespace Ui {
 class MainWindow;
 }
@@ -36,6 +38,7 @@ private slots:
 
     void on_RemoveMeasurementButton_clicked();
 
+    void plotOptions();
 private:
     Ui::MainWindow *ui;
 //    StrategyIOCSV reader;
