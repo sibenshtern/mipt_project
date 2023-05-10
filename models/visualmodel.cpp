@@ -69,7 +69,6 @@ QVariant VisualModel::data(const QModelIndex &index, int role) const {
 
 
 bool VisualModel::setData(const QModelIndex &index, const QVariant &value, int role)
-
 {
     int option = index.column();
     int variable = index.row();
