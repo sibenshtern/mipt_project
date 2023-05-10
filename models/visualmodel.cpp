@@ -114,5 +114,28 @@ bool VisualModel::setData(const QModelIndex &index, const QVariant &value, int r
         return true;
     }
     }
+}
+bool VisualModel::insertColumns(int column, int count, const QModelIndex &parent) {
+    beginInsertColumns(QModelIndex{}, column, column + count - 1);
+    endInsertColumns();
+    return true;
+}
 
+bool VisualModel::insertRows(int row, int count, const QModelIndex &parent) {
+    beginInsertRows(parent, row, row + count - 1);
+    std::cerr << Manager::instance()->GetMeasurementsCount();
+    endInsertRows();
+    return true;
+}
+
+bool VisualModel::removeRows(int row, int count, const QModelIndex &parent) {
+    beginRemoveRows(parent, row, row + count - 1);
+    endRemoveRows();
+    return true;
+}
+
+bool VisualModel::removeColumns(int column, int count, const QModelIndex &parent) {
+    beginRemoveColumns(parent, column, column + count - 1);
+    endRemoveColumns();
+    return true;
 }
