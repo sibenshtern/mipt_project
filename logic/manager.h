@@ -9,6 +9,7 @@
 #include "../models/datamodel.h"
 #include "../plots/plotscatter.h"
 #include "utils.hpp"
+#include "../logic/instrument.h"
 
 class DataModel;
 
@@ -18,12 +19,14 @@ public:
 
     QList<VariableData> calculated;
     QList<VariableData> variables;
+    QList<Instrument> instruments;
 
     VariableData &GetVariable(const QString &);
     RawData GetRawData(const QString &);
 
     void AddVariable(VariableData &);
     void AddMeasurement();
+    void AddInstrument(Instrument &);
 
     void DeleteVariable(int);
     void DeleteCalculated(int);
@@ -36,6 +39,7 @@ public:
 
     int GetMeasurementsCount();
     int GetVariablesCount() const;
+    int GetInstrumentsCount();
 
     DataModel *data_model{nullptr};
     Plot* plot{nullptr};
