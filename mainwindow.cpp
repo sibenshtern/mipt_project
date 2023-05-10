@@ -43,8 +43,14 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 void MainWindow::AddFormula() {
-    parser.parse(ui->lineEdit->text().toStdString());
-    qInfo() << "finish parsing";
+    try {
+        parser.parse(ui->lineEdit->text().toStdString());
+        qInfo() << "finish parsing";
+    }
+    catch(std::exception &e) {
+        error_message.showMessage(e.what());
+    }
+
 }
 
 void MainWindow::plotOptions()

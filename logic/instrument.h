@@ -8,18 +8,21 @@ enum class ErrorType {
     Absolute, Relative, Calculated
 };
 
+enum ErrorValueType {
+    Single, Multiple
+};
+
 struct ErrorValue {
-    explicit ErrorValue(QList<double> const &list) : list{list}, _type{Multiple} {};
-    explicit ErrorValue(double value) : value{value}, _type{Single} {};
+    explicit ErrorValue(QList<double> const &list) : list{list}, _type{ErrorValueType::Multiple} {};
+    explicit ErrorValue(double value) : value{value}, _type{ErrorValueType::Single} {};
     ErrorValue(ErrorValue &);
     ErrorValue &operator=(const ErrorValue &);
 
-    ~ErrorValue() { if (_type == Multiple) list.~QList(); }
-    union {
+    ~ErrorValue() { if (_type == ErrorValueType::Multiple) list.~QList(); }
         QList<double> list;
         double value;
-    };
-    enum {Single, Multiple} _type;
+    
+    ErrorValueType _type;
 };
 
 

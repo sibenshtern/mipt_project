@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 #include <vector>
 #include <map>
@@ -16,7 +18,8 @@
 #include "plugin_api.hpp"
 #include "utils.hpp"
 
-//#include "../manager.h"
+
+#include "../logic/manager.h"
 
 namespace dll = boost::dll;
 namespace x3 = boost::spirit::x3;
@@ -33,11 +36,12 @@ using Expression = boost::variant<
     >;
 
 struct Node{
-    Expression expression;
+    std::vector<double> data{};
     std::vector<double> errors{};
 
-    Node(Expression e) : expression(e){};
-    Node(Expression e, std::vector<double> errors) : expression(e), errors(errors){};
+    Node() = default;
+    Node(std::vector<double> data) : data(data){};
+    Node(std::vector<double> data, std::vector<double> errors) : data(data), errors(errors){};
 };
 
 struct VariableExpression {
@@ -65,16 +69,6 @@ struct UnaryExpression {
 BOOST_FUSION_ADAPT_STRUCT(UnaryExpression, op, arg)
 
 
-struct EqualityExpression {
-    enum op_t { Equality };
-
-    IndexExpression first;
-    Expression last;
-};
-
-BOOST_FUSION_ADAPT_STRUCT(EqualityExpression, first, last)
-
-
 struct FunctionCall {
     std::string function;
     std::vector<Expression> args;
@@ -82,10 +76,6 @@ struct FunctionCall {
 
 
 BOOST_FUSION_ADAPT_STRUCT(FunctionCall, function, args)
-
-struct equality_op_t : x3::symbols<EqualityExpression::op_t> {
-     equality_op_t();
-} const equality_op;
 
 
 struct unary_op_t : x3::symbols<UnaryExpression::op_t> {
@@ -117,7 +107,6 @@ x3::rule<class function_call, FunctionCall> const function_call;
 x3::rule<class binary_expr_1, BinaryExpression> const binary_expr_1;
 x3::rule<class binary_expr_2, BinaryExpression> const binary_expr_2;
 x3::rule<class binary_expr_3, BinaryExpression> const binary_expr_3;
-x3::rule<class equality, EqualityExpression> const equality;
 x3::rule<class expr, Expression> const expr;
 
 auto const identifier_def = x3::raw[+(x3::alpha | '_')];
@@ -133,7 +122,6 @@ auto const simple_expr_def
 
 auto const unary_expr_def = unary_op >> simple_expr;
 
-auto const equality_def = index_variable >> '=' >> simple_expr;
 
 auto const function_call_def = identifier >> '(' >>  (expr % ',') >> ')';
 auto const variable_def = x3::raw[+(x3::alpha)];
@@ -144,7 +132,7 @@ auto const binary_expr_1_def = binary_expr_2 >> *(binary_op(1) >> binary_expr_2)
 auto const binary_expr_2_def = binary_expr_3 >> *(binary_op(2) >> binary_expr_3);
 auto const binary_expr_3_def = simple_expr >> *(binary_op(3) >> simple_expr);
 
-//auto const expr_def = equality;
+
 auto const expr_def = binary_expr_1;
 
 
@@ -153,7 +141,6 @@ BOOST_SPIRIT_DEFINE(
     simple_expr,
     unary_expr,
     function_call,
-    equality,
     binary_expr_1, binary_expr_2,  binary_expr_3,
     expr, variable, index_variable);
 
@@ -162,21 +149,22 @@ class FormulaParser {
 private:
     std::map<std::string, double> constants;
     std::string path = "./";
-    bool presence_of_IndexExpression = false; 
-    std::vector <double> data_;
-    int maxindex = 0;
-    std::vector<double> eval_binary(BinaryExpression::op_t op, std::vector<double> a, std::vector<double> b);
-    //double eval_binary(BinaryExpression::op_t op, double a, double b);
-    std::vector<double> eval(Expression e);
-    double return_variable(std::string name);
+    // std::vector<double> eval_binary(BinaryExpression::op_t op, std::vector<double> a, std::vector<double> b);
+    // std::vector<double> eval(Expression e);
+
     void load_constants(std::string path);
-    //Expression preParse(const char* input);
     void Equality(Expression first, Expression second);
+
+
+    Node eval_binary(BinaryExpression::op_t op, Node first, Node second);
+    Node eval(Expression e);
+
+    //void load_constants(std::string path);
+    //void Equality(Node first, Node second);
 
 public:
     FormulaParser() { load_constants(path);};
     ~FormulaParser() {};
     void parse(std::string input_t);
-    //std::vector <double> parse(std::string input);
 };
 

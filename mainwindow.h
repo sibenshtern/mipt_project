@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QErrorMessage>
 
 //#include "logic/readers.h"
 #include "models/datamodel.h"
@@ -47,5 +48,6 @@ private:
     FormulaParser parser;
     DataModel *data_model{nullptr};
     VisualModel *visual_model{nullptr};
+    QErrorMessage error_message;
 };
 #endif // MAINWINDOW_H
