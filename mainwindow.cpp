@@ -39,6 +39,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->VisualTable->setItemDelegateForColumn(2, LineTypeDelegate);
     ui->VisualTable->setItemDelegateForColumn(3, PlotColorDelegate);
     connect(ui->GraphSettingsButton, SIGNAL(clicked()), this, SLOT(plotOptions()));
+    connect(ui->AddFormulaButton, SIGNAL(clicked()), this, SLOT(AddFormula()));
+}
+
+void MainWindow::AddFormula() {
+//    parser.parse(ui->lineEdit->text().toStdString());
+//    qInfo() << "finish parsing";
+    return;
 }
 
 void MainWindow::plotOptions()
