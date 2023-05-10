@@ -19,8 +19,8 @@ MainWindow::MainWindow(QWidget *parent)
     data_model = new DataModel{};
     visual_model = new VisualModel{};
     Manager::instance()->data_model = data_model;
-    Manager::instance()->variables.push_back(VariableData{"123", "123", Instrument{}, QList<double>{1, 2, 2, 3, 4, 4, 4, 5, 6, 6, 7}});
-    Manager::instance()->variables.push_back(VariableData{"345", "345", Instrument{}, QList<double>{1, 3, 7, 4, 15, 5, 6, 6, 7}});
+    Manager::instance()->variables.push_back(VariableData{"x", "x", Instrument{}, QList<double>{1, 2, 2, 3, 4, 4, 4, 5, 6, 6, 7}});
+    Manager::instance()->variables.push_back(VariableData{"y", "y", Instrument{}, QList<double>{1, 3, 7, 4, 15, 5, 6, 6, 7}});
     Manager::instance()->plot = new PlotChoice(QMap<QString, Plot*> {
     {"Scatter Plot", new PlotScatter()},
     {"Histogramm Plot", new PlotHist()}
@@ -43,9 +43,8 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 void MainWindow::AddFormula() {
-//    parser.parse(ui->lineEdit->text().toStdString());
-//    qInfo() << "finish parsing";
-    return;
+    parser.parse(ui->lineEdit->text().toStdString());
+    qInfo() << "finish parsing";
 }
 
 void MainWindow::plotOptions()

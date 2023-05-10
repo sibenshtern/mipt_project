@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-VariableData &Manager::GetVariable(QString &name) {
+VariableData &Manager::GetVariable(const QString &name) {
     for (auto &variable: variables)
         if (variable.naming.full == name || variable.naming.alias == name)
             return variable;
@@ -12,6 +12,16 @@ VariableData &Manager::GetVariable(QString &name) {
             return calculate;
 
     throw std::invalid_argument("No (calculated) variable with name " + name.toStdString());
+}
+
+RawData Manager::GetRawData(const QString &name) {
+    auto variable = GetVariable(name);
+    std::vector<double> errors(variable.measurements.size());
+
+    for (int i = 0; i < variable.measurements.size(); ++i)
+        errors[i] = variable.Error(i);
+
+    return RawData{{variable.measurements.begin(), variable.measurements.end()}, errors};
 }
 
 void Manager::AddVariable(VariableData &data) {
@@ -25,7 +35,6 @@ void Manager::AddVariable(VariableData &data) {
     }
 
     data_model->insertColumn(GetVariablesCount());
-    std::cout << "Manager::AddVariable(columb inserted flag): " << "true" << "\n";
 
     int tmp = measurement_count - variables.back().measurements.size();
 

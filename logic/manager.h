@@ -8,6 +8,7 @@
 #include "variable_data.h"
 #include "../models/datamodel.h"
 #include "../plots/plotscatter.h"
+#include "utils.hpp"
 
 class DataModel;
 
@@ -18,7 +19,8 @@ public:
     QList<VariableData> calculated;
     QList<VariableData> variables;
 
-    VariableData &GetVariable(QString &);
+    VariableData &GetVariable(const QString &);
+    RawData GetRawData(const QString &);
 
     void AddVariable(VariableData &);
     void AddMeasurement();
