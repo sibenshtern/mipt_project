@@ -11,6 +11,7 @@
 #include "plots/plotscatter.h"
 #include "plots/plothist.h"
 #include "plots/plotchoice.h"
+#include "models/namingmodel.h"
 #include "parser/FormulaParser.hpp"
 
 namespace Ui {
@@ -47,5 +48,6 @@ private:
     FormulaParser parser;
     DataModel *data_model{nullptr};
     VisualModel *visual_model{nullptr};
+    NamingModel *naming_model{nullptr};
 };
 #endif // MAINWINDOW_H
