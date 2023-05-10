@@ -11,7 +11,7 @@
 #include "plots/plotscatter.h"
 #include "plots/plothist.h"
 #include "plots/plotchoice.h"
-//#include "parser/FormulaParser.hpp"
+#include "parser/FormulaParser.hpp"
 
 namespace Ui {
 class MainWindow;
@@ -44,8 +44,7 @@ private slots:
     void AddFormula();
 private:
     Ui::MainWindow *ui;
-//    StrategyIOCSV reader;
-//    FormulaParser parser;
+    FormulaParser parser;
     DataModel *data_model{nullptr};
     VisualModel *visual_model{nullptr};
 };

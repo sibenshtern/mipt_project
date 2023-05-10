@@ -1,4 +1,4 @@
-#include <boost/config.hpp> // for BOOST_SYMBOL_EXPORT
+#include <boost/config.hpp>
 #include "plugin_api.hpp"
 #include <iostream>
 
@@ -14,7 +14,9 @@ namespace plugin_namespace {
             for (int item = 0; item < input_vector.size(); ++item){
                 result += input_vector[item];
             }
-            return result;
+            if (input_vector.size() > 0) return result / input_vector.size();
+            else throw std::runtime_error("No input in function");
+
         }
 
         ~plugin_arithmetic_average() {}
