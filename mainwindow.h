@@ -47,9 +47,12 @@ private slots:
 private:
     Ui::MainWindow *ui;
     FormulaParser parser;
+
     DataModel *data_model{nullptr};
     VisualModel *visual_model{nullptr};
     NamingModel *naming_model{nullptr};
+    InstrumentModel *instrument_model{nullptr};
+
     QErrorMessage error_message;
 };
 #endif // MAINWINDOW_H

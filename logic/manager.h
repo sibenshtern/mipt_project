@@ -6,12 +6,16 @@
 #include <QGlobalStatic>
 
 #include "variable_data.h"
-#include "../models/datamodel.h"
-#include "../plots/plotscatter.h"
+#include "instrument.h"
 #include "utils.hpp"
-#include "../logic/instrument.h"
+
+#include "../models/datamodel.h"
+#include "../models/instrumentmodel.h"
+
+#include "../plots/plotscatter.h"
 
 class DataModel;
+class InstrumentModel;
 
 class Manager {
 public:
@@ -24,9 +28,9 @@ public:
     VariableData &GetVariable(const QString &);
     RawData GetRawData(const QString &);
 
-    void AddVariable(VariableData &);
+    void AddVariable(const VariableData &);
+    void AddInstrument(const Instrument &);
     void AddMeasurement();
-    void AddInstrument(Instrument &);
 
     void DeleteVariable(int);
     void DeleteCalculated(int);
@@ -39,9 +43,10 @@ public:
 
     int GetMeasurementsCount();
     int GetVariablesCount() const;
-    int GetInstrumentsCount();
 
     DataModel *data_model{nullptr};
+    InstrumentModel *instrument_model{nullptr};
+
     Plot* plot{nullptr};
 
     static Manager *instance();

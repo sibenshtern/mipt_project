@@ -1,7 +1,5 @@
 #include "manager.h"
 
-#include <iostream>
-
 VariableData &Manager::GetVariable(const QString &name) {
     for (auto &variable: variables)
         if (variable.naming.full == name || variable.naming.alias == name)
@@ -24,7 +22,7 @@ RawData Manager::GetRawData(const QString &name) {
     return RawData{{variable.measurements.begin(), variable.measurements.end()}, errors};
 }
 
-void Manager::AddVariable(VariableData &data) {
+void Manager::AddVariable(const VariableData &data) {
     int measurement_count = GetMeasurementsCount();
 
     variables.push_back(data);
@@ -36,17 +34,18 @@ void Manager::AddVariable(VariableData &data) {
 
     data_model->insertColumn(GetVariablesCount());
 
-    int tmp = measurement_count - variables.back().measurements.size();
-
     for (auto& variable : variables) {
         int variable_size = variable.measurements.size();
         for (int i = 0; i < GetMeasurementsCount() - variable_size; ++i)
             variable.measurements.push_back(0);
     }
+}
 
-    for (int i = 0; i < tmp; ++i) {
-        variables.back().measurements.push_back(0);
-    }
+void Manager::AddInstrument(const Instrument &data) {
+    int instruments_count = static_cast<int>(instruments.size());
+    instruments.append(data);
+    qInfo() << instruments_count;
+    instrument_model->insertRow(instruments_count);
 }
 
 void Manager::AddMeasurement() {

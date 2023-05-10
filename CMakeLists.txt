@@ -29,13 +29,18 @@ add_executable(DAFELab
 
         models/datamodel.cpp
         models/visualmodel.cpp
+        models/namingmodel.cpp
+        models/instrumentmodel.cpp
+
         comboboxdelegate.cpp
         colordelegate.cpp
+
         qcustomplot.cpp
         plots/plotscatter.cpp
         plots/plothist.cpp
         plots/plotchoice.cpp
         plots/plot.h
+
         parser/FormulaParser.cpp
         )
 

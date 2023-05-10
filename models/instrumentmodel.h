@@ -1,5 +1,5 @@
-#ifndef INSTRUMENTMODEL_H
-#define INSTRUMENTMODEL_H
+#ifndef DAFELAB_INSTRUMENTMODEL_H
+#define DAFELAB_INSTRUMENTMODEL_H
 #include <cmath>
 
 #include <QAbstractTableModel>
