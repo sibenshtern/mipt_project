@@ -9,9 +9,11 @@ MainWindow::MainWindow(QWidget *parent)
     auto *graph_action = new QAction("Graph", this);
     auto *data_action = new QAction("Data", this);
     auto *report_action = new QAction("Report", this);
+
     connect(data_action, SIGNAL(triggered()), this, SLOT(OpenDataPage()));
     connect(graph_action, SIGNAL(triggered()), this, SLOT(OpenGraphPage()));
     connect(report_action, SIGNAL(triggered()), this, SLOT(OpenReportPage()));
+
     ui->menubar->addAction(data_action);
     ui->menubar->addAction(graph_action);
     ui->menubar->addAction(report_action);
@@ -28,25 +30,33 @@ MainWindow::MainWindow(QWidget *parent)
     Manager::instance()->AddVariable(VariableData{"y", "y", Instrument{}, QList<double>{1, 3, 7, 4, 15, 5, 6, 6, 7}});
     Manager::instance()->AddInstrument(Instrument{ErrorType::Relative, 0.4, "Линейка"});
     Manager::instance()->AddInstrument(Instrument{ErrorType::Absolute, 10, "Стул"});
-    Manager::instance()->plot = new PlotChoice(QMap<QString, Plot*> {
-    {"Scatter Plot", new PlotScatter()}
-    {"Histogramm Plot", new PlotHist()}
+
+    plot = new PlotChoice(QMap<QString, Plot*> {
+        {"Scatter Plot", new PlotScatter()},
+        {"Histogramm Plot", new PlotHist()}
     });
-    Manager::instance()->plot->draw(ui->PlotWidget);
+    Manager::instance()->plot = plot;
+    plot->draw(ui->PlotWidget);
+
     ui->VisualTable->setEditTriggers(QAbstractItemView::AllEditTriggers);
+
     ui->MainTable->setModel(data_model);
     ui->VisualTable->setModel(visual_model);
     ui->NamingTable->setModel(naming_model);
     ui->InstrumentTable->setModel(instrument_model);
+
     visual_model->plot_field = ui->PlotWidget;
     QStringList PointTypes = (QStringList() << "None" << "Cross" << "Circle");
     QStringList LineTypes = (QStringList() << "Solid" << "Dashed" << "Dotted");
-    ColorDelegate* PlotColorDelegate = new ColorDelegate(parent);
-    ComboBoxDelegate* PointTypeDelegate = new ComboBoxDelegate(PointTypes, parent);
-    ComboBoxDelegate* LineTypeDelegate = new ComboBoxDelegate(LineTypes, parent);
-    ui->VisualTable->setItemDelegateForColumn(5, PointTypeDelegate);
+
+    auto* PlotColorDelegate = new ColorDelegate(parent);
+    auto* PointTypeDelegate = new ComboBoxDelegate(PointTypes, parent);
+    auto* LineTypeDelegate = new ComboBoxDelegate(LineTypes, parent);
+
     ui->VisualTable->setItemDelegateForColumn(2, LineTypeDelegate);
     ui->VisualTable->setItemDelegateForColumn(3, PlotColorDelegate);
+    ui->VisualTable->setItemDelegateForColumn(5, PointTypeDelegate);
+
     connect(ui->GraphSettingsButton, SIGNAL(clicked()), this, SLOT(plotOptions()));
     connect(ui->AddFormulaButton, SIGNAL(clicked()), this, SLOT(AddFormula()));
 }

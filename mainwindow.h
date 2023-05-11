@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <QErrorMessage>
 
-//#include "logic/readers.h"
 #include "models/datamodel.h"
 #include "models/visualmodel.h"
 #include "comboboxdelegate.h"
@@ -52,6 +51,7 @@ private:
     VisualModel *visual_model{nullptr};
     NamingModel *naming_model{nullptr};
     InstrumentModel *instrument_model{nullptr};
+    PlotChoice *plot{nullptr};
 
     QErrorMessage error_message;
 };
