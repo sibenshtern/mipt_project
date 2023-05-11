@@ -43,6 +43,7 @@ private slots:
 
     void plotOptions();
     void AddFormula();
+    void redraw();
 private:
     Ui::MainWindow *ui;
     FormulaParser parser;

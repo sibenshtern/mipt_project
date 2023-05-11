@@ -15,7 +15,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->menubar->addAction(data_action);
     ui->menubar->addAction(graph_action);
     ui->menubar->addAction(report_action);
-
     data_model = new DataModel{};
     visual_model = new VisualModel{};
     naming_model = new NamingModel{};
@@ -31,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->VisualTable->setEditTriggers(QAbstractItemView::AllEditTriggers);
     ui->VisualTable->setModel(visual_model);
     ui->NamingTable->setModel(naming_model);
-    visual_model->plot_field = ui->PlotWidget;
+    Manager::instance()->plot_field = ui->PlotWidget;
     QStringList PointTypes = (QStringList() << "None" << "Cross" << "Circle");
     QStringList LineTypes = (QStringList() << "Solid" << "Dashed" << "Dotted");
     ColorDelegate* PlotColorDelegate = new ColorDelegate(parent);
@@ -42,11 +41,16 @@ MainWindow::MainWindow(QWidget *parent)
     ui->VisualTable->setItemDelegateForColumn(3, PlotColorDelegate);
     connect(ui->GraphSettingsButton, SIGNAL(clicked()), this, SLOT(plotOptions()));
     connect(ui->AddFormulaButton, SIGNAL(clicked()), this, SLOT(AddFormula()));
+    connect(ui->RedrawButton, SIGNAL(clicked()), this, SLOT(redraw()));
 }
 
 void MainWindow::AddFormula() {
     parser.parse(ui->lineEdit->text().toStdString());
     qInfo() << "finish parsing";
+}
+
+void MainWindow::redraw(){
+    Manager::instance()->plot->draw(ui->PlotWidget);
 }
 
 void MainWindow::plotOptions()

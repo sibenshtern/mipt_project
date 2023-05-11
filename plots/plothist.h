@@ -10,7 +10,8 @@ class PlotHistOptionsDialog : public QDialog
 {
 public:
     explicit PlotHistOptionsDialog(QString, QString, QString, QWidget*);
-    QLineEdit xLabel, yLabel, title, bins;
+    QLineEdit xLabel, yLabel, title;
+    QSpinBox bins;
 };
 
 

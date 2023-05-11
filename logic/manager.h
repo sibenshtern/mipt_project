@@ -43,6 +43,7 @@ public:
 
     DataModel *data_model{nullptr};
     Plot* plot{nullptr};
+    QCustomPlot* plot_field = nullptr;
 
     static Manager *instance();
 private:

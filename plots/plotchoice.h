@@ -13,7 +13,6 @@ public:
     QComboBox currentPlot;
 private slots:
     void options();
-//    void optionsCurrentPlot(QString currentPlot);
 };
 
 class PlotChoice: public Plot
