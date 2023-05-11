@@ -5,28 +5,28 @@
 
 #include "FormulaParser.hpp"
 
-Node operator + (Node &first, Node &second) 
-{   
+
+Node operator + (Node &first, Node &second) {   
     Node node = Node();
-    if (second.data.size() == 1){
+    if (second.data.size() == 1) {
         int size = first.data.size();
-        for (int item = 0; item < size; item++){
+        for (int item = 0; item < size; item++) {
             node.data.push_back(first.data[item] + second.data[0]);
             node.errors.push_back(std::pow(std::pow(first.errors[item], 2) + std::pow(second.errors[0], 2), 0.5));
         }
         return node;
     }
-    else if (first.data.size() == 1){
+    else if (first.data.size() == 1) {
         int size = second.data.size();
-        for (int item = 0; item < size; item++){
+        for (int item = 0; item < size; item++) {
             node.data.push_back(first.data[0] + second.data[item]);
             node.errors.push_back(std::pow(std::pow(first.errors[0], 2) + std::pow(second.errors[item], 2), 0.5));
         }
         return node;
     }
-    else if(second.data.size() == first.data.size()){
+    else if(second.data.size() == first.data.size()) {
         int size = first.data.size();
-        for (int item = 0; item < size; item++){
+        for (int item = 0; item < size; item++) {
             node.data.push_back(first.data[item] + second.data[item]);
             node.errors.push_back(std::pow(std::pow(first.errors[item], 2) + std::pow(second.errors[item], 2), 0.5));
         }
@@ -35,18 +35,21 @@ Node operator + (Node &first, Node &second)
     throw std::runtime_error("Impossible to convert sizes");
 }
 
+
 Node operator - (Node &first, Node &second) 
 {   
     Node node = Node();
-    if (second.data.size() == 1){
+    if (second.data.size() == 1) {
+
         int size = first.data.size();
-        for (int item = 0; item < size; item++){
+        for (int item = 0; item < size; item++) {
             node.data.push_back(first.data[item] - second.data[0]);
             node.errors.push_back(std::pow(std::pow(first.errors[item], 2) + std::pow(second.errors[0], 2), 0.5));
         }
         return node;
     }
     else if (first.data.size() == 1){
+
         int size = second.data.size();
         for (int item = 0; item < size; item++){
             node.data.push_back(first.data[0] - second.data[item]);
@@ -55,6 +58,7 @@ Node operator - (Node &first, Node &second)
         return node;
     }
     else if(second.data.size() == first.data.size()){
+
         int size = first.data.size();
         for (int item = 0; item < size; item++){
             node.data.push_back(first.data[item] - second.data[item]);
@@ -66,40 +70,113 @@ Node operator - (Node &first, Node &second)
 }
 
 
-// TODO OPTIMIZE
 Node operator * (Node first, Node second) 
 {   
     Node node = Node();
-    if (second.data.size() == 1){
+    if (second.data.size() == 1) {
         int size = first.data.size();
-        for (int item = 0; item < size; item++){
-            node.data.push_back(first.data[item] * second.data[0]);
-            double value = first.data[item] * second.data[0];
+        for (int item = 0; item < size; item++) {
+
             double error = 0;
+            double value = first.data[item] * second.data[0];
+            node.data.push_back(value);
+
             if (first.data[item] != 0) error += std::pow(first.errors[item] / first.data[item], 2);
             if (second.data[0] != 0) error += std::pow(second.errors[0] / second.data[0], 2);
+
             node.errors.push_back(std::pow(error, 0.5) * abs(value));
         }
         return node;
     }
-    else if (first.data.size() == 1){
+    else if (first.data.size() == 1) {
+
         int size = second.data.size();
-        for (int item = 0; item < size; item++){
-            node.data.push_back(first.data[0] * second.data[item]);
-            double value = first.data[0] * second.data[item];
+        for (int item = 0; item < size; item++) {
+            
             double error = 0;
+            double value = first.data[0] * second.data[item];
+            
+            node.data.push_back(value);
+
             if (first.data[0] != 0) error += std::pow(first.errors[0] / first.data[0], 2);
             if (second.data[item] != 0) error += std::pow(second.errors[item] / second.data[item], 2);
             node.errors.push_back(std::pow(error, 0.5) * abs(value));
         }
         return node;
     }
-    else if(second.data.size() == first.data.size()){
+    else if(second.data.size() == first.data.size()) {
+
         int size = first.data.size();
-        for (int item = 0; item < size; item++){
-            double value = first.data[item] * second.data[item];
-            node.data.push_back(first.data[item] * second.data[item]);
+        for (int item = 0; item < size; item++) {
+
             double error = 0;
+            double value = first.data[item] * second.data[item];
+
+            node.data.push_back(value);
+
+            if (first.data[item] != 0) error += std::pow(first.errors[item] / first.data[item], 2);
+            if (second.data[item] != 0) error += std::pow(second.errors[item] / second.data[item], 2);
+            node.errors.push_back(std::pow(error, 0.5) * abs(value));
+        }
+        return node;
+    }
+    throw std::runtime_error("Impossible to convert sizes");
+}
+
+Node operator / (Node first, Node second) 
+{   
+    Node node = Node();
+    if (second.data.size() == 1) {
+        int size = first.data.size();
+        for (int item = 0; item < size; item++) {
+
+            double error = 0;
+            double value = 0; first.data[item] / second.data[0];
+            if (second.data[0] != 0) {
+                value = first.data[item] / second.data[0];
+                node.data.push_back(value);
+            }
+            else throw std::runtime_error("Divide by zero");
+
+            if (first.data[item] != 0) error += std::pow(first.errors[item] / first.data[item], 2);
+            if (second.data[0] != 0) error += std::pow(second.errors[0] / second.data[0], 2);
+
+            node.errors.push_back(std::pow(error, 0.5) * abs(value));
+        }
+        return node;
+    }
+    else if (first.data.size() == 1) {
+
+        int size = second.data.size();
+        for (int item = 0; item < size; item++) {
+            
+            double error = 0;
+            double value = 0; 
+            if (second.data[item] != 0) {
+                value = first.data[0] / second.data[item];
+                node.data.push_back(value);
+            }
+            else throw std::runtime_error("Divide by zero");
+
+            if (first.data[0] != 0) error += std::pow(first.errors[0] / first.data[0], 2);
+            if (second.data[item] != 0) error += std::pow(second.errors[item] / second.data[item], 2);
+            node.errors.push_back(std::pow(error, 0.5) * abs(value));
+        }
+        return node;
+    }
+    else if(second.data.size() == first.data.size()) {
+
+        int size = first.data.size();
+        for (int item = 0; item < size; item++) {
+
+            double error = 0;
+            double value = 0;
+            if (second.data[item] != 0) {
+                value = first.data[item] / second.data[item];
+                node.data.push_back(value);
+            }
+            else throw std::runtime_error("Divide by zero");
+
             if (first.data[item] != 0) error += std::pow(first.errors[item] / first.data[item], 2);
             if (second.data[item] != 0) error += std::pow(second.errors[item] / second.data[item], 2);
             node.errors.push_back(std::pow(error, 0.5) * abs(value));
@@ -110,7 +187,55 @@ Node operator * (Node first, Node second)
 }
 
 
+Node operator ^ (Node first, Node second) 
+{   
+    Node node = Node();
+    if (second.data.size() == 1) {
+        int size = first.data.size();
+        for (int item = 0; item < size; item++) {
 
+            double error = 0;
+            double value = std::pow(first.data[item], second.data[0]);
+            node.data.push_back(value);
+
+            if (first.data[item] != 0) error == std::pow(first.errors[item] / first.data[item], 2) * std::pow(second.data[0], 2);
+
+            node.errors.push_back(std::pow(error, 0.5) * abs(value));
+        }
+        return node;
+    }
+    else if (first.data.size() == 1) {
+
+        int size = second.data.size();
+        for (int item = 0; item < size; item++) {
+            
+            double error = 0;
+            double value = std::pow(first.data[0], second.data[item]);
+            
+            node.data.push_back(value);
+
+            if (first.data[0] != 0) error += std::pow(first.errors[0] / first.data[0], 2) * std::pow(second.data[item], 2);
+            node.errors.push_back(std::pow(error, 0.5) * abs(value));
+        }
+        return node;
+    }
+    else if(second.data.size() == first.data.size()) {
+
+        int size = first.data.size();
+        for (int item = 0; item < size; item++) {
+
+            double error = 0;
+            double value = std::pow(first.data[item], second.data[item]);
+
+            node.data.push_back(value);
+
+            if (first.data[item] != 0) error += std::pow(first.errors[item] / first.data[item], 2) * std::pow(second.data[item], 2);
+            node.errors.push_back(std::pow(error, 0.5) * abs(value));
+        }
+        return node;
+    }
+    throw std::runtime_error("Impossible to convert sizes");
+}
 
 
 
