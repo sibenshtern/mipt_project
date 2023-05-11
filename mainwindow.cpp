@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
     visual_model = new VisualModel{};
     naming_model = new NamingModel{};
     instrument_model = new InstrumentModel{};
+    odf_export = new ODF{ui->widget};
 
     Manager::instance()->data_model = data_model;
     Manager::instance()->instrument_model = instrument_model;
@@ -59,6 +60,16 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->GraphSettingsButton, SIGNAL(clicked()), this, SLOT(plotOptions()));
     connect(ui->AddFormulaButton, SIGNAL(clicked()), this, SLOT(AddFormula()));
+    connect(ui->AddTextBlockButton, SIGNAL(clicked()), this, SLOT(AddTextBlock()));
+    connect(ui->AddGraphButton, SIGNAL(clicked()), this, SLOT(AddGraph()));
+}
+
+void MainWindow::AddTextBlock() {
+    odf_export->AddTextBlock();
+}
+
+void MainWindow::AddGraph() {
+    odf_export->AddGraph(ui->PlotWidget);
 }
 
 void MainWindow::AddFormula() {
@@ -69,7 +80,6 @@ void MainWindow::AddFormula() {
     catch(std::exception &e) {
         error_message.showMessage(e.what());
     }
-
 }
 
 void MainWindow::plotOptions()

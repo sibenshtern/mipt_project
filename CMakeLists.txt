@@ -26,6 +26,8 @@ add_executable(DAFELab
         logic/variable_data.cpp
         logic/manager.cpp
         logic/io.cpp
+        logic/blocks.h
+        logic/odf.cpp
 
         models/datamodel.cpp
         models/visualmodel.cpp
@@ -42,6 +44,6 @@ add_executable(DAFELab
         plots/plot.h
 
         parser/FormulaParser.cpp
-        )
+        logic/blocks.cpp)
 
 target_link_libraries(DAFELab Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::PrintSupport /usr/lib/x86_64-linux-gnu/libboost_filesystem.a)

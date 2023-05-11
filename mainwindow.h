@@ -6,12 +6,17 @@
 
 #include "models/datamodel.h"
 #include "models/visualmodel.h"
+#include "models/namingmodel.h"
+
 #include "comboboxdelegate.h"
 #include "colordelegate.h"
+
 #include "plots/plotscatter.h"
 #include "plots/plothist.h"
 #include "plots/plotchoice.h"
-#include "models/namingmodel.h"
+
+#include "logic/odf.h"
+
 #include "parser/FormulaParser.hpp"
 
 namespace Ui {
@@ -43,6 +48,9 @@ private slots:
 
     void plotOptions();
     void AddFormula();
+
+    void AddTextBlock();
+    void AddGraph();
 private:
     Ui::MainWindow *ui;
     FormulaParser parser;
@@ -52,6 +60,7 @@ private:
     NamingModel *naming_model{nullptr};
     InstrumentModel *instrument_model{nullptr};
     PlotChoice *plot{nullptr};
+    ODF *odf_export{nullptr};
 
     QErrorMessage error_message;
 };
