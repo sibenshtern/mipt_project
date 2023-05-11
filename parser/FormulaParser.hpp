@@ -17,7 +17,7 @@
 
 #include "plugin_api.hpp"
 #include "utils.hpp"
-
+#include "Node.hpp"
 
 #include "../logic/manager.h"
 
@@ -35,14 +35,16 @@ using Expression = boost::variant<
     , boost::recursive_wrapper<struct BinaryExpression>
     >;
 
-struct Node{
-    std::vector<double> data{};
-    std::vector<double> errors{};
 
-    Node() = default;
-    Node(std::vector<double> data) : data(data){};
-    Node(std::vector<double> data, std::vector<double> errors) : data(data), errors(errors){};
+struct BinaryExpression {
+    enum op_t { Plus, Minus, Mul, Div, Mod, Pow, Equality};
+
+    Expression first;
+    std::vector<std::pair<op_t, Expression>> ops;
 };
+
+BOOST_FUSION_ADAPT_STRUCT(BinaryExpression, first, ops)
+
 
 struct VariableExpression {
     std::string name;
@@ -74,24 +76,12 @@ struct FunctionCall {
     std::vector<Expression> args;
 };
 
-
 BOOST_FUSION_ADAPT_STRUCT(FunctionCall, function, args)
 
 
 struct unary_op_t : x3::symbols<UnaryExpression::op_t> {
     unary_op_t();
 } const unary_op;
-
-
-struct BinaryExpression {
-    enum op_t { Plus, Minus, Mul, Div, Mod, Pow, Equality};
-
-    Expression first;
-    std::vector<std::pair<op_t, Expression>> ops;
-};
-
-
-BOOST_FUSION_ADAPT_STRUCT(BinaryExpression, first, ops)
 
 
 struct binary_op : x3::symbols<BinaryExpression::op_t> {
@@ -122,7 +112,6 @@ auto const simple_expr_def
 
 auto const unary_expr_def = unary_op >> simple_expr;
 
-
 auto const function_call_def = identifier >> '(' >>  (expr % ',') >> ')';
 auto const variable_def = x3::raw[+(x3::alpha)];
 auto const index_variable_def = x3::raw[+(x3::alpha)] >> '[' >> (x3::int_ % ':') >> ']';
@@ -131,7 +120,6 @@ auto const index_variable_def = x3::raw[+(x3::alpha)] >> '[' >> (x3::int_ % ':')
 auto const binary_expr_1_def = binary_expr_2 >> *(binary_op(1) >> binary_expr_2);
 auto const binary_expr_2_def = binary_expr_3 >> *(binary_op(2) >> binary_expr_3);
 auto const binary_expr_3_def = simple_expr >> *(binary_op(3) >> simple_expr);
-
 
 auto const expr_def = binary_expr_1;
 
@@ -149,18 +137,12 @@ class FormulaParser {
 private:
     std::map<std::string, double> constants;
     std::string path = "./";
-    // std::vector<double> eval_binary(BinaryExpression::op_t op, std::vector<double> a, std::vector<double> b);
-    // std::vector<double> eval(Expression e);
 
     void load_constants(std::string path);
     void Equality(Expression first, Expression second);
 
-
     Node eval_binary(BinaryExpression::op_t op, Node first, Node second);
     Node eval(Expression e);
-
-    //void load_constants(std::string path);
-    //void Equality(Node first, Node second);
 
 public:
     FormulaParser() { load_constants(path);};

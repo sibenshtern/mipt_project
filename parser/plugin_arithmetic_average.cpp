@@ -9,13 +9,19 @@ namespace plugin_namespace {
     public:
         plugin_arithmetic_average() {}
 
-        double calculate(const std::vector <double> &input_vector) {
+        Node calculate(Node input_node) {
             double result = 0;
-            for (int item = 0; item < input_vector.size(); ++item){
-                result += input_vector[item];
+            double error = 0;
+            for (int item = 0; item < input_node.data.size(); ++item){
+                result += input_node.data[item];
+                error += input_node.errors[item];
             }
-            if (input_vector.size() > 0) return result / input_vector.size();
-            else throw std::runtime_error("No input in function");
+            if (input_node.data.size() > 0) {
+                return Node(std::vector<double> {result / input_node.data.size()}, std::vector <double> {error});
+            }
+            else {
+                throw std::runtime_error("No input in function");
+            }
 
         }
 
