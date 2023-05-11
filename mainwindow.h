@@ -48,9 +48,9 @@ private slots:
 
     void plotOptions();
     void AddFormula();
-
     void AddTextBlock();
     void AddGraph();
+    void redraw();
 private:
     Ui::MainWindow *ui;
     FormulaParser parser;

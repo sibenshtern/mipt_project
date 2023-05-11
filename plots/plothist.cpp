@@ -7,7 +7,6 @@ void PlotHist::draw(QCustomPlot* plot){
         auto & v = m->variables[i];
         if (!v.visual.visible) continue;
         plot->addGraph();
-        int bins = 5;
         auto graph = plot->graph(plot->graphCount() - 1);
         QPen pen;
         pen.setColor(v.visual.color);
@@ -28,7 +27,6 @@ void PlotHist::draw(QCustomPlot* plot){
             max = std::max(max, e);
         }
 
-
         double step = (max - min) / bins;
 
         QVector<double> x, y;
@@ -48,13 +46,22 @@ void PlotHist::draw(QCustomPlot* plot){
         y.append(0);
 
         graph->setData(x, y);
-        graph->rescaleAxes(true);
-        plot->xAxis2->setVisible(true);
-        plot->xAxis2->setTickLabels(false);
-        plot->yAxis2->setVisible(true);
-        plot->yAxis2->setTickLabels(false);
-        plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
     }
+    if (plot->plotLayout()->children().size() <= 1)
+    {
+        plot->plotLayout()->insertRow(0);
+        plot->plotLayout()->addElement(0, 0, new QCPTextElement(plot, title));
+    }
+    static_cast<QCPTextElement*>(plot->plotLayout()->element(0, 0))->setText(title);
+    plot->xAxis->setLabel(xlabel);
+    plot->yAxis->setLabel(ylabel);
+    plot->xAxis->setVisible(true);
+    plot->yAxis->setVisible(true);
+    plot->legend->setVisible(true);
+    plot->legend->setBrush(QColor(255, 255, 255, 150));
+    plot->rescaleAxes();
+    plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
+    plot->replot();
 }
 
 void PlotHist::options()
@@ -65,7 +72,7 @@ void PlotHist::options()
     xlabel = optionDialog.xLabel.text();
     ylabel = optionDialog.yLabel.text();
     title = optionDialog.title.text();
-    bins = (optionDialog.bins.text()).toInt();
+    bins = optionDialog.bins.value();
 }
 
 

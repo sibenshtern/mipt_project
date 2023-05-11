@@ -17,7 +17,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->menubar->addAction(data_action);
     ui->menubar->addAction(graph_action);
     ui->menubar->addAction(report_action);
-
     data_model = new DataModel{};
     visual_model = new VisualModel{};
     naming_model = new NamingModel{};
@@ -45,8 +44,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->VisualTable->setModel(visual_model);
     ui->NamingTable->setModel(naming_model);
     ui->InstrumentTable->setModel(instrument_model);
-
-    visual_model->plot_field = ui->PlotWidget;
+    Manager::instance()->plot_field = ui->PlotWidget;
     QStringList PointTypes = (QStringList() << "None" << "Cross" << "Circle");
     QStringList LineTypes = (QStringList() << "Solid" << "Dashed" << "Dotted");
 
@@ -62,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->AddFormulaButton, SIGNAL(clicked()), this, SLOT(AddFormula()));
     connect(ui->AddTextBlockButton, SIGNAL(clicked()), this, SLOT(AddTextBlock()));
     connect(ui->AddGraphButton, SIGNAL(clicked()), this, SLOT(AddGraph()));
+    connect(ui->RedrawButton, SIGNAL(clicked()), this, SLOT(redraw()));
 }
 
 void MainWindow::AddTextBlock() {
@@ -80,6 +79,10 @@ void MainWindow::AddFormula() {
     catch(std::exception &e) {
         error_message.showMessage(e.what());
     }
+}
+
+void MainWindow::redraw(){
+    Manager::instance()->plot->draw(ui->PlotWidget);
 }
 
 void MainWindow::plotOptions()

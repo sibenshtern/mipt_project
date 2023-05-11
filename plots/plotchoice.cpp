@@ -11,6 +11,7 @@ void PlotChoice::options()
     optionDialog.show();
     optionDialog.exec();
     currentPlot = optionDialog.currentPlot.currentText();
+
 }
 
 void PlotChoice::optionsCurrentPlot(QString currentPlot)
@@ -22,7 +23,6 @@ PlotChoiceOptionsDialog::PlotChoiceOptionsDialog(QString currentPlot, QStringLis
     :QDialog(parent)
     {
         QVBoxLayout *mainLayout = new QVBoxLayout;
-
         QLabel *currentPlotLabel = new QLabel(tr("Chosen plot type:"));
         mainLayout->addWidget(currentPlotLabel);
         this->currentPlot.insertItems(0, allPlots);
@@ -33,7 +33,6 @@ PlotChoiceOptionsDialog::PlotChoiceOptionsDialog(QString currentPlot, QStringLis
         QPushButton *currentPlotOptions = new QPushButton("Options");
         mainLayout->addWidget(currentPlotOptions);
         connect(currentPlotOptions, SIGNAL(clicked()), this, SLOT(options()));
-
         setLayout(mainLayout);
     }
 

@@ -18,7 +18,7 @@ Qt::ItemFlags VisualModel::flags(const QModelIndex &index) const {
     switch (index.column())
     {
     case 1:
-        return default_flags | Qt::ItemIsUserCheckable;
+        return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
     case 0:
         return Qt::ItemIsEnabled;
     case 2:
@@ -67,6 +67,29 @@ QVariant VisualModel::data(const QModelIndex &index, int role) const {
         }
 }
 
+QVariant VisualModel::headerData(int section, Qt::Orientation orientation, int role) const {
+    if (role == Qt::DisplayRole) {
+        if (orientation == Qt::Horizontal) {
+            std::cout << "VisualModel::headerData(section): " << section << "\n";
+            switch(section) {
+                case 0:
+                    return "Name of variable";
+                case 1:
+                    return "Visibility";
+                case 2:
+                    return "Line type";
+                case 3:
+                    return "Colour";
+                case 4:
+                    return "Line width";
+                case 5:
+                    return "Point type";
+            }
+        } else if (orientation == Qt::Vertical)
+            return {section + 1};
+    }
+    return {};
+}
 
 bool VisualModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
@@ -76,39 +99,34 @@ bool VisualModel::setData(const QModelIndex &index, const QVariant &value, int r
     {
     case 1:
         Manager::instance()->variables[variable].visual.visible = !(Manager::instance()->variables[variable].visual.visible);
-        Manager::instance()->plot->draw(plot_field);
-        plot_field->replot();
+        Manager::instance()->plot->draw(Manager::instance()->plot_field);
         emit dataChanged(index, index);
         return true;
     case 2:
     {
         Manager::instance()->variables[variable].visual.line_type = value.toString();
-        Manager::instance()->plot->draw(plot_field);
-        plot_field->replot();
+        Manager::instance()->plot->draw(Manager::instance()->plot_field);
         emit dataChanged(index, index);
         return true;
     }
     case 3:
     {
         Manager::instance()->variables[variable].visual.color = value.value<QColor>();
-        Manager::instance()->plot->draw(plot_field);
-        plot_field->replot();
+        Manager::instance()->plot->draw(Manager::instance()->plot_field);
         emit dataChanged(index, index);
         return true;
     }
     case 4:
     {
         Manager::instance()->variables[variable].visual.width = value.toInt();
-        Manager::instance()->plot->draw(plot_field);
-        plot_field->replot();
+        Manager::instance()->plot->draw(Manager::instance()->plot_field);
         emit dataChanged(index, index);
         return true;
     }
     case 5:
     {
         Manager::instance()->variables[variable].visual.point_type = value.toString();
-        Manager::instance()->plot->draw(plot_field);
-        plot_field->replot();
+        Manager::instance()->plot->draw(Manager::instance()->plot_field);
         emit dataChanged(index, index);
         return true;
     }
