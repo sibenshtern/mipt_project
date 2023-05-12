@@ -5,6 +5,10 @@
 #include <QAbstractTableModel>
 #include "../logic/manager.h"
 
+enum InstrumentModelColumns {
+    Name = 0, ErrorType = 1, ErrorValue = 2
+};
+
 class Manager;
 
 class InstrumentModel : public QAbstractTableModel

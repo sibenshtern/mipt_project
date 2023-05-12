@@ -11,7 +11,7 @@ enum class BlockType {
 
 class Block {
 public:
-    virtual void SaveToDocument() = 0;
+    virtual void Export() = 0;
     BlockType type = BlockType::None;
 };
 
@@ -19,8 +19,7 @@ class TextBlock : public Block {
 public:
     explicit TextBlock(QTextEdit *editor = new QTextEdit{}) : editor{editor} {}
 
-    BlockType type = BlockType::TextBlock;
-    void SaveToDocument() override {};
+    void Export() override {};
 
     QTextEdit *editor;
 };
@@ -29,8 +28,7 @@ class TableBlock : public Block {
 public:
     explicit TableBlock(QTableWidget *table = new QTableWidget{}) : table{table} {}
 
-    BlockType type = BlockType::TableBlock;
-    void SaveToDocument() override {};
+    void Export() override {};
 
     QTableWidget *table;
 };
@@ -39,8 +37,7 @@ class PlotBlock : public Block {
 public:
     explicit PlotBlock(const QPixmap &plot_image, QLabel *image_label = new QLabel{});
 
-    BlockType type = BlockType::PlotBlock;
-    void SaveToDocument() override {};
+    void Export() override {};
 
     QPixmap plot_image;
     QLabel *image_label;

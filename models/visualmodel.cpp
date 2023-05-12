@@ -2,9 +2,6 @@
 #include <iostream>
 #include <QDebug>
 
-
-
-
 int VisualModel::rowCount(const QModelIndex &parent) const {
     return Manager::instance()->GetVariablesCount();
 }

@@ -14,147 +14,109 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_4">
-    <item>
+   <layout class="QGridLayout" name="gridLayout_2">
+    <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="dataPage">
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QTabWidget" name="tabWidget">
-            <property name="currentIndex">
-             <number>0</number>
+           <widget class="QTableView" name="NamingTable"/>
+          </item>
+          <item>
+           <widget class="QTableView" name="InstrumentTable"/>
+          </item>
+          <item>
+           <widget class="QTableView" name="MainTable"/>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <property name="spacing">
+             <number>10</number>
             </property>
-            <widget class="QWidget" name="DataTab">
-             <attribute name="title">
-              <string>Data</string>
-             </attribute>
-             <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <property name="leftMargin">
+             <number>10</number>
+            </property>
+            <property name="topMargin">
+             <number>10</number>
+            </property>
+            <property name="rightMargin">
+             <number>10</number>
+            </property>
+            <property name="bottomMargin">
+             <number>10</number>
+            </property>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
               <item>
-               <widget class="QTableView" name="MainTable"/>
+               <widget class="QComboBox" name="ChooseSource">
+                <item>
+                 <property name="text">
+                  <string>CSV file</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>MongoDB</string>
+                 </property>
+                </item>
+               </widget>
               </item>
               <item>
-               <layout class="QVBoxLayout" name="verticalLayout_2">
-                <property name="spacing">
-                 <number>10</number>
+               <widget class="QPushButton" name="LoadButton">
+                <property name="text">
+                 <string>Load data</string>
                 </property>
-                <property name="leftMargin">
-                 <number>10</number>
-                </property>
-                <property name="topMargin">
-                 <number>10</number>
-                </property>
-                <property name="rightMargin">
-                 <number>10</number>
-                </property>
-                <property name="bottomMargin">
-                 <number>10</number>
-                </property>
-                <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_3">
-                  <item>
-                   <widget class="QComboBox" name="ChooseSource">
-                    <item>
-                     <property name="text">
-                      <string>CSV file</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>MongoDB</string>
-                     </property>
-                    </item>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QPushButton" name="LoadButton">
-                    <property name="text">
-                     <string>Load data</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="AddVariableButton">
-                  <property name="text">
-                   <string>Add new variable</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="RemoveVariable">
-                  <property name="text">
-                   <string>Remove variable</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="AddMeasurementButton">
-                  <property name="text">
-                   <string>Add measurement</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="RemoveMeasurementButton">
-                  <property name="text">
-                   <string>Remove measurement</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="verticalSpacer">
-                  <property name="orientation">
-                   <enum>Qt::Vertical</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>20</width>
-                    <height>40</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-               </layout>
+               </widget>
               </item>
              </layout>
-            </widget>
-            <widget class="QWidget" name="NamingTab">
-             <attribute name="title">
-              <string>Naming</string>
-             </attribute>
-             <widget class="QTableView" name="NamingTable">
-              <property name="geometry">
-               <rect>
-                <x>10</x>
-                <y>10</y>
-                <width>441</width>
-                <height>820</height>
-               </rect>
+            </item>
+            <item>
+             <widget class="QPushButton" name="AddVariableButton">
+              <property name="text">
+               <string>Add new variable</string>
               </property>
              </widget>
-            </widget>
-            <widget class="QWidget" name="InstruentsTab">
-             <attribute name="title">
-              <string>Instruments</string>
-             </attribute>
-             <widget class="QTableView" name="InstrumentTable">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>10</y>
-                <width>551</width>
-                <height>661</height>
-               </rect>
+            </item>
+            <item>
+             <widget class="QPushButton" name="RemoveVariable">
+              <property name="text">
+               <string>Remove variable</string>
               </property>
              </widget>
-            </widget>
-           </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="AddMeasurementButton">
+              <property name="text">
+               <string>Add measurement</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="RemoveMeasurementButton">
+              <property name="text">
+               <string>Remove measurement</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>
@@ -169,6 +131,13 @@
           </property>
           <widget class="QWidget" name="TableWidget" native="true">
            <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item>
+             <widget class="QPushButton" name="GraphSettingsButton">
+              <property name="text">
+               <string>plots</string>
+              </property>
+             </widget>
+            </item>
             <item>
              <widget class="QTableView" name="VisualTable"/>
             </item>
@@ -188,50 +157,7 @@
             </item>
            </layout>
           </widget>
-          <widget class="QCustomPlot" name="PlotWidget" native="true">
-           <widget class="QPushButton" name="GraphSettingsButton">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>0</y>
-              <width>81</width>
-              <height>31</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string>Settings</string>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>icons/settings_big.png</normaloff>icons/settings_big.png</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>32</width>
-              <height>32</height>
-             </size>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="RedrawButton">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>40</y>
-              <width>0</width>
-              <height>0</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string>PushButton</string>
-            </property>
-            <property name="shortcut">
-             <string>Ctrl+R</string>
-            </property>
-           </widget>
-          </widget>
+          <widget class="QCustomPlot" name="PlotWidget" native="true"/>
          </widget>
         </item>
        </layout>
@@ -239,14 +165,34 @@
       <widget class="QWidget" name="page">
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
-         <widget class="QWidget" name="widget" native="true">
-          <layout class="QVBoxLayout" name="verticalLayout_6"/>
+         <widget class="QScrollArea" name="widget">
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="area">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>889</width>
+             <height>726</height>
+            </rect>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout"/>
+          </widget>
          </widget>
         </item>
         <item>
          <widget class="QPushButton" name="AddTextBlockButton">
           <property name="text">
            <string>Add Text Block</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="AddTableButton">
+          <property name="text">
+           <string>Add Table</string>
           </property>
          </widget>
         </item>

@@ -18,6 +18,7 @@
 #include "logic/odf.h"
 
 #include "parser/FormulaParser.hpp"
+#include "logic/io.h"
 
 namespace Ui {
 class MainWindow;
@@ -50,6 +51,7 @@ private slots:
     void AddFormula();
     void AddTextBlock();
     void AddGraph();
+    void AddTableBlock();
     void redraw();
 private:
     Ui::MainWindow *ui;
@@ -61,6 +63,7 @@ private:
     InstrumentModel *instrument_model{nullptr};
     PlotChoice *plot{nullptr};
     ODF *odf_export{nullptr};
+    IOCSV csv_reader;
 
     QErrorMessage error_message;
 };

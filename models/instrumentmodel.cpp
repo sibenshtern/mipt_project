@@ -1,6 +1,5 @@
 #include "instrumentmodel.h"
 
-#include <iostream>
 #include <QDebug>
 
 int InstrumentModel::rowCount(const QModelIndex &parent) const {
@@ -13,15 +12,18 @@ int InstrumentModel::columnCount(const QModelIndex &parent) const {
 
 bool InstrumentModel::setData(const QModelIndex &index, const QVariant &value, int role) {
     if (index.isValid() && role == Qt::EditRole) {
-        int option = index.column();
-        int variable = index.row();
-        switch (option) {
-            case 0:
-                Manager::instance()->variables[variable].naming.full = value.toString();
+        switch (index.column()) {
+            case InstrumentModelColumns::Name:
+                Manager::instance()->instruments[index.row()].name = value.toString();
                 emit dataChanged(index, index);
                 return true;
-            case 1: {
-                Manager::instance()->variables[variable].naming.alias = value.toString();
+            case InstrumentModelColumns::ErrorType: {
+                QString error_type = value.toString();
+
+                if (error_type == "Relative")
+                    Manager::instance()->instruments[index.row()].type = ErrorType::Relative;
+                else if (error_type == "Absolute")
+                    Manager::instance()->instruments[index.row()].type = ErrorType::Absolute;
                 emit dataChanged(index, index);
                 return true;
             }
@@ -32,13 +34,13 @@ bool InstrumentModel::setData(const QModelIndex &index, const QVariant &value, i
 QVariant InstrumentModel::headerData(int section, Qt::Orientation orientation, int role) const {
     if (role == Qt::DisplayRole) {
         if (orientation == Qt::Horizontal) {
-            std::cout << "InstrumentModel::headerData(section): " << section << "\n";
+            qDebug() << "InstrumentModel::headerData(section): " << section << "\n";
             switch (section) {
-                case 0:
+                case InstrumentModelColumns::Name:
                     return {"Instrument name"};
-                case 1:
+                case InstrumentModelColumns::ErrorType:
                     return {"Error Type"};
-                case 2:
+                case InstrumentModelColumns::ErrorValue:
                     return {"Error Value"};
                 default:
                     return {};
@@ -56,14 +58,14 @@ Qt::ItemFlags InstrumentModel::flags(const QModelIndex &index) const {
 
 QVariant InstrumentModel::data(const QModelIndex &index, int role) const {
     auto manager = Manager::instance();
-    if (index.row() < manager->GetVariablesCount()) {
+    if (index.isValid() && index.row() < manager->GetVariablesCount()) {
         auto instrument = manager->instruments[index.row()];
         if (role == Qt::DisplayRole) {
             switch (index.column()) {
-                case 0:
+                case InstrumentModelColumns::Name:
                     qInfo() << instrument.name;
-                    return instrument.name;
-                case 1: {
+                    return {instrument.name};
+                case InstrumentModelColumns::ErrorType: {
                     switch (instrument.type) {
                         case ErrorType::Absolute:
                             return {"Absolute"};
@@ -73,7 +75,7 @@ QVariant InstrumentModel::data(const QModelIndex &index, int role) const {
                             return {"Calculated"};
                     }
                 }
-                case 2:
+                case InstrumentModelColumns::ErrorValue:
                     switch (instrument.type) {
                         case ErrorType::Absolute:
                         case ErrorType::Relative:
