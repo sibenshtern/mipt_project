@@ -54,7 +54,6 @@ MainWindow::MainWindow(QWidget *parent)
     auto *PlotColorDelegate = new ColorDelegate(parent);
     auto *PointTypeDelegate = new ComboBoxDelegate(PointTypes, parent);
     auto *LineTypeDelegate = new ComboBoxDelegate(LineTypes, parent);
-
     ui->VisualTable->setItemDelegateForColumn(2, LineTypeDelegate);
     ui->VisualTable->setItemDelegateForColumn(3, PlotColorDelegate);
     ui->VisualTable->setItemDelegateForColumn(5, PointTypeDelegate);
