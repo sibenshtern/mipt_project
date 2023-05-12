@@ -31,8 +31,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->VisualTable->setModel(visual_model);
     ui->NamingTable->setModel(naming_model);
     Manager::instance()->plot_field = ui->PlotWidget;
-    QStringList PointTypes = (QStringList() << "None" << "Cross" << "Circle");
-    QStringList LineTypes = (QStringList() << "Solid" << "Dashed" << "Dotted");
+    QStringList PointTypes = (QStringList() << "None" << "Cross" << "Circle"); // TODO: Fix!
+    QStringList LineTypes = (QStringList() << "Solid" << "Dashed" << "Dotted"); // TODO: Fix!
     ColorDelegate* PlotColorDelegate = new ColorDelegate(parent);
     ComboBoxDelegate* PointTypeDelegate = new ComboBoxDelegate(PointTypes, parent);
     ComboBoxDelegate* LineTypeDelegate = new ComboBoxDelegate(LineTypes, parent);
