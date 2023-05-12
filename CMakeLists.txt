@@ -16,6 +16,8 @@ endif()
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets PrintSupport REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets PrintSupport REQUIRED)
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/qcustomplot.h ${CMAKE_CURRENT_BINARY_DIR}/DAFELab_autogen/include/qcustomplot.h COPYONLY)
+
 add_executable(DAFELab
         mainwindow.ui
         mainwindow.cpp

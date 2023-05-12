@@ -1,6 +1,5 @@
 #ifndef NAMINGMODEL_H
 #define NAMINGMODEL_H
-#pragma once
 
 #include <cmath>
 

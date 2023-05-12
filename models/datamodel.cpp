@@ -15,7 +15,7 @@ int DataModel::columnCount(const QModelIndex &parent) const {
 QVariant DataModel::data(const QModelIndex &index, int role) const {
     if (role == Qt::DisplayRole) {
         QString answer;
-        std::cout << "DataModel::data(row, column): " << index.row() << " " << index.column() << "\n";
+        // qInfo() << "DataModel::data(row, column): " << index.row() << " " << index.column() << "\n";
         if (index.column() < Manager::instance()->variables.size())
             try {
                 answer = QString::number(Manager::instance()->variables[index.column()][index.row()]);
@@ -30,7 +30,7 @@ QVariant DataModel::data(const QModelIndex &index, int role) const {
 QVariant DataModel::headerData(int section, Qt::Orientation orientation, int role) const {
     if (role == Qt::DisplayRole)
         if (orientation == Qt::Horizontal) {
-            std::cout << "DataModel::headerData(section): " << section << "\n";
+            // qInfo() << "DataModel::headerData(section): " << section << "\n";
             if (section < Manager::instance()->variables.size())
                 return Manager::instance()->variables[section].naming.alias;
             else
@@ -52,7 +52,7 @@ bool DataModel::setData(const QModelIndex &index, const QVariant &value, int rol
                 Manager::instance()->variables[index.column()][index.row()] = value.toDouble();
                 return true;
             } catch (...) {
-                std::cout << "ooops" << "\n";
+                std::cout << "ooops" << "\n"; // TODO: write normal error!
             }
         }
         return false;
@@ -72,7 +72,6 @@ bool DataModel::insertColumns(int column, int count, const QModelIndex &parent) 
 
 bool DataModel::insertRows(int row, int count, const QModelIndex &parent) {
     beginInsertRows(parent, row, row + count - 1);
-    std::cerr << Manager::instance()->GetMeasurementsCount();
     endInsertRows();
     return true;
 }

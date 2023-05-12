@@ -92,16 +92,14 @@ void Manager::DeleteCalculated(QString &full_name) {
 }
 
 int Manager::GetMeasurementsCount() {
+    int measurements_count = 0;
     for (auto &variable : variables)
-        if (max_variables_measurements < variable.measurements.size())
-            max_variables_measurements = variable.measurements.size();
+        measurements_count = std::max(measurements_count, variable.measurements.size());
 
-    for (auto &calculate : calculated) {
-        if (max_calculated_measurements < calculate.measurements.size())
-            max_calculated_measurements = calculate.measurements.size();
-    }
+    for (auto &calculate : calculated)
+        measurements_count = std::max(measurements_count, calculate.measurements.size());
 
-    return std::max(max_variables_measurements, max_calculated_measurements);
+    return measurements_count;
 }
 
 int Manager::GetVariablesCount() const {
@@ -111,8 +109,6 @@ int Manager::GetVariablesCount() const {
 void Manager::Clear() {
     variables.clear();
     calculated.clear();
-    max_variables_measurements = 0;
-    max_calculated_measurements = 0;
 }
 
 Q_GLOBAL_STATIC(Manager, manager);

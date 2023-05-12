@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QErrorMessage>
+#include <QItemSelectionModel>
 
 #include "models/datamodel.h"
 #include "models/visualmodel.h"
@@ -41,11 +42,10 @@ private slots:
 
     void on_AddVariableButton_clicked();
 
-    void on_RemoveVariable_clicked();
+    void RemoveVariable();
+    void RemoveMeasurement();
 
     void on_AddMeasurementButton_clicked();
-
-    void on_RemoveMeasurementButton_clicked();
 
     void plotOptions();
     void AddFormula();

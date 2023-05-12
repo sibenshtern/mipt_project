@@ -51,10 +51,6 @@ public:
     QCustomPlot* plot_field = nullptr;
 
     static Manager *instance();
-private:
-    int max_variables_measurements{0};
-
-    int max_calculated_measurements{0};
 };
 
 

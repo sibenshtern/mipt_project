@@ -65,6 +65,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->AddTextBlockButton, SIGNAL(clicked()), this, SLOT(AddTextBlock()));
     connect(ui->AddGraphButton, SIGNAL(clicked()), this, SLOT(AddGraph()));
     connect(ui->AddTableButton, SIGNAL(clicked()), this, SLOT(AddTableBlock()));
+    connect(ui->RemoveVariableButton, SIGNAL(clicked()), this, SLOT(RemoveVariable()));
+    connect(ui->RemoveMeasurementButton, SIGNAL(clicked()), this, SLOT(RemoveMeasurement()));
 }
 
 void MainWindow::AddTextBlock() {
@@ -97,7 +99,6 @@ void MainWindow::plotOptions() {
     Manager::instance()->plot->options();
 }
 
-
 void MainWindow::OpenGraphPage() {
     ui->stackedWidget->setCurrentIndex(1);
 }
@@ -124,22 +125,50 @@ void MainWindow::on_LoadButton_clicked() {
 void MainWindow::on_AddVariableButton_clicked() {
     Manager::instance()->variables.push_back(VariableData{Manager::instance()->GetMeasurementsCount()});
     data_model->insertColumn(Manager::instance()->GetVariablesCount() - 1);
-    return;
 }
 
-void MainWindow::on_RemoveVariable_clicked() {
-    return;
+void MainWindow::RemoveVariable() {
+    auto selection_model = ui->MainTable->selectionModel();
+    size_t column_index = selection_model->currentIndex().column();
+
+    qInfo() << "MainWindow::RemoveVariable(column_index): " << column_index;
+
+    auto manager = Manager::instance();
+
+    if (column_index < manager->variables.size())
+        manager->variables.erase(manager->variables.begin() + static_cast<int>(column_index));
+    else if (column_index - manager->variables.size() < manager->calculated.size())
+        manager->calculated.erase(manager->calculated.begin() + static_cast<int>(column_index - manager->variables.size()));
+
+    data_model->removeColumn(static_cast<int>(column_index));
+    selection_model->clearSelection();
+    selection_model->clearCurrentIndex();
 }
 
+void MainWindow::RemoveMeasurement() {
+    auto selection_model = ui->MainTable->selectionModel();
+    size_t row_index = selection_model->currentIndex().row();
+
+    qInfo() << selection_model->currentIndex();
+    qInfo() << "MainWindow::RemoveVariable(column_index): " << row_index;
+
+    auto manager = Manager::instance();
+
+    if (row_index < manager->GetMeasurementsCount()) {
+        for (auto &_variable : manager->variables)
+            _variable.measurements.erase(_variable.measurements.begin() + static_cast<int>(row_index));
+        for (auto &calculate : manager->calculated)
+            calculate.measurements.erase(calculate.measurements.begin() + static_cast<int>(row_index));
+    }
+
+    data_model->removeRow(static_cast<int>(row_index));
+    selection_model->clearSelection();
+    selection_model->clearCurrentIndex();
+
+}
 
 void MainWindow::on_AddMeasurementButton_clicked() {
     Manager::instance()->AddMeasurement();
     data_model->insertRow(Manager::instance()->GetMeasurementsCount());
     return;
 }
-
-
-void MainWindow::on_RemoveMeasurementButton_clicked() {
-    return;
-}
-
