@@ -11,30 +11,35 @@ int InstrumentModel::columnCount(const QModelIndex &parent) const {
 }
 
 bool InstrumentModel::setData(const QModelIndex &index, const QVariant &value, int role) {
-    if (index.isValid() && role == Qt::EditRole) {
+    if (index.isValid() && role == Qt::EditRole && value.toString() != "") {
         switch (index.column()) {
             case InstrumentModelColumns::Name:
-                Manager::instance()->instruments[index.row()].name = value.toString();
-                emit dataChanged(index, index);
-                return true;
+                Manager::instance()->variables[index.row()].instrument.name = value.toString();
             case InstrumentModelColumns::ErrorType: {
                 QString error_type = value.toString();
-
                 if (error_type == "Relative")
-                    Manager::instance()->instruments[index.row()].type = ErrorType::Relative;
+                    Manager::instance()->variables[index.row()].instrument.error.type = ErrorType::Relative;
                 else if (error_type == "Absolute")
-                    Manager::instance()->instruments[index.row()].type = ErrorType::Absolute;
-                emit dataChanged(index, index);
+                    Manager::instance()->variables[index.row()].instrument.error.type = ErrorType::Absolute;
+                return true;
+            }
+            case InstrumentModelColumns::ErrorValue: {
+                if (value.toString().contains(','))
+                    const_cast<QVariant &>(value) = QVariant{value.toString().replace(',', '.')};
+                Manager::instance()->variables[index.row()].instrument.error.value = value.toDouble();
                 return true;
             }
         }
+        emit dataChanged(index, index);
+        return true;
     }
+    return false;
 }
 
 QVariant InstrumentModel::headerData(int section, Qt::Orientation orientation, int role) const {
     if (role == Qt::DisplayRole) {
         if (orientation == Qt::Horizontal) {
-            qDebug() << "InstrumentModel::headerData(section): " << section << "\n";
+            qDebug() << "InstrumentModel::headerData(section): " << section;
             switch (section) {
                 case InstrumentModelColumns::Name:
                     return {"Instrument name"};
@@ -45,8 +50,10 @@ QVariant InstrumentModel::headerData(int section, Qt::Orientation orientation, i
                 default:
                     return {};
             }
-        } else if (orientation == Qt::Vertical)
+        } else if (orientation == Qt::Vertical) {
+            qDebug() << "InstrumentModel::headerData(variables.size()): " << Manager::instance()->variables.size();
             return {Manager::instance()->variables[section].naming.alias};
+        }
     }
     return {};
 }
@@ -58,15 +65,15 @@ Qt::ItemFlags InstrumentModel::flags(const QModelIndex &index) const {
 
 QVariant InstrumentModel::data(const QModelIndex &index, int role) const {
     auto manager = Manager::instance();
+
     if (index.isValid() && index.row() < manager->GetVariablesCount()) {
-        auto instrument = manager->instruments[index.row()];
+        auto instrument = manager->variables[index.row()].instrument;
         if (role == Qt::DisplayRole) {
             switch (index.column()) {
                 case InstrumentModelColumns::Name:
-                    qInfo() << instrument.name;
-                    return {instrument.name};
+                    return instrument.name;
                 case InstrumentModelColumns::ErrorType: {
-                    switch (instrument.type) {
+                    switch (instrument.error.type) {
                         case ErrorType::Absolute:
                             return {"Absolute"};
                         case ErrorType::Relative:
@@ -76,13 +83,8 @@ QVariant InstrumentModel::data(const QModelIndex &index, int role) const {
                     }
                 }
                 case InstrumentModelColumns::ErrorValue:
-                    switch (instrument.type) {
-                        case ErrorType::Absolute:
-                        case ErrorType::Relative:
-                            return instrument.error.value;
-                        case ErrorType::Calculated:
-                            return {"Not supported"};
-                    }
+                    if (instrument.error.type != ErrorType::Calculated)
+                        return instrument.error.value;
             }
         }
     }

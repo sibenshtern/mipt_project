@@ -38,7 +38,8 @@ private slots:
     void OpenDataPage();
     void OpenReportPage();
 
-    void on_LoadButton_clicked();
+    void loadFile();
+    void saveFile(QString file_name);
 
     void on_AddVariableButton_clicked();
 
@@ -63,7 +64,11 @@ private:
     InstrumentModel *instrument_model{nullptr};
     PlotChoice *plot{nullptr};
     ODF *odf_export{nullptr};
-    IOCSV csv_reader;
+
+    IOCSV csv_io;
+    IOJSON json_io;
+
+    void keyPressEvent(QKeyEvent *event) override;
 
     QErrorMessage error_message;
 };

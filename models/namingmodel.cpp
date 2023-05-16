@@ -18,11 +18,15 @@ bool NamingModel::setData(const QModelIndex &index, const QVariant &value, int r
         switch(option)
         {
         case 0:
+            if (value.toString() == "")
+                return false;
             Manager::instance()->variables[variable].naming.full = value.toString();
             emit dataChanged(index, index);
             return true;
         case 1:
         {
+            if (value.toString() == "")
+                return false;
            Manager::instance()->variables[variable].naming.alias = value.toString();
            emit dataChanged(index, index);
            return true;

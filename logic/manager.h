@@ -11,11 +11,15 @@
 
 #include "../models/datamodel.h"
 #include "../models/instrumentmodel.h"
+#include "../models/namingmodel.h"
+#include "../models/visualmodel.h"
 
 #include "../plots/plotscatter.h"
 
 class DataModel;
 class InstrumentModel;
+class NamingModel;
+class VisualModel;
 
 class Manager {
 public:
@@ -23,20 +27,20 @@ public:
 
     QList<VariableData> calculated;
     QList<VariableData> variables;
-    QList<Instrument> instruments;
 
-    VariableData &GetVariable(const QString &);
-    RawData GetRawData(const QString &);
+    VariableData &GetVariable(const QString &name);
+    RawData GetRawData(const QString &name);
 
-    void AddVariable(const VariableData &);
-    void AddInstrument(const Instrument &);
+    void AddVariable(const VariableData &variable);
+
     void AddMeasurement();
+    void DeleteMeasurement(size_t index);
 
-    void DeleteVariable(int);
-    void DeleteCalculated(int);
+    void DeleteVariable(size_t index);
+    void DeleteCalculated(size_t index);
 
-    void DeleteVariable(QString &);
-    void DeleteCalculated(QString &);
+    void DeleteVariable(QString &name);
+    void DeleteCalculated(QString &name);
 
     void ClearCalculated() { calculated.clear(); };
     void Clear();
@@ -46,6 +50,8 @@ public:
 
     DataModel *data_model{nullptr};
     InstrumentModel *instrument_model{nullptr};
+    NamingModel *naming_model{nullptr};
+    VisualModel *visual_model{nullptr};
 
     Plot* plot{nullptr};
     QCustomPlot* plot_field = nullptr;

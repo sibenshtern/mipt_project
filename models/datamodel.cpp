@@ -11,11 +11,9 @@ int DataModel::columnCount(const QModelIndex &parent) const {
     return Manager::instance()->GetVariablesCount();
 }
 
-// TODO: remove std::cout
 QVariant DataModel::data(const QModelIndex &index, int role) const {
     if (role == Qt::DisplayRole) {
         QString answer;
-        // qInfo() << "DataModel::data(row, column): " << index.row() << " " << index.column() << "\n";
         if (index.column() < Manager::instance()->variables.size())
             try {
                 answer = QString::number(Manager::instance()->variables[index.column()][index.row()]);
@@ -47,17 +45,20 @@ QModelIndex DataModel::index(int row, int column, const QModelIndex &parent) con
 
 bool DataModel::setData(const QModelIndex &index, const QVariant &value, int role) {
     if (index.isValid() && role == Qt::EditRole) {
+        if (value.toString() == "")
+            return false;
+
         if (Manager::instance()->variables[index.column()][index.row()] != value.toDouble()) {
             try {
                 Manager::instance()->variables[index.column()][index.row()] = value.toDouble();
                 return true;
-            } catch (...) {
-                std::cout << "ooops" << "\n"; // TODO: write normal error!
+            } catch (std::exception &e) {
+                qDebug() << "DataModel::setData(exception): " << e.what();
             }
         }
         return false;
     }
-    return true;
+    return false;
 }
 
 Qt::ItemFlags DataModel::flags(const QModelIndex &index) const {

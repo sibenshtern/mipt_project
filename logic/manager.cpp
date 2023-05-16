@@ -22,30 +22,27 @@ RawData Manager::GetRawData(const QString &name) {
     return RawData{{variable.measurements.begin(), variable.measurements.end()}, errors};
 }
 
-void Manager::AddVariable(const VariableData &data) {
+void Manager::AddVariable(const VariableData &variable) {
     int measurement_count = GetMeasurementsCount();
 
-    variables.push_back(data);
+    if (variable.naming.full == "" && variable.naming.alias == "")
+        const_cast<VariableData &>(variable).SetDefaultName(variables.size() + 1);
+    variables.push_back(variable);
 
-    int rows_count = std::max(0, data.measurements.size() - measurement_count);
-    for (int i = 0; i < rows_count; ++i) {
+    int rows_count = std::max(0, variable.measurements.size() - measurement_count);
+    for (int i = 0; i < rows_count; ++i)
         data_model->insertRow(measurement_count + i);
-    }
 
     data_model->insertColumn(GetVariablesCount());
+    instrument_model->insertRow(GetVariablesCount());
+    naming_model->insertRow(GetVariablesCount());
+    visual_model->insertRow(GetVariablesCount());
 
-    for (auto& variable : variables) {
-        int variable_size = variable.measurements.size();
+    for (auto& _variable : variables) {
+        int variable_size = _variable.measurements.size();
         for (int i = 0; i < GetMeasurementsCount() - variable_size; ++i)
-            variable.measurements.push_back(0);
+            _variable.measurements.push_back(0);
     }
-}
-
-void Manager::AddInstrument(const Instrument &data) {
-    int instruments_count = static_cast<int>(instruments.size());
-    instruments.append(data);
-    qInfo() << instruments_count;
-    instrument_model->insertRow(instruments_count);
 }
 
 void Manager::AddMeasurement() {
@@ -54,41 +51,67 @@ void Manager::AddMeasurement() {
     }
 }
 
-void Manager::DeleteVariable(int index) {
-    if (index < 0 || index >= variables.size())
+void Manager::DeleteMeasurement(size_t index) {
+    if (index >= GetMeasurementsCount())
+        throw std::range_error("Index bigger that measurements count.");
+
+    for (auto &variable: variables)
+        variable.measurements.erase(variable.measurements.begin() + static_cast<int>(index));
+    for (auto &calculate: calculated)
+        calculate.measurements.erase(calculate.measurements.begin() + static_cast<int>(index));
+
+    data_model->removeRow(static_cast<int>(index));
+    if (GetMeasurementsCount() == 0) {
+        data_model->removeColumns(0, GetVariablesCount());
+        instrument_model->removeRows(0, GetVariablesCount());
+        naming_model->removeRows(0, GetMeasurementsCount());
+        Clear();
+    }
+}
+
+void Manager::DeleteVariable(size_t index) {
+    if (index >= variables.size())
         throw std::range_error("Wrong index");
 
-    variables.erase(variables.begin() + index);
-    data_model->removeRow(index);
+    int measurement_count = variables[static_cast<int>(index)].measurements.size();
+
+    variables.erase(variables.begin() + static_cast<int>(index));
+    data_model->removeColumn(static_cast<int>(index));
+    instrument_model->removeRow(static_cast<int>(index));
+    naming_model->removeRow(static_cast<int>(index));
+
+    qDebug() << "Manager::DeleteVariable(index): " << index;
+
+    if (variables.empty())
+        data_model->removeRows(0, measurement_count);
 }
 
-void Manager::DeleteCalculated(int index) {
-    if (index < 0 || index > calculated.size())
+void Manager::DeleteCalculated(size_t index) {
+    if (index > calculated.size())
         throw std::invalid_argument("Wrong index");
 
-    calculated.erase(calculated.begin() + index);
+    calculated.erase(calculated.begin() + static_cast<int>(index));
 }
 
-void Manager::DeleteVariable(QString &full_name) {
+void Manager::DeleteVariable(QString &name) {
     for (int i = 0; i < variables.size(); ++i)
-        if (variables[i].naming.full == full_name) {
+        if (variables[i].naming.full == name || variables[i].naming.alias == name) {
             variables.erase(variables.begin() + i);
-            data_model->removeRow(i);
+            data_model->removeColumn(i);
             return;
         }
 
-    throw std::invalid_argument("No variable with name " + full_name.toStdString());
+    throw std::invalid_argument("No variable with name " + name.toStdString());
 }
 
-void Manager::DeleteCalculated(QString &full_name) {
+void Manager::DeleteCalculated(QString &name) {
     for (int i = 0; i < calculated.size(); ++i)
-        if (calculated[i].naming.alias == full_name) {
+        if (calculated[i].naming.alias == name) {
             calculated.erase(calculated.begin() + i);
-
             return;
         }
 
-    throw std::invalid_argument("No calculated variable with name " + full_name.toStdString());
+    throw std::invalid_argument("No calculated variable with name " + name.toStdString());
 }
 
 int Manager::GetMeasurementsCount() {
@@ -107,6 +130,11 @@ int Manager::GetVariablesCount() const {
 }
 
 void Manager::Clear() {
+    data_model->removeRows(0, GetMeasurementsCount());
+    data_model->removeColumns(0, GetVariablesCount());
+    instrument_model->removeRows(0, GetVariablesCount());
+    naming_model->removeRows(0, GetVariablesCount());
+
     variables.clear();
     calculated.clear();
 }

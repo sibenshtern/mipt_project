@@ -24,12 +24,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     Manager::instance()->data_model = data_model;
     Manager::instance()->instrument_model = instrument_model;
-
-    Manager::instance()->AddVariable(
-            VariableData{"x", "x", Instrument{}, QList<double>{1, 2, 2, 3, 4, 4, 4, 5, 6, 6, 7}});
-    Manager::instance()->AddVariable(VariableData{"y", "y", Instrument{}, QList<double>{1, 3, 7, 4, 15, 5, 6, 6, 7}});
-    Manager::instance()->AddInstrument(Instrument{ErrorType::Relative, 0.4, "Линейка"});
-    Manager::instance()->AddInstrument(Instrument{ErrorType::Absolute, 10, "Стул"});
+    Manager::instance()->naming_model = naming_model;
+    Manager::instance()->visual_model = visual_model;
 
     plot = new PlotChoice(QMap<QString, Plot *>{
             {"Scatter Plot",    new PlotScatter()},
@@ -67,6 +63,33 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->AddTableButton, SIGNAL(clicked()), this, SLOT(AddTableBlock()));
     connect(ui->RemoveVariableButton, SIGNAL(clicked()), this, SLOT(RemoveVariable()));
     connect(ui->RemoveMeasurementButton, SIGNAL(clicked()), this, SLOT(RemoveMeasurement()));
+    connect(ui->LoadButton, SIGNAL(clicked()), this, SLOT(loadFile()));
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event) {
+    if (event->modifiers() & Qt::ControlModifier) {
+        if (event->key() == Qt::Key_S) {
+            QString file_name = QFileDialog::getSaveFileName(this, tr("Save File"), "~", tr("CSV File (*.csv), JSON File(*.json)"));
+            saveFile(file_name);
+        }
+    }
+    QMainWindow::keyPressEvent(event);
+}
+
+void MainWindow::saveFile(QString file_name) {
+    QFile csv_file{file_name};
+
+    if (!csv_file.open(QIODevice::WriteOnly | QIODevice::Text))
+        return;
+
+    QTextStream out(&csv_file);
+
+    qDebug() << "MainWindow::save(file_name): " << file_name;
+
+    if (file_name.endsWith(".csv"))
+        out << csv_io.save();
+    else if (file_name.endsWith(".json"))
+        out << json_io.save().toJson(QJsonDocument::Indented);
 }
 
 void MainWindow::AddTextBlock() {
@@ -115,56 +138,56 @@ MainWindow::~MainWindow() {
     delete ui;
 }
 
-void MainWindow::on_LoadButton_clicked() {
-    QString filename = QFileDialog::getOpenFileName(this, tr("Open Image"), "~", tr("CSV File (*.csv)"));
-    csv_reader.load(filename);
+void MainWindow::loadFile() {
+    QString file_name;
+    if (ui->ChooseSource->currentText() == "CSV file") {
+        file_name = QFileDialog::getOpenFileName(this, tr("Open CSV file"), "~", tr("CSV File (*.csv)"));
+        qDebug() << "MainWindow::loadFile(file_name): " << file_name;
+        csv_io.load(file_name);
+    } else if (ui->ChooseSource->currentText() == "JSON file") {
+        file_name = QFileDialog::getOpenFileName(this, tr("Open JSON file"), "~", tr("JSON file (*.json)"));
+        qDebug() << "MainWindow::loadFile(file_name): " << file_name;
+        json_io.load(file_name);
+    }
+
     ui->MainTable->viewport()->repaint();
 }
 
 
 void MainWindow::on_AddVariableButton_clicked() {
-    Manager::instance()->variables.push_back(VariableData{Manager::instance()->GetMeasurementsCount()});
-    data_model->insertColumn(Manager::instance()->GetVariablesCount() - 1);
+    Manager::instance()->AddVariable(VariableData{Manager::instance()->GetMeasurementsCount()});
 }
 
 void MainWindow::RemoveVariable() {
     auto selection_model = ui->MainTable->selectionModel();
-    size_t column_index = selection_model->currentIndex().column();
+    auto columns = selection_model->selectedColumns();
 
-    qInfo() << "MainWindow::RemoveVariable(column_index): " << column_index;
+    if (columns.empty())
+        return;
 
-    auto manager = Manager::instance();
+    size_t column_index = columns[0].column();
 
-    if (column_index < manager->variables.size())
-        manager->variables.erase(manager->variables.begin() + static_cast<int>(column_index));
-    else if (column_index - manager->variables.size() < manager->calculated.size())
-        manager->calculated.erase(manager->calculated.begin() + static_cast<int>(column_index - manager->variables.size()));
+    for (size_t i = 0; i < columns.size(); ++i)
+        Manager::instance()->DeleteVariable(column_index);
 
-    data_model->removeColumn(static_cast<int>(column_index));
     selection_model->clearSelection();
     selection_model->clearCurrentIndex();
 }
 
 void MainWindow::RemoveMeasurement() {
     auto selection_model = ui->MainTable->selectionModel();
-    size_t row_index = selection_model->currentIndex().row();
+    auto rows = selection_model->selectedRows();
 
-    qInfo() << selection_model->currentIndex();
-    qInfo() << "MainWindow::RemoveVariable(column_index): " << row_index;
+    if (rows.empty())
+        return;
 
-    auto manager = Manager::instance();
+    size_t row_index = rows[0].row();
 
-    if (row_index < manager->GetMeasurementsCount()) {
-        for (auto &_variable : manager->variables)
-            _variable.measurements.erase(_variable.measurements.begin() + static_cast<int>(row_index));
-        for (auto &calculate : manager->calculated)
-            calculate.measurements.erase(calculate.measurements.begin() + static_cast<int>(row_index));
-    }
+    for (size_t i = 0; i < rows.size(); ++i)
+        Manager::instance()->DeleteMeasurement(row_index);
 
-    data_model->removeRow(static_cast<int>(row_index));
     selection_model->clearSelection();
     selection_model->clearCurrentIndex();
-
 }
 
 void MainWindow::on_AddMeasurementButton_clicked() {

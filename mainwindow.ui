@@ -14,16 +14,16 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_4">
+   <layout class="QVBoxLayout" name="verticalLayout_6">
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
        <number>0</number>
       </property>
       <widget class="QWidget" name="dataPage">
-       <layout class="QVBoxLayout" name="verticalLayout_5">
+       <layout class="QVBoxLayout" name="verticalLayout_7">
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
           <item>
            <widget class="QTabWidget" name="tabWidget">
             <property name="currentIndex">
@@ -35,7 +35,14 @@
              </attribute>
              <layout class="QHBoxLayout" name="horizontalLayout_6">
               <item>
-               <widget class="QTableView" name="MainTable"/>
+               <widget class="QTableView" name="MainTable">
+                <attribute name="horizontalHeaderStretchLastSection">
+                 <bool>false</bool>
+                </attribute>
+                <attribute name="verticalHeaderStretchLastSection">
+                 <bool>false</bool>
+                </attribute>
+               </widget>
               </item>
               <item>
                <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -61,6 +68,11 @@
                     <item>
                      <property name="text">
                       <string>CSV file</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>JSON file</string>
                      </property>
                     </item>
                     <item>
@@ -128,31 +140,21 @@
              <attribute name="title">
               <string>Naming</string>
              </attribute>
-             <widget class="QTableView" name="NamingTable">
-              <property name="geometry">
-               <rect>
-                <x>10</x>
-                <y>10</y>
-                <width>441</width>
-                <height>820</height>
-               </rect>
-              </property>
-             </widget>
+             <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <item>
+               <widget class="QTableView" name="NamingTable"/>
+              </item>
+             </layout>
             </widget>
             <widget class="QWidget" name="InstruentsTab">
              <attribute name="title">
               <string>Instruments</string>
              </attribute>
-             <widget class="QTableView" name="InstrumentTable">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>10</y>
-                <width>551</width>
-                <height>661</height>
-               </rect>
-              </property>
-             </widget>
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <item>
+               <widget class="QTableView" name="InstrumentTable"/>
+              </item>
+             </layout>
             </widget>
            </widget>
           </item>
@@ -248,8 +250,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1107</width>
-             <height>726</height>
+             <width>98</width>
+             <height>28</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout"/>
