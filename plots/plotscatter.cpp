@@ -25,17 +25,18 @@ void PlotScatter::draw(QCustomPlot *plot)
         {
           x.append(j);
           y.append(v.measurements[j]);
-          e.append(1); //TODO:: add errors
+          e.append(m->variables[i].Error(i)); //TODO:: add errors
         }
         graph->setData(x, y);
-        errorBars->setData(e);
+        if (v.visual.error_bars)
+            errorBars->setData(e);
     }
-        if (plot->plotLayout()->children().size() <= 1)
-        {
-            plot->plotLayout()->insertRow(0);
-            plot->plotLayout()->addElement(0, 0, new QCPTextElement(plot, title));
-        }
-        static_cast<QCPTextElement*>(plot->plotLayout()->element(0, 0))->setText(title);
+    if (plot->plotLayout()->children().size() <= 1)
+    {
+        plot->plotLayout()->insertRow(0);
+        plot->plotLayout()->addElement(0, 0, new QCPTextElement(plot, title));
+    }
+    static_cast<QCPTextElement*>(plot->plotLayout()->element(0, 0))->setText(title);
         plot->xAxis->setLabel(xlabel);
         plot->yAxis->setLabel(ylabel);
         plot->xAxis->setVisible(true);
@@ -76,5 +77,6 @@ PlotScatterOptionsDialog::PlotScatterOptionsDialog(QString xlabel, QString ylabe
 
 
 }
+
 
 

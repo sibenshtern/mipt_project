@@ -38,6 +38,7 @@ public:
         int width {5};
         bool visible {true};
         QColor color {"red"};
+        bool error_bars{true};
         QString line_type {"Solid"};
         QString point_type {"None"};
         QMap<QString, Qt::PenStyle> line_types = {

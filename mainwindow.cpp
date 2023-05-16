@@ -33,7 +33,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     plot = new PlotChoice(QMap<QString, Plot *>{
             {"Scatter Plot",    new PlotScatter()},
-            {"Histogramm Plot", new PlotHist()}
+            {"Histogramm Plot", new PlotHist()},
+            {"2D Scatter Plot", new PlotScatter2D()}
     });
     Manager::instance()->plot = plot;
     plot->draw(ui->PlotWidget);
@@ -45,8 +46,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->NamingTable->setModel(naming_model);
     ui->InstrumentTable->setModel(instrument_model);
     Manager::instance()->plot_field = ui->PlotWidget;
-    QStringList PointTypes = (QStringList() << "None" << "Cross" << "Circle");
-    QStringList LineTypes = (QStringList() << "Solid" << "Dashed" << "Dotted");
+    QStringList PointTypes = (QStringList() << "None" << "Cross" << "Circle"); // TODO: Fix names
+    QStringList LineTypes = (QStringList() << "Solid" << "Dashed" << "Dotted"); // TODO: Fix names
     QStringList ErrorTypes = (QStringList() << "Relative" << "Absolute");
 
     auto *ErrorTypeDelegate = new ComboBoxDelegate(ErrorTypes, parent);
@@ -54,6 +55,9 @@ MainWindow::MainWindow(QWidget *parent)
     auto *PlotColorDelegate = new ColorDelegate(parent);
     auto *PointTypeDelegate = new ComboBoxDelegate(PointTypes, parent);
     auto *LineTypeDelegate = new ComboBoxDelegate(LineTypes, parent);
+    Manager::instance()->visual_table = ui->VisualTable;
+    Manager::instance()->scatters_models = visual_model;
+    Manager::instance()->td_scatter_model = instrument_model;
     ui->VisualTable->setItemDelegateForColumn(2, LineTypeDelegate);
     ui->VisualTable->setItemDelegateForColumn(3, PlotColorDelegate);
     ui->VisualTable->setItemDelegateForColumn(5, PointTypeDelegate);
@@ -61,12 +65,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->InstrumentTable->setItemDelegateForColumn(InstrumentModelColumns::ErrorType, ErrorTypeDelegate);
 
     connect(ui->GraphSettingsButton, SIGNAL(clicked()), this, SLOT(plotOptions()));
+    connect(ui->RedrawButton, SIGNAL(clicked()), this, SLOT(redraw()));
     connect(ui->AddFormulaButton, SIGNAL(clicked()), this, SLOT(AddFormula()));
     connect(ui->AddTextBlockButton, SIGNAL(clicked()), this, SLOT(AddTextBlock()));
     connect(ui->AddGraphButton, SIGNAL(clicked()), this, SLOT(AddGraph()));
     connect(ui->AddTableButton, SIGNAL(clicked()), this, SLOT(AddTableBlock()));
     connect(ui->RemoveVariableButton, SIGNAL(clicked()), this, SLOT(RemoveVariable()));
     connect(ui->RemoveMeasurementButton, SIGNAL(clicked()), this, SLOT(RemoveMeasurement()));
+    connect(ui->RedrawButton, SIGNAL(QDialog::Rejected), this, SLOT(redraw()));
 }
 
 void MainWindow::AddTextBlock() {

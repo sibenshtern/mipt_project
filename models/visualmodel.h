@@ -1,7 +1,4 @@
 #pragma once
-
-#include <cmath>
-
 #include <QAbstractTableModel>
 #include "../logic/manager.h"
 
