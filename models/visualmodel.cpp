@@ -7,22 +7,25 @@ int VisualModel::rowCount(const QModelIndex &parent) const {
 }
 
 int VisualModel::columnCount(const QModelIndex &parent) const {
-    return 6;
+    return 7;
 }
+
+enum Columns{NameOfVariable, Visibility, LineType, Colour, LineWidth, PointType, ErrorBars};
 
 Qt::ItemFlags VisualModel::flags(const QModelIndex &index) const {
     Qt::ItemFlags default_flags {Qt::ItemIsSelectable, Qt::ItemIsEditable, Qt::ItemIsEnabled};
     switch (index.column())
     {
-    case 1:
+    case Visibility:
+    case ErrorBars:
         return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
-    case 0:
+    case NameOfVariable:
         return Qt::ItemIsEnabled;
-    case 2:
-    case 3:
-    case 4:
-    case 5:
-         return default_flags;
+    case LineType:
+    case Colour:
+    case LineWidth:
+    case PointType:
+        return default_flags;
 }
 }
 
@@ -30,37 +33,44 @@ QVariant VisualModel::data(const QModelIndex &index, int role) const {
    int variable = index.row();
     switch (index.column())
        {
-        case 0:
+        case NameOfVariable:
         if (role == Qt::DisplayRole)
             return QVariant(Manager::instance()->variables[variable].naming.full);
         else
             return QVariant();
-       case 1:
+        case Visibility:
         if (role == Qt::CheckStateRole)
            return QVariant(Manager::instance()->variables[variable].visual.visible);
         else
-            return QVariant();
-       case 2:
+           return QVariant();
+        case LineType:
         if (role == Qt::DisplayRole)
             return QVariant(Manager::instance()->variables[variable].visual.line_type);
-            else
+        else
             return QVariant();
-       case 3:
-          if (role == Qt::BackgroundRole)
+        case Colour:
+        if (role == Qt::BackgroundRole)
             return QVariant(Manager::instance()->variables[variable].visual.color);
-          else
+        else
               return QVariant();
-       case 4:
+        case LineWidth:
         if (role == Qt::DisplayRole)
            return QVariant(Manager::instance()->variables[variable].visual.width);
         else
             return QVariant();
         break;
-       case 5:
+        case PointType:
         if (role == Qt::DisplayRole)
            return QVariant(Manager::instance()->variables[variable].visual.point_type);
-           else
-               return QVariant();
+        else
+           return QVariant();
+        case ErrorBars:
+        if (role == Qt::CheckStateRole)
+            return QVariant(Manager::instance()->variables[variable].visual.error_bars);
+        else
+            return QVariant();
+
+
         }
 }
 
@@ -68,19 +78,21 @@ QVariant VisualModel::headerData(int section, Qt::Orientation orientation, int r
     if (role == Qt::DisplayRole) {
         if (orientation == Qt::Horizontal) {
             std::cout << "VisualModel::headerData(section): " << section << "\n";
-            switch(section) {
-                case 0:
+            switch (section) {
+                case NameOfVariable:
                     return "Name of variable";
-                case 1:
+                case Visibility:
                     return "Visibility";
-                case 2:
+                case LineType:
                     return "Line type";
-                case 3:
+                case Colour:
                     return "Colour";
-                case 4:
+                case LineWidth:
                     return "Line width";
-                case 5:
+                case PointType:
                     return "Point type";
+                case ErrorBars:
+                    return "Error Bars";
             }
         } else if (orientation == Qt::Vertical)
             return {section + 1};
@@ -94,38 +106,44 @@ bool VisualModel::setData(const QModelIndex &index, const QVariant &value, int r
     int variable = index.row();
     switch(option)
     {
-    case 1:
+    case Visibility:
         Manager::instance()->variables[variable].visual.visible = !(Manager::instance()->variables[variable].visual.visible);
         Manager::instance()->plot->draw(Manager::instance()->plot_field);
         emit dataChanged(index, index);
         return true;
-    case 2:
+    case LineType:
     {
         Manager::instance()->variables[variable].visual.line_type = value.toString();
         Manager::instance()->plot->draw(Manager::instance()->plot_field);
         emit dataChanged(index, index);
         return true;
     }
-    case 3:
+    case Colour:
     {
         Manager::instance()->variables[variable].visual.color = value.value<QColor>();
         Manager::instance()->plot->draw(Manager::instance()->plot_field);
         emit dataChanged(index, index);
         return true;
     }
-    case 4:
+    case LineWidth:
     {
         Manager::instance()->variables[variable].visual.width = value.toInt();
         Manager::instance()->plot->draw(Manager::instance()->plot_field);
         emit dataChanged(index, index);
         return true;
     }
-    case 5:
+    case PointType:
     {
         Manager::instance()->variables[variable].visual.point_type = value.toString();
         Manager::instance()->plot->draw(Manager::instance()->plot_field);
         emit dataChanged(index, index);
         return true;
+    case ErrorBars:
+        Manager::instance()->variables[variable].visual.error_bars = !(Manager::instance()->variables[variable].visual.error_bars);
+        Manager::instance()->plot->draw(Manager::instance()->plot_field);
+        emit dataChanged(index, index);
+        return true;
+
     }
     }
 }
@@ -137,7 +155,6 @@ bool VisualModel::insertColumns(int column, int count, const QModelIndex &parent
 
 bool VisualModel::insertRows(int row, int count, const QModelIndex &parent) {
     beginInsertRows(parent, row, row + count - 1);
-    std::cerr << Manager::instance()->GetMeasurementsCount();
     endInsertRows();
     return true;
 }

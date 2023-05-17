@@ -1,0 +1,44 @@
+[
+  {
+    "name": {
+      "alias": "x",
+      "full": "variable_x"
+    },
+    "measurements" : [
+      1, 1, 2, 4, 4.5
+    ],
+    "instrument": {
+      "error_type": "Absolute",
+      "error_value": 0.5,
+      "name": "Линейка"
+    }
+  },
+  {
+    "name": {
+      "alias": "y",
+      "full": "variable_y"
+    },
+    "measurements" : [
+      1, 1, 2, 3, 6.3
+    ],
+    "instrument": {
+      "error_type": "Relative",
+      "error_value": 0.01,
+      "name": "Лазер"
+    }
+  },
+  {
+    "name": {
+      "alias": "z",
+      "full": "variable_z"
+    },
+    "measurements" : [
+      2, 3, 5, 6, 7
+    ],
+    "instrument": {
+      "error_type": "Calculated",
+      "error_value": [1, 2, 3, 4, 5],
+      "name": "Calculated"
+    }
+  }
+]

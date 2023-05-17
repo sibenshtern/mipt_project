@@ -55,6 +55,9 @@ public:
 
     Plot* plot{nullptr};
     QCustomPlot* plot_field = nullptr;
+    QTableView* visual_table{nullptr};
+    QAbstractTableModel* scatters_models{nullptr};
+    QAbstractTableModel* td_scatter_model{nullptr};
 
     static Manager *instance();
 };

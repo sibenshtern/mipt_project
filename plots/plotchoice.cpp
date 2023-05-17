@@ -9,8 +9,14 @@ void PlotChoice::options()
 {
     PlotChoiceOptionsDialog optionDialog(currentPlot, plots.keys(), this);
     optionDialog.show();
-    optionDialog.exec();
+    int result = optionDialog.exec();
     currentPlot = optionDialog.currentPlot.currentText();
+    if (result == QDialog::Rejected || result == QDialog::Accepted) // TODO: Fix dialog opening after clicking on screen
+        Manager::instance()->plot->draw(Manager::instance()->plot_field);
+    if (currentPlot == "2D Scatter Plot")
+        Manager::instance()->visual_table->setModel(Manager::instance()->td_scatter_model);
+    else
+        Manager::instance()->visual_table->setModel(Manager::instance()->scatters_models);
 
 }
 

@@ -13,6 +13,7 @@
 struct Visual {
     int width {5};
     bool visible {true};
+    bool error_bars {true};
     QColor color {"red"};
     QString line_type {"Solid"};
     QString point_type {"None"};
