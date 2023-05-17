@@ -82,12 +82,14 @@ bool DataModel::insertRows(int row, int count, const QModelIndex &parent) {
 bool DataModel::removeRows(int row, int count, const QModelIndex &parent) {
     beginRemoveRows(parent, row, row + count - 1);
     endRemoveRows();
+    Manager::instance()->plot->draw(Manager::instance()->plot_field);
     return true;
 }
 
 bool DataModel::removeColumns(int column, int count, const QModelIndex &parent) {
     beginRemoveColumns(parent, column, column + count - 1);
     endRemoveColumns();
+    Manager::instance()->plot->draw(Manager::instance()->plot_field);
     return true;
 
 }
