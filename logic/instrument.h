@@ -14,8 +14,6 @@ struct Error {
     explicit Error(const QList<double> &error_list, ErrorType error_type = ErrorType::Calculated);
     Error(Error &error);
     Error &operator=(const Error &error);
-
-    ~Error() { if(type == ErrorType::Calculated) list.~QList(); }
     
     QList<double> list;
     double value;

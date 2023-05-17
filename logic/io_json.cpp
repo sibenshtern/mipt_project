@@ -16,7 +16,6 @@ void IOJSON::load(QString file_name) {
     else
         throw std::runtime_error("Json file must contain array with variables");
 
-    QList<VariableData> variables;
     for (auto && i : variables_array) {
         QJsonObject variable_object = i.toObject();
 
@@ -103,11 +102,8 @@ void IOJSON::load(QString file_name) {
         variable.measurements = measurements;
         variable.instrument = instrument;
         qDebug() << "IOJSON::load(variable.instrument.error.list): " << variable.instrument.error.list;
-        variables.append(variable);
-    }
-
-    for (const auto &variable : variables)
         Manager::instance()->AddVariable(variable);
+    }
 }
 
 QJsonDocument IOJSON::save() {
