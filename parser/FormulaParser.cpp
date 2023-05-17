@@ -86,32 +86,35 @@ void FormulaParser::Equality(Expression first, Expression second) {
             constants[first.name] = second_data.data[0];
         },
         [&](const IndexExpression &first) -> void {
-            
+            if (first.args.size() > 2 || (first.args.size() == 2 && (first.args[1] - first.args[1] < 0 ||  first.args[1] < 1 || first.args[1] < 1)) || (first.args.size() == 1 && first.args[0] < 1)) 
+                throw std::runtime_error("Too much indexes");
             auto second_data = eval(second);
-            //VariableData manager_data = Manager::instance()->GetVariable(QString{first.name.c_str()});
+
             try {
                 auto manager_data = Manager::instance()->GetVariable(QString{first.name.c_str()});
             }
             catch(...) {
                 int measurements_count = Manager::instance()->GetMeasurementsCount();
+                if (measurements_count == 0) {
+                    measurements_count = *std::max_element(first.args.begin(), first.args.end());
+                }
                 auto variable = VariableData(measurements_count);
                 variable.naming.full = variable.naming.alias = QString{first.name.c_str()};
                 Manager::instance()->AddVariable(variable);
             }
-            auto manager_data = Manager::instance()->GetVariable(QString{first.name.c_str()});
-            if (first.args.size() == 3 )throw std::runtime_error("Too much indexes");
-            else if (first.args.size() == 1 && first.args[0] <= manager_data.measurements.size() && first.args[0] > 0 && second_data.data.size() > 0) {
+            auto &manager_data = Manager::instance()->GetVariable(QString{first.name.c_str()});
+
+            if (first.args.size() == 1 && first.args[0] <= manager_data.measurements.size() && second_data.data.size() > 0) {
                 manager_data.measurements[first.args[0] - 1] = second_data.data[0];
             } 
-            else if (first.args.size() == 2 && first.args[1] <= manager_data.measurements.size() && first.args[0] > 0 && first.args[1] - first.args[1] > 0) {
+            else if (first.args.size() == 2 && first.args[1] <= manager_data.measurements.size()) {
 
-                if (manager_data.instrument.type != ErrorType::Calculated) {
+                if (manager_data.instrument.error.type != ErrorType::Calculated) {
                     QList<double> tmp_list;
                     for (int item = 0; item < manager_data.measurements.size(); ++item)
                         tmp_list.append(manager_data.Error(item));
                     
-                    manager_data.instrument.type = ErrorType::Calculated;
-                    manager_data.instrument.error._type = ErrorValueType::Multiple;
+                    manager_data.instrument.error.type = ErrorType::Calculated;
                     manager_data.instrument.error.list.swap(tmp_list);
                 }   
 
