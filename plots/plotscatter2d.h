@@ -2,7 +2,7 @@
 #define PLOTSCATTER2D_H
 #include <QWidget>
 #include "../logic/variable_data.h"
-#include "plots/plot.h"
+#include "plot.h"
 #include "../logic/manager.h"
 #include <QDialog>
 

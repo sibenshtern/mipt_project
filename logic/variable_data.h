@@ -28,6 +28,7 @@ struct Visual {
            {"Circle", QCPScatterStyle::ssCircle}
    };
 };
+
 class VariableData {
 public:
     VariableData() = default;

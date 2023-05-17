@@ -78,7 +78,7 @@ QVariant VisualModel::headerData(int section, Qt::Orientation orientation, int r
     if (role == Qt::DisplayRole) {
         if (orientation == Qt::Horizontal) {
             std::cout << "VisualModel::headerData(section): " << section << "\n";
-            switch(section) {
+            switch (section) {
                 case NameOfVariable:
                     return "Name of variable";
                 case Visibility:
@@ -155,7 +155,6 @@ bool VisualModel::insertColumns(int column, int count, const QModelIndex &parent
 
 bool VisualModel::insertRows(int row, int count, const QModelIndex &parent) {
     beginInsertRows(parent, row, row + count - 1);
-    std::cerr << Manager::instance()->GetMeasurementsCount();
     endInsertRows();
     return true;
 }

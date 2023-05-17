@@ -41,6 +41,10 @@ void PlotScatter2D::draw(QCustomPlot* plot)
     plot->yAxis->setLabel(ylabel);
     plot->xAxis->setVisible(true);
     plot->yAxis->setVisible(true);
+<<<<<<< HEAD
+=======
+    plot->rescaleAxes();
+>>>>>>> 12159fe (error)
     plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
     plot->replot();
 }

@@ -2,6 +2,7 @@
 #define DAFELAB_INSTRUMENT_H
 
 #include <QList>
+#include <QDebug>
 
 enum class ErrorType {
     Absolute, Relative, Calculated

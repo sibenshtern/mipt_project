@@ -6,6 +6,8 @@ void IOJSON::load(QString file_name) {
     if (!(json_file.open(QIODevice::ReadOnly | QIODevice::Text)))
         throw std::runtime_error("Cannot open json file: " + file_name.toStdString());
 
+    Manager::instance()->Clear();
+
     auto json = QJsonDocument::fromJson(json_file.readAll());
 
     QJsonArray variables_array;
@@ -67,7 +69,6 @@ void IOJSON::load(QString file_name) {
         for (auto &&j : measurements_array)
             measurements.append(j.toDouble());
 
-
         Instrument instrument;
         Instrument calculated_instrument(QList<double>{});
         VariableData variable;
@@ -76,14 +77,14 @@ void IOJSON::load(QString file_name) {
         variable.naming.alias = naming_object["alias"].toString();
 
         if (error_type == "Calculated") {
-            Instrument tmp_instrument(QList<double>{});
             instrument.error.type = ErrorType::Calculated;
-            for (auto &&j : instrument_object["error_value"].toArray())
+            for (auto &&j : instrument_object["error_value"].toArray()) {
+                qDebug() << "IOJSON::load(j.toDouble()): " << j.toDouble();
                 instrument.error.list.append(j.toDouble());
-
+            }
+            qDebug() << "IOJSON::load(instrument.error.list): " << instrument.error.list;
             if (measurements.size() != instrument.error.list.size())
                 throw std::runtime_error(R"("Field "measurements" and "error_value" must be same size.")");
-            instrument = tmp_instrument;
         } else if (error_type == "Relative") {
             instrument.error.type = ErrorType::Relative;
             instrument.error.value = instrument_object["error_value"].toDouble();
@@ -98,8 +99,10 @@ void IOJSON::load(QString file_name) {
             instrument.name = instrument_object["name"].toString();
         }
 
-        variable.measurements.swap(measurements);
+        qDebug() << "IOJSON::load(instrument.error.list): " << instrument.error.list;
+        variable.measurements = measurements;
         variable.instrument = instrument;
+        qDebug() << "IOJSON::load(variable.instrument.error.list): " << variable.instrument.error.list;
         variables.append(variable);
     }
 

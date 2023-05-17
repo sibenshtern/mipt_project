@@ -97,13 +97,12 @@ void FormulaParser::Equality(Expression first, Expression second) {
             } 
             else if (first.args.size() == 2 && first.args[1] < manager_data.measurements.size()) {
 
-                if (manager_data.instrument.type != ErrorType::Calculated) {
+                if (manager_data.instrument.error.type != ErrorType::Calculated) {
                     QList<double> tmp_list;
                     for (int item = 0; item < manager_data.measurements.size(); ++item)
                         tmp_list.append(manager_data.Error(item));
                     
-                    manager_data.instrument.type = ErrorType::Calculated;
-                    manager_data.instrument.error._type = ErrorValueType::Multiple;
+                    manager_data.instrument.error.type = ErrorType::Calculated;
                     manager_data.instrument.error.list.swap(tmp_list);
                 }   
 

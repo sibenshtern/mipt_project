@@ -44,8 +44,9 @@ add_executable(DAFELab
         plots/plothist.cpp
         plots/plotchoice.cpp
         plots/plot.h
+        plots/plotscatter2d.cpp
 
         parser/FormulaParser.cpp
-        logic/blocks.cpp logic/io_json.cpp)
+        logic/blocks.cpp logic/io_json.cpp )
 
 target_link_libraries(DAFELab Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::PrintSupport /usr/lib/x86_64-linux-gnu/libboost_filesystem.a)
