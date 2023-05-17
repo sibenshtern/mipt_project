@@ -35,30 +35,29 @@ void FormulaParser::parse(std::string input_t){
 
     input_t.erase(std::remove_if(input_t.begin(), input_t.end(), isspace), input_t.end());
 
-    if(input_t.find("=") == 0) throw std::runtime_error("Тo data to the right of equality");
-    else if(input_t.find("=") >= input_t.size()) throw std::runtime_error("No equality");
-    else if(input_t.find("=") == 0) throw std::runtime_error("Тo data to the right of equality");
-    else if(input_t.find("=") == input_t.rfind("=")){
+    if (input_t.find("=") == input_t.rfind("=")){
         std::string first_token_t = input_t.substr(0, input_t.find("="));
         std::string second_token_t = input_t.substr(input_t.find("=")+1, input_t.size() - 1);
 
         const char * first_token = first_token_t.c_str();
         const char * second_token = second_token_t.c_str();
 
-        auto f_end = first_token + std::strlen(first_token);
-        auto s_end = second_token + std::strlen(second_token);
-
         Expression f_result;
         Expression s_result;
-        auto f_ok = phrase_parse(first_token, f_end, expr, x3::space, f_result);
-        auto s_ok = phrase_parse(second_token, s_end, expr, x3::space, s_result);
 
-        if (f_ok && first_token == f_end && s_ok && second_token == s_end) Equality(f_result, s_result);
-        // throw std::runtime_error(std::string("Failed at: `") + first + "`");
-        // std::cout << "FormulaParser::parse(exp) : " << exp << "\n";
+        auto f_ok = phrase_parse(first_token, first_token + std::strlen(first_token), expr, x3::space, f_result);
+        auto s_ok = phrase_parse(second_token, second_token + std::strlen(second_token), expr, x3::space, s_result);
+
+        if (f_ok && first_token == first_token + std::strlen(first_token) && s_ok && second_token == second_token + std::strlen(second_token)) {
+            Equality(f_result, s_result);
+        }
     }
-    else throw std::runtime_error("To much equality");
+    else throw std::runtime_error("Wrong input");
 }
+
+// parse expression "first_expression = second_expression"
+// first_expression can be variable or index_expression
+// second_expression is expression
 
 void FormulaParser::Equality(Expression first, Expression second) {
 
@@ -70,7 +69,7 @@ void FormulaParser::Equality(Expression first, Expression second) {
             throw std::runtime_error("You cannot assign anything to a unary operation");
         },
         [&](const FunctionCall& first) -> void {
-            //save function
+            //TODO save function
         },
         [&](const BinaryExpression& first) -> void {
             Equality(first.first, second);
@@ -78,24 +77,33 @@ void FormulaParser::Equality(Expression first, Expression second) {
         [&](const VariableExpression &first) -> void {
 
             auto second_data = eval(second);
-            if (second_data.data.size() > 1) 
+            if (second_data.data.size() > 1) {
                 throw std::runtime_error("You can't assign multiple values to a constant");
-            if (constants.find(first.name) != constants.end()) 
+            }
+            if (constants.find(first.name) != constants.end()) {
                 throw std::runtime_error("You can't override the value of a constant");
+            }
             constants[first.name] = second_data.data[0];
         },
         [&](const IndexExpression &first) -> void {
             
             auto second_data = eval(second);
-            auto &manager_data = Manager::instance()->GetVariable(QString{first.name.c_str()});
-
-            if (first.args.size() == 1 && first.args[0] < manager_data.measurements.size() && first.args[0] > 0 && second_data.data.size() > 0) {
+            //VariableData manager_data = Manager::instance()->GetVariable(QString{first.name.c_str()});
+            try {
+                auto manager_data = Manager::instance()->GetVariable(QString{first.name.c_str()});
+            }
+            catch(...) {
+                int measurements_count = Manager::instance()->GetMeasurementsCount();
+                auto variable = VariableData(measurements_count);
+                variable.naming.full = variable.naming.alias = QString{first.name.c_str()};
+                Manager::instance()->AddVariable(variable);
+            }
+            auto manager_data = Manager::instance()->GetVariable(QString{first.name.c_str()});
+            if (first.args.size() == 3 )throw std::runtime_error("Too much indexes");
+            else if (first.args.size() == 1 && first.args[0] <= manager_data.measurements.size() && first.args[0] > 0 && second_data.data.size() > 0) {
                 manager_data.measurements[first.args[0] - 1] = second_data.data[0];
             } 
-            else if (first.args.size() == 1 && (first.args[0] >= manager_data.measurements.size() || first.args[0] <= 0)) {
-                throw std::runtime_error("Wrong index");
-            } 
-            else if (first.args.size() == 2 && first.args[1] < manager_data.measurements.size()) {
+            else if (first.args.size() == 2 && first.args[1] <= manager_data.measurements.size() && first.args[0] > 0 && first.args[1] - first.args[1] > 0) {
 
                 if (manager_data.instrument.type != ErrorType::Calculated) {
                     QList<double> tmp_list;
@@ -111,26 +119,24 @@ void FormulaParser::Equality(Expression first, Expression second) {
                     manager_data.measurements[item - 1] = second_data.data[item - first.args[0]];
                     manager_data.instrument.error.list[item - 1] = second_data.errors[item - first.args[0]];
                 }
-
             }
-            else if (first.args.size() == 2 && first.args[1] >= manager_data.measurements.size()) {
+            else
                 throw std::runtime_error("Wrong index");
-            }
-            else throw std::runtime_error("Too much indexes");
-            return;
         });
     boost::apply_visitor(visitor, first);
 }
 
+//parse binary_expression "first_expression operation second-expressions"
 Node FormulaParser::eval_binary(BinaryExpression::op_t op, Node first, Node second) { 
 
     switch (op) {
-    case BinaryExpression::Plus: return first + second;
-    case BinaryExpression::Minus: return first - second;
-    case BinaryExpression::Mul: return first * second;
-    case BinaryExpression::Div: return first / second;
-    case BinaryExpression::Pow: return first ^ second;
-    default: throw std::runtime_error("Unknown operator");
+
+        case BinaryExpression::Plus: return first + second;
+        case BinaryExpression::Minus: return first - second;
+        case BinaryExpression::Mul: return first * second;
+        case BinaryExpression::Div: return first / second;
+        case BinaryExpression::Pow: return first ^ second;
+        default: throw std::runtime_error("Unknown operator");
     }
 }
 
@@ -138,6 +144,7 @@ Node FormulaParser::eval_binary(BinaryExpression::op_t op, Node first, Node seco
 Node FormulaParser::eval(Expression e) {
     std::vector <double> data{};
     auto visitor = boost::make_overloaded_function(
+
         [](double x) -> Node {
             return Node(std::vector<double>{x}, std::vector<double>{0}); 
         },
@@ -163,7 +170,7 @@ Node FormulaParser::eval(Expression e) {
             try{
                 boost::filesystem::path lib_path(".");
                 boost::shared_ptr<plugin_api> plugin = nullptr; 
-                std::string plugin_name = "plugin_" + e.function;
+                std::string plugin_name = "plugin_" + e.function + ".func";
                 plugin = dll::import_symbol<plugin_api>(lib_path / plugin_name, "plugin", dll::load_mode::append_decorations);
                 return {plugin->calculate(Node(args, errors))};
             }

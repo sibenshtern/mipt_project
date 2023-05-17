@@ -5,6 +5,17 @@
 
 #include "FormulaParser.hpp"
 
+// void double_push_back(Node &node, double a, int op){
+//     switch (op)
+//     {
+//     case 1:
+//         node.data.push_back(a + b);
+//         break;
+    
+//     default:
+//         break;
+//     }
+// }
 
 Node operator + (Node &first, Node &second) {   
     Node node = Node();

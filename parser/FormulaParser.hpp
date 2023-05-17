@@ -35,7 +35,7 @@ using Expression = boost::variant<
     , boost::recursive_wrapper<struct BinaryExpression>
     >;
 
-
+// first_expression operand next_expression
 struct BinaryExpression {
     enum op_t { Plus, Minus, Mul, Div, Mod, Pow, Equality};
 
@@ -45,7 +45,7 @@ struct BinaryExpression {
 
 BOOST_FUSION_ADAPT_STRUCT(BinaryExpression, first, ops)
 
-
+// constant
 struct VariableExpression {
     std::string name;
 };
@@ -53,6 +53,7 @@ struct VariableExpression {
 BOOST_FUSION_ADAPT_STRUCT(VariableExpression, name);
 
 
+// name[arg[1]: arg[2]] or name[arg[1]]
 struct IndexExpression {
     std::string name;
     std::vector<int> args;
@@ -60,7 +61,7 @@ struct IndexExpression {
 
 BOOST_FUSION_ADAPT_STRUCT(IndexExpression, name, args);
 
-
+// -a, +a
 struct UnaryExpression {
     enum op_t { Plus, Minus, };
 
@@ -70,7 +71,7 @@ struct UnaryExpression {
 
 BOOST_FUSION_ADAPT_STRUCT(UnaryExpression, op, arg)
 
-
+// fuction_name(arg[1], arg[2]...)
 struct FunctionCall {
     std::string function;
     std::vector<Expression> args;
@@ -136,7 +137,7 @@ class FormulaParser {
     
 private:
     std::map<std::string, double> constants;
-    std::string path = "./";
+    std::string path = ".";
 
     void load_constants(std::string path);
     void Equality(Expression first, Expression second);
