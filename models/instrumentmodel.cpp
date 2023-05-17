@@ -27,6 +27,8 @@ bool InstrumentModel::setData(const QModelIndex &index, const QVariant &value, i
                 if (value.toString().contains(','))
                     const_cast<QVariant &>(value) = QVariant{value.toString().replace(',', '.')};
                 Manager::instance()->variables[index.row()].instrument.error.value = value.toDouble();
+                Manager::instance()->plot->draw(Manager::instance()->plot_field);
+                emit dataChanged(index, index);
                 return true;
             }
         }

@@ -15,6 +15,7 @@
 #include "plots/plotscatter.h"
 #include "plots/plothist.h"
 #include "plots/plotchoice.h"
+#include "plots/plotscatter2d.h"
 
 #include "logic/odf.h"
 

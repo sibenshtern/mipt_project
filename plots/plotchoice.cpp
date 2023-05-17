@@ -9,9 +9,10 @@ void PlotChoice::options()
 {
     PlotChoiceOptionsDialog optionDialog(currentPlot, plots.keys(), this);
     optionDialog.show();
-    optionDialog.exec();
+    int result = optionDialog.exec();
     currentPlot = optionDialog.currentPlot.currentText();
-
+    if (result == QDialog::Rejected || result == QDialog::Accepted) // TODO: Fix dialog opening after clicking on screen
+        Manager::instance()->plot->draw(Manager::instance()->plot_field);
 }
 
 void PlotChoice::optionsCurrentPlot(QString currentPlot)

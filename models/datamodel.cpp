@@ -51,6 +51,8 @@ bool DataModel::setData(const QModelIndex &index, const QVariant &value, int rol
         if (Manager::instance()->variables[index.column()][index.row()] != value.toDouble()) {
             try {
                 Manager::instance()->variables[index.column()][index.row()] = value.toDouble();
+                Manager::instance()->plot->draw(Manager::instance()->plot_field);
+                emit dataChanged(index, index);
                 return true;
             } catch (std::exception &e) {
                 qDebug() << "DataModel::setData(exception): " << e.what();

@@ -28,13 +28,12 @@ MainWindow::MainWindow(QWidget *parent)
     Manager::instance()->visual_model = visual_model;
 
     plot = new PlotChoice(QMap<QString, Plot *>{
-            {"Scatter Plot",    new PlotScatter()},
-            {"Histogramm Plot", new PlotHist()}
-    });
+                {"Scatter Plot",    new PlotScatter()},
+                {"Histogramm Plot", new PlotHist()},
+                {"2D Scatter Plot", new PlotScatter2D()}
+        });
     Manager::instance()->plot = plot;
     plot->draw(ui->PlotWidget);
-
-    ui->VisualTable->setEditTriggers(QAbstractItemView::AllEditTriggers);
 
     ui->MainTable->setModel(data_model);
     ui->VisualTable->setModel(visual_model);
@@ -67,29 +66,29 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event) {
-    if (event->modifiers() & Qt::ControlModifier) {
-        if (event->key() == Qt::Key_S) {
-            QString file_name = QFileDialog::getSaveFileName(this, tr("Save File"), "~", tr("CSV File (*.csv), JSON File(*.json)"));
-            saveFile(file_name);
-        }
-    }
-    QMainWindow::keyPressEvent(event);
+//    if (event->modifiers() & Qt::ControlModifier) {
+//        if (event->key() == Qt::Key_S) {
+//            QString file_name = QFileDialog::getSaveFileName(this, tr("Save File"), "~", tr("CSV File (*.csv), JSON File(*.json)"));
+//            saveFile(file_name);
+//        }
+//    }
+//    QMainWindow::keyPressEvent(event);
 }
 
 void MainWindow::saveFile(QString file_name) {
-    QFile csv_file{file_name};
+//    QFile csv_file{file_name};
 
-    if (!csv_file.open(QIODevice::WriteOnly | QIODevice::Text))
-        return;
+//    if (!csv_file.open(QIODevice::WriteOnly | QIODevice::Text))
+//        return;
 
-    QTextStream out(&csv_file);
+//    QTextStream out(&csv_file);
 
-    qDebug() << "MainWindow::save(file_name): " << file_name;
+//    qDebug() << "MainWindow::save(file_name): " << file_name;
 
-    if (file_name.endsWith(".csv"))
-        out << csv_io.save();
-    else if (file_name.endsWith(".json"))
-        out << json_io.save().toJson(QJsonDocument::Indented);
+//    if (file_name.endsWith(".csv"))
+//        out << csv_io.save(); //TODO: Return it back!
+//    else if (file_name.endsWith(".json"))
+//        out << json_io.save().toJson(QJsonDocument::Indented); //TODO: Return it back!
 }
 
 void MainWindow::AddTextBlock() {
@@ -139,18 +138,18 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::loadFile() {
-    QString file_name;
-    if (ui->ChooseSource->currentText() == "CSV file") {
-        file_name = QFileDialog::getOpenFileName(this, tr("Open CSV file"), "~", tr("CSV File (*.csv)"));
-        qDebug() << "MainWindow::loadFile(file_name): " << file_name;
-        csv_io.load(file_name);
-    } else if (ui->ChooseSource->currentText() == "JSON file") {
-        file_name = QFileDialog::getOpenFileName(this, tr("Open JSON file"), "~", tr("JSON file (*.json)"));
-        qDebug() << "MainWindow::loadFile(file_name): " << file_name;
-        json_io.load(file_name);
-    }
+//    QString file_name;
+//    if (ui->ChooseSource->currentText() == "CSV file") {
+//        file_name = QFileDialog::getOpenFileName(this, tr("Open CSV file"), "~", tr("CSV File (*.csv)"));
+//        qDebug() << "MainWindow::loadFile(file_name): " << file_name;
+//        csv_io.load(file_name); //TODO: Return it back!
+//    } else if (ui->ChooseSource->currentText() == "JSON file") {
+//        file_name = QFileDialog::getOpenFileName(this, tr("Open JSON file"), "~", tr("JSON file (*.json)"));
+//        qDebug() << "MainWindow::loadFile(file_name): " << file_name;
+//       json_io.load(file_name);//TODO: Return it back!
+ //   }
 
-    ui->MainTable->viewport()->repaint();
+    //ui->MainTable->viewport()->repaint();
 }
 
 

@@ -1,7 +1,4 @@
 #pragma once
-
-#include <cmath>
-
 #include <QAbstractTableModel>
 #include "../logic/manager.h"
 
@@ -24,4 +21,3 @@ private:
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
     bool removeColumns(int column, int count, const QModelIndex &parent = QModelIndex()) override;
 };
-//    QModelIndex parent(const QModelIndex &child) const override { return {}; };

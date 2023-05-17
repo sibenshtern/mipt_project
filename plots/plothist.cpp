@@ -59,7 +59,6 @@ void PlotHist::draw(QCustomPlot* plot){
     plot->yAxis->setVisible(true);
     plot->legend->setVisible(true);
     plot->legend->setBrush(QColor(255, 255, 255, 150));
-    plot->rescaleAxes();
     plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
     plot->replot();
 }
