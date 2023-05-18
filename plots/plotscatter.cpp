@@ -25,7 +25,7 @@ void PlotScatter::draw(QCustomPlot *plot)
         {
           x.append(j);
           y.append(v.measurements[j]);
-          e.append(m->variables[i].Error(j)); //TODO:: add errors
+          e.append(m->variables[i].Error(j));
         }
         graph->setData(x, y);
         if (v.visual.error_bars)

@@ -10,7 +10,6 @@ int VisualModel::columnCount(const QModelIndex &parent) const {
     return 7;
 }
 
-enum VisualModelColumns{NameOfVariable, Visibility, LineType, Colour, LineWidth, PointType, ErrorBars};
 
 Qt::ItemFlags VisualModel::flags(const QModelIndex &index) const {
     Qt::ItemFlags default_flags {Qt::ItemIsSelectable, Qt::ItemIsEditable, Qt::ItemIsEnabled};

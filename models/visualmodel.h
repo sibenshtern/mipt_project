@@ -2,6 +2,8 @@
 #include <QAbstractTableModel>
 #include "../logic/manager.h"
 
+enum VisualTableColumns{NameOfVariable, Visibility, LineType, Colour, LineWidth, PointType, ErrorBars};
+
 class Manager;
 
 class VisualModel : public QAbstractTableModel

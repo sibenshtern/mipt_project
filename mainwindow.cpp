@@ -26,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
     Manager::instance()->instrument_model = instrument_model;
     Manager::instance()->naming_model = naming_model;
     Manager::instance()->visual_model = visual_model;
+    Manager::instance()->visual_table = ui->VisualTable;
 
     plot = new PlotChoice(QMap<QString, Plot *>{
                 {"Scatter Plot",    new PlotScatter()},

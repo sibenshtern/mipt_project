@@ -52,6 +52,7 @@ public:
     InstrumentModel *instrument_model{nullptr};
     NamingModel *naming_model{nullptr};
     VisualModel *visual_model{nullptr};
+    QTableView *visual_table{nullptr};
 
     Plot* plot{nullptr};
     QCustomPlot* plot_field = nullptr;

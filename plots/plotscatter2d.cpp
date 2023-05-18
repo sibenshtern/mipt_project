@@ -2,11 +2,21 @@
 
 void PlotScatter2D::draw(QCustomPlot* plot)
 {
-    auto m = Manager::instance();
-    plot->clearGraphs();;
+    plot->clearGraphs();
     plot->addGraph();
     auto graph = plot->graph(0);
     QPen pen;
+    for (int i = 0; i < Manager::instance()->variables.size();++i)
+        if (Manager::instance()->variables[i].naming.full == x_variable.naming.full)
+            break;
+    for (int i = 0; i < Manager::instance()->variables.size();++i){
+        bool flag = false;
+        if (Manager::instance()->variables[i].naming.full == y_variable.naming.full){
+            break;
+            flag = true;
+        }
+        if (flag) return;
+    }
     pen.setColor("green");
     pen.setStyle(Qt::SolidLine);
     pen.setWidthF(5);
@@ -68,20 +78,20 @@ PlotScatter2DOptionsDialog::PlotScatter2DOptionsDialog(QString xlabel, QString y
     QLabel *xLabelLabel = new QLabel(tr("X axis label"));
     mainLayout->addWidget(xLabelLabel);
     this->xLabel.clear();
-    for(auto& v: Manager::instance()->variables){
-        this->xLabel.addItem(v.naming.full);
-        if(v.naming.full == xlabel)
-            this->xLabel.setCurrentIndex(this->xLabel.count() + 1);
+    for (int i = 0; i < Manager::instance()->variables.size();++i){
+        this->xLabel.addItem(Manager::instance()->variables[i].naming.full);
+        if(Manager::instance()->variables[i].naming.full == xlabel)
+            this->xLabel.setCurrentIndex(i);
     }
     mainLayout->addWidget(&this->xLabel);
 
     QLabel *yLabelLabel = new QLabel(tr("Y axis label"));
     mainLayout->addWidget(yLabelLabel);
     this->yLabel.clear();
-    for(auto& v: Manager::instance()->variables){
-        this->yLabel.addItem(v.naming.full);
-        if(v.naming.full == ylabel)
-            this->yLabel.setCurrentIndex(this->xLabel.count() + 1);
+    for (int i = 0; i < Manager::instance()->variables.size();++i){
+        this->yLabel.addItem(Manager::instance()->variables[i].naming.full);
+        if(Manager::instance()->variables[i].naming.full == ylabel)
+            this->yLabel.setCurrentIndex(i);
     }
     mainLayout->addWidget(&this->yLabel);
     setLayout(mainLayout);
