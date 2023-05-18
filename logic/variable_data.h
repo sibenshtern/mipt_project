@@ -1,41 +1,80 @@
-#pragma once
+#ifndef DAFELAB_VARIABLE_DATA_H
+#define DAFELAB_VARIABLE_DATA_H
 
-#include <QList>
 #include <QString>
+#include <QColor>
+#include <utility>
 #include <stdexcept>
+#include <QMap>
+#include "../qcustomplot.h"
+
 #include "instrument.h"
+
+struct Visual {
+<<<<<<< HEAD
+   int width {5};
+   bool visible {true};
+   QColor color {"red"};
+   bool error_bars{true};
+   QString line_type {"Solid"};
+   QString point_type {"None"};
+   QMap<QString, Qt::PenStyle> line_types = {
+           {"Solid", Qt::SolidLine},
+           {"Dashed", Qt::DashLine},
+           {"Dotted", Qt::DotLine}
+   };
+   QMap<QString, QCPScatterStyle> point_types = {
+           {"None", QCPScatterStyle::ssNone},
+           {"Cross", QCPScatterStyle::ssCross},
+           {"Circle", QCPScatterStyle::ssCircle}
+   };
+=======
+    int width {5};
+    bool visible {true};
+    bool error_bars {true};
+    QColor color {"red"};
+    QString line_type {"Solid"};
+    QString point_type {"None"};
+    QMap<QString, Qt::PenStyle> line_types = {
+            {"Solid", Qt::SolidLine},
+            {"Dashed", Qt::DashLine},
+            {"Dotted", Qt::DotLine}
+    };
+    QMap<QString, QCPScatterStyle> point_types = {
+            {"None", QCPScatterStyle::ssNone},
+            {"Cross", QCPScatterStyle::ssCross},
+            {"Circle", QCPScatterStyle::ssCircle}
+    };
+>>>>>>> 7b28b9288cf80ea5b73d202f023679629072aa16
+};
 
 class VariableData {
 public:
     VariableData() = default;
-    VariableData(QString full_name, QString short_name, Instrument &instrument);
-    template<typename T, typename P>
-    VariableData(QString full_name, QString short_name, T&& instrument,
-                 P&& measurements);
+    explicit VariableData(int measurements_count);
+
+    VariableData(QString full_name, QString short_name, const Instrument &instrument)
+        : naming{std::move(full_name), std::move(short_name)}, instrument{instrument} {};
+
+    VariableData(
+            QString full_name, QString short_name,
+            const Instrument &instrument, const QList<double> &measurements);
+
     VariableData(const VariableData &);
 
-    void ChangeFullName(QString &);
-    void ChangeShortName(QString &);
-    void ChangeInstrument(Instrument &);
-    void ChangeMeasurement(int, double);
-    void ChangeMeasurements(QList<double> &);
+    double Error(size_t measurement_index);
 
-    void AddMeasurement(double measurement);
-    void DeleteMeasurement(int index);
+    double &operator[](size_t index);
 
-    QString GetFullName() { return full_name; }
-    QString GetShortName() { return short_name; }
-    QList<double> GetMeasurements() const { return measurements; }
-    double GetMeasurement(int index) const;
-private:
+    void SetDefaultName(size_t variable_index);
+
     QList<double> measurements;
-    QString full_name;
-    QString short_name;
+    struct {
+        QString full;
+        QString alias;
+    } naming;
     Instrument instrument;
+    Visual visual;
 };
 
-template<typename T, typename P>
-VariableData::VariableData(QString full_name, QString short_name, T&& instrument, P&& measurements)
-        : VariableData(full_name, short_name, instrument) {
-    this->measurements = measurements;
-};
+#endif //DAFELAB_VARIABLE_DATA_H

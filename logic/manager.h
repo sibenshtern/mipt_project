@@ -1,50 +1,66 @@
-#pragma once
+#ifndef DAFELAB_MANAGER_H
+#define DAFELAB_MANAGER_H
+
 
 #include <QList>
-#include <QModelIndex>  // temporary solution TODO: remove QModelIndex include
+#include <QGlobalStatic>
 
 #include "variable_data.h"
-#include "../models/measurement_model.h"
+#include "instrument.h"
+#include "utils.hpp"
 
+#include "../models/datamodel.h"
+#include "../models/instrumentmodel.h"
+#include "../models/namingmodel.h"
+#include "../models/visualmodel.h"
 
-class MeasurementModel;
+#include "../plots/plotscatter.h"
+
+class DataModel;
+class InstrumentModel;
+class NamingModel;
+class VisualModel;
 
 class Manager {
 public:
     Manager() = default;
-    Manager(QList<VariableData> &variables, QList<VariableData> &calculated);
 
-    void AddVariable();
+    QList<VariableData> calculated;
+    QList<VariableData> variables;
 
-    template<typename T>
-    void AddVariable(T&& variable);
+    VariableData &GetVariable(const QString &name);
+    RawData GetRawData(const QString &name);
 
-    VariableData &GetVariable(int index);
-    VariableData &GetVariable(QString &name);
+    void AddVariable(const VariableData &variable);
 
-    void DeleteVariable(int index);
+    void AddMeasurement();
+    void DeleteMeasurement(size_t index);
+
+    void DeleteVariable(size_t index);
+    void DeleteCalculated(size_t index);
+
     void DeleteVariable(QString &name);
-
-    void AddMeasurementRow();
-    void RemoveMeasurementRow(int index);
+    void DeleteCalculated(QString &name);
 
     void ClearCalculated() { calculated.clear(); };
-    void AddCalculated(VariableData &variable);
+    void Clear();
 
-    int GetMeasurementsCount() const { return _max_measurements_count; }
-    int GetVariablesCount() const { return variables.size() + calculated.size(); }
-private:
-    QList<VariableData> variables;
-    QList<VariableData> calculated;
+    int GetMeasurementsCount();
+    int GetVariablesCount() const;
 
-    MeasurementModel *measurement_model {nullptr};
+    DataModel *data_model{nullptr};
+    InstrumentModel *instrument_model{nullptr};
+    NamingModel *naming_model{nullptr};
+    VisualModel *visual_model{nullptr};
 
-    int _max_measurements_count {0};
+    Plot* plot{nullptr};
+    QCustomPlot* plot_field = nullptr;
+    QTableView* visual_table{nullptr};
+    QAbstractTableModel* scatters_models{nullptr};
+    QAbstractTableModel* td_scatter_model{nullptr};
+
+    static Manager *instance();
 };
 
-template<typename T>
-void Manager::AddVariable(T&& variable) {
-    variables.push_back(variable);
-    _max_measurements_count = std::max(_max_measurements_count, variable.GetMeasurements().size());
-    // TODO: rewrite this with interaction with Models
-}
+
+#endif //DAFELAB_MANAGER_H

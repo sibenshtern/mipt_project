@@ -1,42 +1,48 @@
 #include "instrument.h"
 
-ErrorValue::ErrorValue(ErrorValue &error_value) : _type{error_value._type} {
-    if (error_value._type == Single)
-        value = error_value.value;
-    else if (error_value._type == Multiple)
-        list = error_value.list;
-};
+#include <utility>
 
-ErrorValue &ErrorValue::operator=(const ErrorValue &error_value) {
-    _type = error_value._type;
-    if (_type == Single)
-        value = error_value.value;
-    else if (_type == Multiple)
-        list = error_value.list;
+Error::Error(double value, ErrorType error_type) : value{value} {
+    if (error_type == ErrorType::Calculated)
+        throw std::invalid_argument("Error type with number value can't be calculated");
+    type = error_type;
+}
+
+Error::Error(const QList<double> &error_list, ErrorType error_type) {
+    if (error_type != ErrorType::Calculated)
+        throw std::invalid_argument("Error type with list value must be calculated");
+    type = error_type;
+    list = error_list;
+}
+
+Error::Error(Error &error) {
+    if (error.type == ErrorType::Calculated)
+        list = error.list;
+    else
+        value = error.value;
+    type = error.type;
+}
+
+Error &Error::operator=(const Error &error) {
+    type = error.type;
+    if (type == ErrorType::Calculated)
+        list = error.list;
+    else
+        value = error.value;
     return *this;
 }
 
-Instrument::Instrument(ErrorType type, double value)
-        : type{type}, error{value} {};
+Instrument::Instrument(ErrorType error_type, double error_value, QString name) {
+    error = Error{error_value, error_type};
+    this->name = std::move(name);
+}
 
-Instrument::Instrument(ErrorType type, QList<double> list)
-        : type{type}, error{list} {};
+Instrument::Instrument(QList<double> const &error_list, QString name) {
+    error = Error{error_list, ErrorType::Calculated};
+    this->name = std::move(name);
+}
 
-void Instrument::ChangeValue(double new_value) {
-    if (new_value < 0)
-        throw std::range_error("Error value must be greater than zero");
-    if (type == ErrorType::Calculated)
-        throw std::logic_error("Can't change single value in calculated error");
-
-    error.value = new_value;
-};
-
-void Instrument::ChangeValue(QList<double> list) {
-    for (size_t i = 0; i < list.size(); ++i)
-        if (list[(int) i] < 0)
-            throw std::range_error("Error value must be greater than zero");
-    if (type != ErrorType::Calculated)
-        throw std::logic_error("Can't change list of error in single value error");
-
-    error.list = list;
-};
+Instrument::Instrument(const Instrument &instrument) {
+    error = instrument.error;
+    name = instrument.name;
+}

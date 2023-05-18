@@ -1,40 +1,37 @@
-#pragma once
+#ifndef DAFELAB_INSTRUMENT_H
+#define DAFELAB_INSTRUMENT_H
 
 #include <QList>
-#include <stdexcept>
+#include <QDebug>
 
 enum class ErrorType {
     Absolute, Relative, Calculated
 };
 
-struct ErrorValue {
-    explicit ErrorValue(QList<double> &list) : list{list}, _type{Multiple} {};
-    explicit ErrorValue(double value) : value{value}, _type{Single} {};
-    ErrorValue(ErrorValue &);
-    ErrorValue &operator=(const ErrorValue &);
+struct Error {
+    Error() : Error(0, ErrorType::Absolute) {}
+    Error(double value, ErrorType error_type);
+    explicit Error(const QList<double> &error_list, ErrorType error_type = ErrorType::Calculated);
+    Error(Error &error);
+    Error &operator=(const Error &error);
+    
+    QList<double> list;
+    double value;
 
-    ~ErrorValue() { if (_type == Multiple) list.~QList(); }
-    union {
-        QList<double> list;
-        double value;
-    };
-    enum {Single, Multiple} _type;
+    ErrorType type;
 };
 
 class Instrument {
 public:
-    Instrument() : Instrument(ErrorType::Absolute, 0) {};
-    Instrument(ErrorType, double);
-    Instrument(ErrorType, QList<double>);
-    Instrument(Instrument &) = default;
-    Instrument &operator=(const Instrument &) = default;
+    Instrument() : Instrument(ErrorType::Absolute, 0, "Default instrument") {};
+    Instrument(ErrorType error_type, double error_value, QString name = "Default");
+    explicit Instrument(QList<double> const &error_list, QString name = "Default");
+    Instrument(const Instrument &instrument);
+    Instrument &operator=(const Instrument &instrument) = default;
 
-    ErrorType &GetType() { return type; }
-    ErrorValue &GetError() { return error; }
-
-    void ChangeValue(double);
-    void ChangeValue(QList<double>);
-private:
-    ErrorType type;
-    ErrorValue error;
+    Error error;
+    QString name;
 };
+
+
+#endif //DAFELAB_INSTRUMENT_H
