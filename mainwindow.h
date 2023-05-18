@@ -42,7 +42,7 @@ private slots:
     void loadFile();
     void saveFile(QString file_name);
 
-    void on_AddVariableButton_clicked();
+    void addEmptyVariable();
 
     void RemoveVariable();
     void RemoveMeasurement();

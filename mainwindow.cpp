@@ -67,16 +67,17 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->RemoveVariableButton, SIGNAL(clicked()), this, SLOT(RemoveVariable()));
     connect(ui->RemoveMeasurementButton, SIGNAL(clicked()), this, SLOT(RemoveMeasurement()));
     connect(ui->LoadButton, SIGNAL(clicked()), this, SLOT(loadFile()));
+    connect(ui->AddVariableButton, SIGNAL(clicked()), this, SLOT(addEmptyVariable()));
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event) {
-//    if (event->modifiers() & Qt::ControlModifier) {
-//        if (event->key() == Qt::Key_S) {
-//            QString file_name = QFileDialog::getSaveFileName(this, tr("Save File"), "~", tr("CSV File (*.csv), JSON File(*.json)"));
-//            saveFile(file_name);
-//        }
-//    }
-//    QMainWindow::keyPressEvent(event);
+    if (event->modifiers() & Qt::ControlModifier) {
+        if (event->key() == Qt::Key_S) {
+            QString file_name = QFileDialog::getSaveFileName(this, tr("Save File"), "~", tr("CSV File (*.csv), JSON File(*.json)"));
+            saveFile(file_name);
+        }
+    }
+    QMainWindow::keyPressEvent(event);
 }
 
 void MainWindow::saveFile(QString file_name) {
@@ -156,8 +157,7 @@ void MainWindow::loadFile() {
     ui->MainTable->viewport()->repaint();
 }
 
-
-void MainWindow::on_AddVariableButton_clicked() {
+void MainWindow::addEmptyVariable() {
     Manager::instance()->AddVariable(VariableData{Manager::instance()->GetMeasurementsCount()});
 }
 

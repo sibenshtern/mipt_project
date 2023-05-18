@@ -43,6 +43,7 @@ void Manager::AddVariable(const VariableData &variable) {
         for (int i = 0; i < GetMeasurementsCount() - variable_size; ++i)
             _variable.measurements.push_back(0);
     }
+    plot->draw(plot_field);
 }
 
 void Manager::AddMeasurement() {
