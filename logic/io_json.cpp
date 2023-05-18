@@ -23,7 +23,7 @@ void IOJSON::load(QString file_name) {
         if (!variable_object.contains("name"))
             throw std::runtime_error("The variable object must contain field \"name\".");
         if (!variable_object["name"].isObject())
-            throw std::runtime_error("Name field must be object.");
+            throw std::runtime_error(R"(Field "name" must be object with fields "full" and "alias".)");
 
         QJsonObject naming_object = variable_object["name"].toObject();
         if (!(naming_object.contains("full") && naming_object.contains("alias")))
@@ -35,14 +35,14 @@ void IOJSON::load(QString file_name) {
         if (!variable_object.contains("instrument"))
             throw std::runtime_error("Variable object must contain field \"instrument\".");
         if (!variable_object["instrument"].isObject())
-            throw std::runtime_error("Field \"instrument\" must be object.");
+            throw std::runtime_error(R"("Field "instrument" must be object with fields "error_type" and "error_value".")");
 
         QJsonObject instrument_object = variable_object["instrument"].toObject();
         if (!(instrument_object.contains("error_type") && instrument_object.contains("error_value")))
-            throw std::runtime_error(R"(Instrument field must contain fields "error_type" and "error_value".)");
+            throw std::runtime_error(R"(Field "instrument" must contain fields "error_type" and "error_value".)");
 
         if (!instrument_object["error_type"].isString())
-            throw std::runtime_error("Field \"error_type\" must be string.");
+            throw std::runtime_error(R"("Field "error_type" must be string and one from ("Absolute", "Relative", "Calculated"".")");
 
         QString error_type = instrument_object["error_type"].toString();
         if (!QList<QString>{"Absolute", "Relative", "Calculated"}.contains(error_type))
@@ -54,7 +54,7 @@ void IOJSON::load(QString file_name) {
             throw std::runtime_error(R"("Field "error_value" when "error_type" equal "Absolute" or "Relative" must be double.")");
 
         if (instrument_object["error_value"].isDouble() && instrument_object["error_value"].toDouble() < 0)
-            throw std::runtime_error(R"("Field "error_value" must be positive.")");
+            throw std::runtime_error(R"("Field "error_value" must be positive number.")");
 
         // check measurements
         if (!variable_object.contains("measurements"))

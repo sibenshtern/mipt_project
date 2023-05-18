@@ -144,14 +144,18 @@ MainWindow::~MainWindow() {
 
 void MainWindow::loadFile() {
     QString file_name;
-    if (ui->ChooseSource->currentText() == "CSV file") {
-        file_name = QFileDialog::getOpenFileName(this, tr("Open CSV file"), "~", tr("CSV File (*.csv)"));
-        qDebug() << "MainWindow::loadFile(file_name): " << file_name;
-        csv_io.load(file_name);
-    } else if (ui->ChooseSource->currentText() == "JSON file") {
-        file_name = QFileDialog::getOpenFileName(this, tr("Open JSON file"), "~", tr("JSON file (*.json)"));
-        qDebug() << "MainWindow::loadFile(file_name): " << file_name;
-       json_io.load(file_name);
+    try {
+        if (ui->ChooseSource->currentText() == "CSV file") {
+            file_name = QFileDialog::getOpenFileName(this, tr("Open CSV file"), "~", tr("CSV File (*.csv)"));
+            qDebug() << "MainWindow::loadFile(file_name): " << file_name;
+            csv_io.load(file_name);
+        } else if (ui->ChooseSource->currentText() == "JSON file") {
+            file_name = QFileDialog::getOpenFileName(this, tr("Open JSON file"), "~", tr("JSON file (*.json)"));
+            qDebug() << "MainWindow::loadFile(file_name): " << file_name;
+            json_io.load(file_name);
+        }
+    } catch (std::runtime_error &e) {
+        error_message.showMessage(e.what());
     }
 
     ui->MainTable->viewport()->repaint();

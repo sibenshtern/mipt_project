@@ -12,6 +12,9 @@ enum class BlockType {
 class Block {
 public:
     virtual void Export() = 0;
+
+
+
     BlockType type = BlockType::None;
 };
 

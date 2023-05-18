@@ -11,24 +11,6 @@
 #include "instrument.h"
 
 struct Visual {
-<<<<<<< HEAD
-   int width {5};
-   bool visible {true};
-   QColor color {"red"};
-   bool error_bars{true};
-   QString line_type {"Solid"};
-   QString point_type {"None"};
-   QMap<QString, Qt::PenStyle> line_types = {
-           {"Solid", Qt::SolidLine},
-           {"Dashed", Qt::DashLine},
-           {"Dotted", Qt::DotLine}
-   };
-   QMap<QString, QCPScatterStyle> point_types = {
-           {"None", QCPScatterStyle::ssNone},
-           {"Cross", QCPScatterStyle::ssCross},
-           {"Circle", QCPScatterStyle::ssCircle}
-   };
-=======
     int width {5};
     bool visible {true};
     bool error_bars {true};
@@ -45,7 +27,6 @@ struct Visual {
             {"Cross", QCPScatterStyle::ssCross},
             {"Circle", QCPScatterStyle::ssCircle}
     };
->>>>>>> 7b28b9288cf80ea5b73d202f023679629072aa16
 };
 
 class VariableData {
