@@ -21,12 +21,12 @@ void PlotScatter2D::draw(QCustomPlot* plot)
     errorBarsX->setDataPlottable(graph);
     errorBarsY->setDataPlottable(graph);
     QVector<double> x, y, eX, eY;
-    for (int j=0; j<std::min(x_variable.measurements.size(), y_variable.measurements.size()); ++j)
+    for (int j=0; j<std::min(x_variable->measurements.size(), y_variable->measurements.size()); ++j)
     {
-      x.append(x_variable.measurements[j]);
-      y.append(y_variable.measurements[j]);
-      eX.append(x_variable.Error(j));
-      eY.append(y_variable.Error(j));
+      x.append(x_variable->measurements[j]);
+      y.append(y_variable->measurements[j]);
+      eX.append(x_variable->Error(j));
+      eY.append(y_variable->Error(j));
     }
     graph->setData(x, y);
     errorBarsX->setData(eX);
@@ -51,8 +51,8 @@ void PlotScatter2D::options()
     optionDialog.show();
     optionDialog.exec();
     xlabel = Manager::instance()->GetVariable(optionDialog.xLabel.currentText()).naming.full;
-    x_variable =  Manager::instance()->GetVariable(optionDialog.xLabel.currentText());
-    y_variable =  Manager::instance()->GetVariable(optionDialog.yLabel.currentText());
+    x_variable = &Manager::instance()->GetVariable(optionDialog.xLabel.currentText());
+    y_variable = &Manager::instance()->GetVariable(optionDialog.yLabel.currentText());
     ylabel = Manager::instance()->GetVariable(optionDialog.yLabel.currentText()).naming.full;
     title = optionDialog.title.text();
 }
