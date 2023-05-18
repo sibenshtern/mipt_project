@@ -23,6 +23,7 @@ public:
     void MoveUpBlock(Block *block);
     void MoveDownBlock(Block *block);
     void AppendBlock(Block *block);
+    void ExportToODF();
     QList<Block *> blocks;
 private:
     QWidget *widget_with_blocks;

@@ -17,6 +17,7 @@ find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets PrintSupport REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets PrintSupport REQUIRED)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/qcustomplot.h ${CMAKE_CURRENT_BINARY_DIR}/DAFELab_autogen/include/qcustomplot.h COPYONLY)
+#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/*.func ${CMAKE_CURRENT_BINARY_DIR}/*.func COPYONLY)
 
 add_executable(DAFELab
         mainwindow.ui
@@ -28,7 +29,7 @@ add_executable(DAFELab
         logic/variable_data.cpp
         logic/manager.cpp
         logic/io_csv.cpp
-        logic/blocks.h
+        logic/blocks.cpp
         logic/odf.cpp
 
         models/datamodel.cpp

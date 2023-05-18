@@ -17,6 +17,8 @@ QVariant DataModel::data(const QModelIndex &index, int role) const {
         if (index.column() < Manager::instance()->variables.size())
             try {
                 answer = QString::number(Manager::instance()->variables[index.column()][index.row()]);
+                if (show_error)
+                    answer += "±" + QString::number(Manager::instance()->variables[index.column()].Error(index.row()));
             } catch (std::range_error &error) {
                 answer = "";
             }

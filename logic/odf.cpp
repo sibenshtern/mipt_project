@@ -6,6 +6,17 @@ ODF::ODF(QWidget *widget_with_blocks) : widget_with_blocks{widget_with_blocks} {
     cursor = new QTextCursor{};
 }
 
+void ODF::ExportToODF() {
+    document = new QTextDocument();
+    cursor = new QTextCursor(document);
+
+    for (auto block : blocks) {
+        block->Export(cursor);
+    }
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "untitled",tr("Open Document (.odf)"));
+    QTextDocumentWriter odfWritter(fileName); odfWritter.write(document);
+}
+
 void ODF::DeleteBlock(Block *block) {
     blocks.erase(blocks.begin() + blocks.indexOf(block));
     widget_with_blocks->layout()->removeWidget(block->widget);
@@ -79,5 +90,7 @@ void ODF::AddTableBlock() {
             table->setItem(row, column, item);
         }
     }
+
+//    auto *item = new QTableWidgetItem(Qt::)
     AppendBlock(new TableBlock(table));
 }

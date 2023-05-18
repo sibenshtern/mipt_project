@@ -41,6 +41,8 @@ private slots:
     void DeleteODFBlock();
     void MoveUpODFBlock();
     void MoveDownODFBlock();
+    void ExportToODF();
+    void ShowError();
 
     void loadFile();
     void saveFile(QString file_name);

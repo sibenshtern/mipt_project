@@ -59,7 +59,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->InstrumentTable->setItemDelegateForColumn(InstrumentModelColumns::ErrorType, ErrorTypeDelegate);
 
     connect(ui->GraphSettingsButton, SIGNAL(clicked()), this, SLOT(plotOptions()));
-    connect(ui->RedrawButton, SIGNAL(clicked()), this, SLOT(redraw()));
     connect(ui->AddFormulaButton, SIGNAL(clicked()), this, SLOT(AddFormula()));
     connect(ui->AddTextBlockButton, SIGNAL(clicked()), this, SLOT(AddTextBlock()));
     connect(ui->AddGraphButton, SIGNAL(clicked()), this, SLOT(AddGraph()));
@@ -68,6 +67,21 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->RemoveMeasurementButton, SIGNAL(clicked()), this, SLOT(RemoveMeasurement()));
     connect(ui->LoadButton, SIGNAL(clicked()), this, SLOT(loadFile()));
     connect(ui->AddVariableButton, SIGNAL(clicked()), this, SLOT(addEmptyVariable()));
+    connect(ui->ExportToODFButton, SIGNAL(clicked()), this, SLOT(ExportToODF()));
+    connect(ui->errorCheckBox, SIGNAL(clicked()), this, SLOT(ShowError()));
+}
+
+void MainWindow::ExportToODF() {
+    odf_export->ExportToODF();
+}
+
+void MainWindow::ShowError() {
+    qDebug() << ui->errorCheckBox->isChecked();
+    if (ui->errorCheckBox->isChecked())
+        data_model->show_error = true;
+    else
+        data_model->show_error = false;
+    ui->MainTable->repaint();
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event) {
