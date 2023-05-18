@@ -4,6 +4,9 @@
 #include <QTextEdit>
 #include <QTableWidget>
 #include <QLabel>
+#include <QPushButton>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 enum class BlockType {
     TextBlock, TableBlock, PlotBlock, None
@@ -12,15 +15,23 @@ enum class BlockType {
 class Block {
 public:
     virtual void Export() = 0;
-
-
-
+    Block();
     BlockType type = BlockType::None;
+
+    void DeleteBlock(QWidget *widget);
+    void SetProperty(size_t index);
+
+    QWidget *widget;
+    QPushButton *up_button;
+    QPushButton *down_button;
+    QPushButton *delete_button;
+    QVBoxLayout *button_layout;
+    QHBoxLayout *widget_layout;
 };
 
 class TextBlock : public Block {
 public:
-    explicit TextBlock(QTextEdit *editor = new QTextEdit{}) : editor{editor} {}
+    explicit TextBlock(QTextEdit *editor = new QTextEdit{});
 
     void Export() override {};
 
@@ -29,7 +40,7 @@ public:
 
 class TableBlock : public Block {
 public:
-    explicit TableBlock(QTableWidget *table = new QTableWidget{}) : table{table} {}
+    explicit TableBlock(QTableWidget *table = new QTableWidget{});
 
     void Export() override {};
 

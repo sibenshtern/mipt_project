@@ -19,10 +19,12 @@ public:
     void AddTextBlock();
     void AddGraph(QCustomPlot *plot);
     void AddTableBlock();
-//    void ExportToODF();
-//    void ExportToPDF();
-private:
+    void DeleteBlock(Block *block);
+    void MoveUpBlock(Block *block);
+    void MoveDownBlock(Block *block);
+    void AppendBlock(Block *block);
     QList<Block *> blocks;
+private:
     QWidget *widget_with_blocks;
     QTextDocument *document;
     QTextCursor *cursor;

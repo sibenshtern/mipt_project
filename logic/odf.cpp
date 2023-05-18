@@ -6,35 +6,61 @@ ODF::ODF(QWidget *widget_with_blocks) : widget_with_blocks{widget_with_blocks} {
     cursor = new QTextCursor{};
 }
 
-void ODF::AddTextBlock() {
-    blocks.append(new TextBlock());
+void ODF::DeleteBlock(Block *block) {
+    blocks.erase(blocks.begin() + blocks.indexOf(block));
+    widget_with_blocks->layout()->removeWidget(block->widget);
+    block->widget->hide();
+
+    for (size_t i = 0; i < blocks.size(); ++i)
+        blocks[static_cast<int>(i)]->SetProperty(i);
+}
+
+void ODF::MoveUpBlock(Block *block) {
+    auto tmp_block = blocks[blocks.indexOf(block)];
+    int index = blocks.indexOf(block);
+    if (index > 0) {
+        blocks.erase(blocks.begin() + blocks.indexOf(block));
+        blocks.insert(index - 1, tmp_block);
+        widget_with_blocks->layout()->removeWidget(tmp_block->widget);
+        dynamic_cast<QVBoxLayout *>(widget_with_blocks->layout())->insertWidget(index - 1, tmp_block->widget);
+
+        for (size_t i = 0; i < blocks.size(); ++i)
+            blocks[static_cast<int>(i)]->SetProperty(i);
+    }
+}
+
+void ODF::MoveDownBlock(Block *block) {
+    auto tmp_block = blocks[blocks.indexOf(block)];
+    int index = blocks.indexOf(block);
+
+    if (index < static_cast<int>(blocks.size()) - 1) {
+        blocks.erase(blocks.begin() + blocks.indexOf(block));
+        blocks.insert(index + 1, tmp_block);
+        widget_with_blocks->layout()->removeWidget(tmp_block->widget);
+        dynamic_cast<QVBoxLayout *>(widget_with_blocks->layout())->insertWidget(index + 1, tmp_block->widget);
+
+        for (size_t i = 0; i < blocks.size(); ++i)
+            blocks[static_cast<int>(i)]->SetProperty(i);
+    }
+}
+
+void ODF::AppendBlock(Block *block) {
+    blocks.append(block);
 
     auto layout = qobject_cast<QVBoxLayout *>(widget_with_blocks->layout());
-    if (layout) {
-        auto text_block = dynamic_cast<TextBlock *>(blocks.back());
-        if (text_block)
-            layout->addWidget(text_block->editor);
-        else
-            qWarning() << "Cannot convert block to TextBlock";
-    } else
-        qWarning() << "Cannot find layout";
+    if (layout && block->widget) {
+        layout->addWidget(block->widget);
+        block->SetProperty(blocks.size() - 1);
+    }
     widget_with_blocks->update();
 }
 
-void ODF::AddGraph(QCustomPlot *plot) {
-    blocks.append(new PlotBlock(plot->toPixmap(400, 300)));
+void ODF::AddTextBlock() {
+    AppendBlock(new TextBlock());
+}
 
-    auto layout = qobject_cast<QVBoxLayout *>(widget_with_blocks->layout());
-    if (layout) {
-        auto plot_block = dynamic_cast<PlotBlock *>(blocks.back());
-        if (plot_block)
-            layout->addWidget(plot_block->image_label);
-        else
-            qWarning() << "Cannot convert block to PlotBlock";
-    }
-    else
-        qWarning() << "Cannot find layout";
-    widget_with_blocks->update();
+void ODF::AddGraph(QCustomPlot *plot) {
+    AppendBlock(new PlotBlock(plot->toPixmap(400, 300)));
 }
 
 void ODF::AddTableBlock() {
@@ -53,17 +79,5 @@ void ODF::AddTableBlock() {
             table->setItem(row, column, item);
         }
     }
-    blocks.append(new TableBlock(table));
-
-    auto layout = qobject_cast<QVBoxLayout *>(widget_with_blocks->layout());
-    if (layout) {
-        auto table_block = dynamic_cast<TableBlock *>(blocks.back());
-        if (table_block)
-            layout->addWidget(table_block->table);
-        else
-            qWarning() << "Cannot convert block to PlotBlock";
-    }
-    else
-        qWarning() << "Cannot find layout";
-    widget_with_blocks->update();
+    AppendBlock(new TableBlock(table));
 }
