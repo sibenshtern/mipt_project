@@ -59,7 +59,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->InstrumentTable->setItemDelegateForColumn(InstrumentModelColumns::ErrorType, ErrorTypeDelegate);
 
     connect(ui->GraphSettingsButton, SIGNAL(clicked()), this, SLOT(plotOptions()));
-    connect(ui->RedrawButton, SIGNAL(clicked()), this, SLOT(redraw()));
     connect(ui->AddFormulaButton, SIGNAL(clicked()), this, SLOT(AddFormula()));
     connect(ui->AddTextBlockButton, SIGNAL(clicked()), this, SLOT(AddTextBlock()));
     connect(ui->AddGraphButton, SIGNAL(clicked()), this, SLOT(AddGraph()));
@@ -68,6 +67,21 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->RemoveMeasurementButton, SIGNAL(clicked()), this, SLOT(RemoveMeasurement()));
     connect(ui->LoadButton, SIGNAL(clicked()), this, SLOT(loadFile()));
     connect(ui->AddVariableButton, SIGNAL(clicked()), this, SLOT(addEmptyVariable()));
+    connect(ui->ExportToODFButton, SIGNAL(clicked()), this, SLOT(ExportToODF()));
+    connect(ui->errorCheckBox, SIGNAL(clicked()), this, SLOT(ShowError()));
+}
+
+void MainWindow::ExportToODF() {
+    odf_export->ExportToODF();
+}
+
+void MainWindow::ShowError() {
+    qDebug() << ui->errorCheckBox->isChecked();
+    if (ui->errorCheckBox->isChecked())
+        data_model->show_error = true;
+    else
+        data_model->show_error = false;
+    ui->MainTable->repaint();
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event) {
@@ -78,6 +92,24 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
         }
     }
     QMainWindow::keyPressEvent(event);
+}
+
+void MainWindow::DeleteODFBlock() {
+    QVariant button = sender()->property("index");
+    odf_export->DeleteBlock(odf_export->blocks[button.toInt()]);
+    ui->area->repaint();
+}
+
+void MainWindow::MoveUpODFBlock() {
+    QVariant button = sender()->property("index");
+    odf_export->MoveUpBlock(odf_export->blocks[button.toInt()]);
+    ui->area->repaint();
+}
+
+void MainWindow::MoveDownODFBlock() {
+    QVariant button = sender()->property("index");
+    odf_export->MoveDownBlock(odf_export->blocks[button.toInt()]);
+    ui->area->repaint();
 }
 
 void MainWindow::saveFile(QString file_name) {
@@ -98,14 +130,24 @@ void MainWindow::saveFile(QString file_name) {
 
 void MainWindow::AddTextBlock() {
     odf_export->AddTextBlock();
+    connect(odf_export->blocks.back()->delete_button, SIGNAL(clicked()), this, SLOT(DeleteODFBlock()));
+    connect(odf_export->blocks.back()->up_button, SIGNAL(clicked()), this, SLOT(MoveUpODFBlock()));
+    connect(odf_export->blocks.back()->down_button, SIGNAL(clicked()), this, SLOT(MoveDownODFBlock()));
+
 }
 
 void MainWindow::AddGraph() {
     odf_export->AddGraph(ui->PlotWidget);
+    connect(odf_export->blocks.back()->delete_button, SIGNAL(clicked()), this, SLOT(DeleteODFBlock()));
+    connect(odf_export->blocks.back()->up_button, SIGNAL(clicked()), this, SLOT(MoveUpODFBlock()));
+    connect(odf_export->blocks.back()->down_button, SIGNAL(clicked()), this, SLOT(MoveDownODFBlock()));
 }
 
 void MainWindow::AddTableBlock() {
     odf_export->AddTableBlock();
+    connect(odf_export->blocks.back()->delete_button, SIGNAL(clicked()), this, SLOT(DeleteODFBlock()));
+    connect(odf_export->blocks.back()->up_button, SIGNAL(clicked()), this, SLOT(MoveUpODFBlock()));
+    connect(odf_export->blocks.back()->down_button, SIGNAL(clicked()), this, SLOT(MoveDownODFBlock()));
 }
 
 void MainWindow::AddFormula() {
@@ -144,14 +186,18 @@ MainWindow::~MainWindow() {
 
 void MainWindow::loadFile() {
     QString file_name;
-    if (ui->ChooseSource->currentText() == "CSV file") {
-        file_name = QFileDialog::getOpenFileName(this, tr("Open CSV file"), "~", tr("CSV File (*.csv)"));
-        qDebug() << "MainWindow::loadFile(file_name): " << file_name;
-        csv_io.load(file_name);
-    } else if (ui->ChooseSource->currentText() == "JSON file") {
-        file_name = QFileDialog::getOpenFileName(this, tr("Open JSON file"), "~", tr("JSON file (*.json)"));
-        qDebug() << "MainWindow::loadFile(file_name): " << file_name;
-       json_io.load(file_name);
+    try {
+        if (ui->ChooseSource->currentText() == "CSV file") {
+            file_name = QFileDialog::getOpenFileName(this, tr("Open CSV file"), "~", tr("CSV File (*.csv)"));
+            qDebug() << "MainWindow::loadFile(file_name): " << file_name;
+            csv_io.load(file_name);
+        } else if (ui->ChooseSource->currentText() == "JSON file") {
+            file_name = QFileDialog::getOpenFileName(this, tr("Open JSON file"), "~", tr("JSON file (*.json)"));
+            qDebug() << "MainWindow::loadFile(file_name): " << file_name;
+            json_io.load(file_name);
+        }
+    } catch (std::runtime_error &e) {
+        error_message.showMessage(e.what());
     }
 
     ui->MainTable->viewport()->repaint();

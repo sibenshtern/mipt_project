@@ -38,6 +38,11 @@ private slots:
     void OpenGraphPage();
     void OpenDataPage();
     void OpenReportPage();
+    void DeleteODFBlock();
+    void MoveUpODFBlock();
+    void MoveDownODFBlock();
+    void ExportToODF();
+    void ShowError();
 
     void loadFile();
     void saveFile(QString file_name);
