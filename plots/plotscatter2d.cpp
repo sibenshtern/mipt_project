@@ -21,7 +21,11 @@ void PlotScatter2D::draw(QCustomPlot* plot)
     errorBarsX->setDataPlottable(graph);
     errorBarsY->setDataPlottable(graph);
     QVector<double> x, y, eX, eY;
+<<<<<<< HEAD
     for (int j=0; j<std::min(x_variable.measurements.size(), y_variable.measurements.size()); ++j)
+=======
+    for (int j=0; j<std::min(m->variables[0].measurements.size(), m->variables[1].measurements.size()); ++j)
+>>>>>>> 7b28b9288cf80ea5b73d202f023679629072aa16
     {
       x.append(x_variable.measurements[j]);
       y.append(y_variable.measurements[j]);
