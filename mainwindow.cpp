@@ -80,6 +80,24 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
     QMainWindow::keyPressEvent(event);
 }
 
+void MainWindow::DeleteODFBlock() {
+    QVariant button = sender()->property("index");
+    odf_export->DeleteBlock(odf_export->blocks[button.toInt()]);
+    ui->area->repaint();
+}
+
+void MainWindow::MoveUpODFBlock() {
+    QVariant button = sender()->property("index");
+    odf_export->MoveUpBlock(odf_export->blocks[button.toInt()]);
+    ui->area->repaint();
+}
+
+void MainWindow::MoveDownODFBlock() {
+    QVariant button = sender()->property("index");
+    odf_export->MoveDownBlock(odf_export->blocks[button.toInt()]);
+    ui->area->repaint();
+}
+
 void MainWindow::saveFile(QString file_name) {
     QFile csv_file{file_name};
 
@@ -98,14 +116,24 @@ void MainWindow::saveFile(QString file_name) {
 
 void MainWindow::AddTextBlock() {
     odf_export->AddTextBlock();
+    connect(odf_export->blocks.back()->delete_button, SIGNAL(clicked()), this, SLOT(DeleteODFBlock()));
+    connect(odf_export->blocks.back()->up_button, SIGNAL(clicked()), this, SLOT(MoveUpODFBlock()));
+    connect(odf_export->blocks.back()->down_button, SIGNAL(clicked()), this, SLOT(MoveDownODFBlock()));
+
 }
 
 void MainWindow::AddGraph() {
     odf_export->AddGraph(ui->PlotWidget);
+    connect(odf_export->blocks.back()->delete_button, SIGNAL(clicked()), this, SLOT(DeleteODFBlock()));
+    connect(odf_export->blocks.back()->up_button, SIGNAL(clicked()), this, SLOT(MoveUpODFBlock()));
+    connect(odf_export->blocks.back()->down_button, SIGNAL(clicked()), this, SLOT(MoveDownODFBlock()));
 }
 
 void MainWindow::AddTableBlock() {
     odf_export->AddTableBlock();
+    connect(odf_export->blocks.back()->delete_button, SIGNAL(clicked()), this, SLOT(DeleteODFBlock()));
+    connect(odf_export->blocks.back()->up_button, SIGNAL(clicked()), this, SLOT(MoveUpODFBlock()));
+    connect(odf_export->blocks.back()->down_button, SIGNAL(clicked()), this, SLOT(MoveDownODFBlock()));
 }
 
 void MainWindow::AddFormula() {
