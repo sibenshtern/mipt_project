@@ -18,7 +18,7 @@
 
 #include "logic/odf.h"
 
-#include "parser/FormulaParser.hpp"
+#include "parser/FormulaParser.h"
 #include "logic/io.h"
 
 namespace Ui {

@@ -1,10 +1,10 @@
-#pragma once
+#ifndef FORMULAPARSER_H
+#define FORMULAPARSER_H
 
 #include <string>
 #include <vector>
 #include <map>
 #include <iostream>
-#include <fstream>
 
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/algorithm.hpp>
@@ -15,9 +15,9 @@
 #include <boost/functional/overloaded_function.hpp>
 #include <boost/spirit/home/x3.hpp>
 
-#include "plugin_api.hpp"
+#include "plugin_api.h"
 #include "utils.hpp"
-#include "Node.hpp"
+#include "Node.h"
 
 #include "../logic/manager.h"
 
@@ -151,3 +151,5 @@ public:
     void parse(std::string input_t);
 };
 
+
+#endif //FORMULAPARSER_H

@@ -1,5 +1,5 @@
 #include <boost/config.hpp>
-#include "plugin_api.hpp"
+#include "plugin_api.h"
 #include <iostream>
 
 

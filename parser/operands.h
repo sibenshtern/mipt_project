@@ -1,9 +1,10 @@
-#pragma once
+#ifndef OPERANDS_H
+#define OPERANDS_H
 
 #include <vector>
 #include <cmath>
 
-#include "FormulaParser.hpp"
+#include "FormulaParser.h"
 
 void calculateDataAndVariable(Node &node, double firstVariable, double firstError, double secondVariable, double secondError, int op) {
     double error = 0, value = 0;
@@ -84,7 +85,7 @@ Node operation(Node &first, Node &second, int op) {
         }
         return node;
     }
-    throw std::runtime_error("Impossible to convert sizes");
+    throw std::runtime_error("Error");
 }
 
 Node operator + (Node &first, Node &second) {   
@@ -107,3 +108,5 @@ Node operator / (Node &first, Node &second) {
 Node operator ^ (Node &first, Node &second) {   
     return operation(first, second, 5);
 }
+
+#endif //OPERANDS_H
