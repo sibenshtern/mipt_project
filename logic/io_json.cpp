@@ -6,8 +6,6 @@ void IOJSON::load(QString file_name) {
     if (!(json_file.open(QIODevice::ReadOnly | QIODevice::Text)))
         throw std::runtime_error("Cannot open json file: " + file_name.toStdString());
 
-    Manager::instance()->Clear();
-
     auto json = QJsonDocument::fromJson(json_file.readAll());
 
     QJsonArray variables_array;
@@ -16,6 +14,7 @@ void IOJSON::load(QString file_name) {
     else
         throw std::runtime_error("Json file must contain array with variables");
 
+    QList<VariableData> variables;
     for (auto && i : variables_array) {
         QJsonObject variable_object = i.toObject();
 
@@ -102,8 +101,13 @@ void IOJSON::load(QString file_name) {
         variable.measurements = measurements;
         variable.instrument = instrument;
         qDebug() << "IOJSON::load(variable.instrument.error.list): " << variable.instrument.error.list;
-        Manager::instance()->AddVariable(variable);
+        variables.append(variable);
     }
+
+    Manager::instance()->Clear();
+
+    for (auto &variable : variables)
+        Manager::instance()->AddVariable(variable);
 }
 
 QJsonDocument IOJSON::save() {

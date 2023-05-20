@@ -62,6 +62,9 @@ QVariant InstrumentModel::headerData(int section, Qt::Orientation orientation, i
 
 Qt::ItemFlags InstrumentModel::flags(const QModelIndex &index) const {
     Qt::ItemFlags default_flags{Qt::ItemIsSelectable, Qt::ItemIsEditable, Qt::ItemIsEnabled};
+    if (Manager::instance()->variables[index.row()].instrument.error.type == ErrorType::Calculated && index.column() >= 1) {
+        return {Qt::ItemIsSelectable, Qt::ItemIsEnabled};
+    }
     return default_flags;
 }
 

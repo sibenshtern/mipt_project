@@ -81,15 +81,20 @@ void MainWindow::ShowError() {
         data_model->show_error = true;
     else
         data_model->show_error = false;
+    emit data_model->dataChanged(
+            data_model->index(0, 0),
+            data_model->index(
+                    Manager::instance()->GetMeasurementsCount(),
+                    Manager::instance()->GetVariablesCount()));
     ui->MainTable->repaint();
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event) {
     if (event->modifiers() & Qt::ControlModifier) {
-        if (event->key() == Qt::Key_S) {
-            QString file_name = QFileDialog::getSaveFileName(this, tr("Save File"), "~", tr("CSV File (*.csv), JSON File(*.json)"));
-            saveFile(file_name);
-        }
+        if (event->key() == Qt::Key_S)
+            saveFile();
+        if (event->key() == Qt::Key_O)
+            loadFile();
     }
     QMainWindow::keyPressEvent(event);
 }
@@ -112,7 +117,8 @@ void MainWindow::MoveDownODFBlock() {
     ui->area->repaint();
 }
 
-void MainWindow::saveFile(QString file_name) {
+void MainWindow::saveFile() {
+    QString file_name = QFileDialog::getSaveFileName(this, tr("Save File"), "~", tr("CSV File (*.csv), JSON File(*.json)"));
     QFile csv_file{file_name};
 
     if (!csv_file.open(QIODevice::WriteOnly | QIODevice::Text))

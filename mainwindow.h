@@ -45,7 +45,7 @@ private slots:
     void ShowError();
 
     void loadFile();
-    void saveFile(QString file_name);
+    void saveFile();
 
     void addEmptyVariable();
 
