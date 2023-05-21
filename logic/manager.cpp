@@ -66,6 +66,7 @@ void Manager::DeleteMeasurement(size_t index) {
         data_model->removeColumns(0, GetVariablesCount());
         instrument_model->removeRows(0, GetVariablesCount());
         naming_model->removeRows(0, GetMeasurementsCount());
+        visual_model->removeRows(0, GetVariablesCount());
         Clear();
     }
 }
@@ -80,8 +81,7 @@ void Manager::DeleteVariable(size_t index) {
     data_model->removeColumn(static_cast<int>(index));
     instrument_model->removeRow(static_cast<int>(index));
     naming_model->removeRow(static_cast<int>(index));
-
-    qDebug() << "Manager::DeleteVariable(index): " << index;
+    visual_model->removeRow(static_cast<int>(index));
 
     if (variables.empty())
         data_model->removeRows(0, measurement_count);
@@ -135,6 +135,7 @@ void Manager::Clear() {
     data_model->removeColumns(0, GetVariablesCount());
     instrument_model->removeRows(0, GetVariablesCount());
     naming_model->removeRows(0, GetVariablesCount());
+    visual_model->removeRows(0, GetVariablesCount());
 
     variables.clear();
     calculated.clear();

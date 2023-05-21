@@ -40,7 +40,6 @@ void IOCSV::load(QString file_name) {
             variables_names.append(QString{variable_name.c_str()});
 
         std::string error_data = token.substr(details_index_start + 1, details_index_end - 2);
-        qDebug() << "IOCSV::load(error_data)" << error_data.c_str();
         if (!error_data.empty() && error_data.find(',') != std::string::npos)
             boost::split(error_parameters, error_data, boost::is_any_of(","));
 
@@ -50,7 +49,6 @@ void IOCSV::load(QString file_name) {
             if (point != std::string::npos)
                 error_parameters[1] = error_parameters[1].replace(point, point, ",");
             error_value = std::stod(error_parameters[1]);
-            qDebug() << "IOCSV::load(error_value): " << error_value;
             if (error_parameters.size() == 3)
                 instrument_name = error_parameters[2];
             else
@@ -59,27 +57,20 @@ void IOCSV::load(QString file_name) {
 
         Instrument instrument;
 
-        if (error_type == "Absolute") {
-            instrument.error.type = ErrorType::Absolute;
-        } else if (error_type == "Relative") {
+        if (error_type == "Relative") {
             instrument.error.type = ErrorType::Relative;
         } else {
-            qDebug() << "Unknown error type. By default set Absolute";
             instrument.error.type = ErrorType::Absolute;
         }
 
         if (error_value >= 0) {
             instrument.error.value = error_value;
         } else if (error_value < 0) {
-            qDebug() << "Error value invalid. By default set 0";
             instrument.error.value = 0;
         }
 
         if (!instrument_name.empty())
             instrument.name = QString{instrument_name.c_str()};
-        else {
-            qDebug() << "Instrument name empty. By default set \"Default instrument\"";
-        }
 
         variables.append(VariableData{QString{variable_name.c_str()}, QString{variable_name.c_str()}, instrument});
     }
@@ -95,12 +86,10 @@ void IOCSV::load(QString file_name) {
             size_t point = tokens[i].find('.');
             if (point != std::string::npos)
                 tokens[i] = tokens[i].replace(point, point, ",");
-            qDebug() << "IOCSV::load(tokens[i]): " << tokens[i].c_str();
             variables[i].measurements.push_back(std::stod(tokens[i]));
         }
     }
 
-    qDebug() << "IOCSV::load(variables.size()): " << variables.size();
     for (auto &variable: variables) {
         Manager::instance()->AddVariable(variable);
     }

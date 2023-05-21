@@ -6,8 +6,6 @@ void IOJSON::load(QString file_name) {
     if (!(json_file.open(QIODevice::ReadOnly | QIODevice::Text)))
         throw std::runtime_error("Cannot open json file: " + file_name.toStdString());
 
-    Manager::instance()->Clear();
-
     auto json = QJsonDocument::fromJson(json_file.readAll());
 
     QJsonArray variables_array;
@@ -16,6 +14,7 @@ void IOJSON::load(QString file_name) {
     else
         throw std::runtime_error("Json file must contain array with variables");
 
+    QList<VariableData> variables;
     for (auto && i : variables_array) {
         QJsonObject variable_object = i.toObject();
 
@@ -78,10 +77,8 @@ void IOJSON::load(QString file_name) {
         if (error_type == "Calculated") {
             instrument.error.type = ErrorType::Calculated;
             for (auto &&j : instrument_object["error_value"].toArray()) {
-                qDebug() << "IOJSON::load(j.toDouble()): " << j.toDouble();
                 instrument.error.list.append(j.toDouble());
             }
-            qDebug() << "IOJSON::load(instrument.error.list): " << instrument.error.list;
             if (measurements.size() != instrument.error.list.size())
                 throw std::runtime_error(R"("Field "measurements" and "error_value" must be same size.")");
         } else if (error_type == "Relative") {
@@ -98,12 +95,15 @@ void IOJSON::load(QString file_name) {
             instrument.name = instrument_object["name"].toString();
         }
 
-        qDebug() << "IOJSON::load(instrument.error.list): " << instrument.error.list;
         variable.measurements = measurements;
         variable.instrument = instrument;
-        qDebug() << "IOJSON::load(variable.instrument.error.list): " << variable.instrument.error.list;
-        Manager::instance()->AddVariable(variable);
+        variables.append(variable);
     }
+
+    Manager::instance()->Clear();
+
+    for (auto &variable : variables)
+        Manager::instance()->AddVariable(variable);
 }
 
 QJsonDocument IOJSON::save() {

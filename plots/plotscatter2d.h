@@ -25,7 +25,7 @@ public:
     ~PlotScatter2D() = default;
     void draw(QCustomPlot* plot) override;
     void options() override;
-    VariableData x_variable, y_variable;
+    VariableData *x_variable, *y_variable;
     QString xlabel = "Measurement number", ylabel = "Measurement value", title = "";
 };
 

@@ -14,7 +14,8 @@ void ODF::ExportToODF() {
         block->Export(cursor);
     }
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "untitled",tr("Open Document (.odf)"));
-    QTextDocumentWriter odfWritter(fileName); odfWritter.write(document);
+    QTextDocumentWriter odfWritter(fileName);
+    odfWritter.write(document);
 }
 
 void ODF::DeleteBlock(Block *block) {
@@ -78,19 +79,38 @@ void ODF::AddTableBlock() {
     auto manager = Manager::instance();
     int rows_count = manager->GetMeasurementsCount();
     int columns_count = manager->GetVariablesCount();
-    auto table = new QTableWidget(rows_count, columns_count);
+    auto table = new QTableWidget(rows_count + 1, columns_count + 1);
+    table->verticalHeader()->hide();
+    table->horizontalHeader()->hide();
 
-    for (int row = 0; row < rows_count; ++row) {
-        for (int column = 0; column < columns_count; ++column) {
-            QString number = QString::number(manager->variables[column].measurements[row]);
-            QVariant variant(number);
+    auto *clear_item = new QTableWidgetItem();
+    clear_item->setData(Qt::DisplayRole, " ");
+    clear_item->setFlags(clear_item->flags() ^ Qt::ItemIsEditable);
+    table->setItem(0, 0, clear_item);
+
+    for (int row = 1; row <= rows_count; ++row) {
+        QString number = QString::number(row);
+        auto *item = new QTableWidgetItem();
+        item->setData(Qt::DisplayRole, {number});
+        table->setItem(row, 0, item);
+    }
+
+    for (int column = 1; column <= columns_count; ++column) {
+        QString text = Manager::instance()->variables[column - 1].naming.full;
+        auto *item = new QTableWidgetItem();
+        item->setData(Qt::DisplayRole, {text});
+        table->setItem(0, column, item);
+   }
+
+    for (int row = 1; row <= rows_count; ++row) {
+        for (int column = 1; column <= columns_count; ++column) {
+            QString number = QString::number(manager->variables[column - 1].measurements[row - 1]);
 
             auto *item = new QTableWidgetItem();
-            item->setData(Qt::DisplayRole, variant);
+            item->setData(Qt::DisplayRole, {number});
             table->setItem(row, column, item);
         }
     }
 
-//    auto *item = new QTableWidgetItem(Qt::)
     AppendBlock(new TableBlock(table));
 }

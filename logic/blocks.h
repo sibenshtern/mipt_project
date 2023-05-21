@@ -33,7 +33,7 @@ class TextBlock : public Block {
 public:
     explicit TextBlock(QTextEdit *editor = new QTextEdit{});
 
-    void Export(QTextCursor *document) override;
+    void Export(QTextCursor *cursor) override;
 
     QTextEdit *editor;
 };
@@ -42,7 +42,7 @@ class TableBlock : public Block {
 public:
     explicit TableBlock(QTableWidget *table = new QTableWidget{});
 
-    void Export(QTextCursor *document) override;
+    void Export(QTextCursor *cursor) override;
 
     QTableWidget *table;
 };
@@ -51,9 +51,10 @@ class PlotBlock : public Block {
 public:
     explicit PlotBlock(const QPixmap &plot_image, QLabel *image_label = new QLabel{});
 
-    void Export(QTextCursor *document) override;
+    void Export(QTextCursor *cursor) override;
 
     QPixmap plot_image;
+    QImage image;
     QLabel *image_label;
 };
 

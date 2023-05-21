@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1145</width>
-    <height>901</height>
+    <width>1128</width>
+    <height>890</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,7 +22,7 @@
       </property>
       <widget class="QStackedWidget" name="stackedWidget">
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="dataPage">
         <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -188,7 +188,14 @@
              <item>
               <layout class="QHBoxLayout" name="ParserLayout">
                <item>
-                <widget class="QLineEdit" name="lineEdit"/>
+                <widget class="QLineEdit" name="lineEdit">
+                 <property name="placeholderText">
+                  <string>Enter formula</string>
+                 </property>
+                 <property name="clearButtonEnabled">
+                  <bool>false</bool>
+                 </property>
+                </widget>
                </item>
                <item>
                 <widget class="QPushButton" name="AddFormulaButton">
@@ -217,8 +224,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>919</width>
-              <height>695</height>
+              <width>98</width>
+              <height>28</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout"/>
@@ -291,7 +298,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1145</width>
+     <width>1128</width>
      <height>22</height>
     </rect>
    </property>
@@ -299,6 +306,11 @@
   <action name="actionOpen_graph">
    <property name="text">
     <string>Open graph</string>
+   </property>
+  </action>
+  <action name="actionLoad_constants">
+   <property name="text">
+    <string>Load constants</string>
    </property>
   </action>
  </widget>
