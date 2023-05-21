@@ -49,29 +49,19 @@ TableBlock::TableBlock(QTableWidget *table) : table{table} {
 }
 
 void TableBlock::Export(QTextCursor *cursor) {
-    QTextTable *document_table = cursor->insertTable(table->rowCount() + 1, table->columnCount() + 1);
+    QTextTableFormat table_format;
+    table_format.setCellPadding(5);
+    table_format.setAlignment(Qt::AlignCenter);
 
-    for (int row = 1; row <= table->rowCount(); ++row) {
-        auto cell = document_table->cellAt(row, 0);
-        auto cellCursor = cell.firstCursorPosition();
-        cellCursor.insertText(QString::number(row));
-    }
+    cursor->insertTable(table->rowCount(), table->columnCount(), table_format);
 
-    for (int column = 1; column <= table->columnCount(); ++column) {
-        auto cell = document_table->cellAt(0, column);
-        auto cellCursor = cell.firstCursorPosition();
-        cellCursor.insertText(Manager::instance()->variables[column - 1].naming.full);
-    }
-
-    for (int row = 1; row <= table->rowCount(); ++row) {
-        for (int column = 1; column <= table->columnCount(); ++column) {
-            auto cell = document_table->cellAt(row, column);
-            auto cellCursor = cell.firstCursorPosition();
-            qDebug() << "TableBlock::Export" << table->itemAt(row - 1, column - 1)->text();
-            cellCursor.insertText(table->item(row - 1, column - 1)->text());
+    for (int row = 0; row < table->rowCount(); ++row) {
+        for (int column = 0; column < table->columnCount(); ++column) {
+            cursor->insertText(table->item(row, column)->text());
+            cursor->movePosition(QTextCursor::NextCell);
         }
     }
-    cursor->insertBlock();
+    cursor->movePosition(QTextCursor::NextBlock);
 }
 
 PlotBlock::PlotBlock(const QPixmap &plot_image, QLabel *image_label)
@@ -79,21 +69,20 @@ PlotBlock::PlotBlock(const QPixmap &plot_image, QLabel *image_label)
 {
     image_label->setPixmap(plot_image);
     widget_layout->addWidget(image_label);
+    image = plot_image.toImage();
 };
 
 void PlotBlock::Export(QTextCursor *cursor) {
-    static size_t image_n = 0;
-    QString url = QString("mydata://image%1.png").arg(image_n);
+    static unsigned long image_n = 0;
+    QString url = QString("mydata://image" + QString::number(image_n) + ".png");
 
-    QImage image = plot_image.toImage();
-    cursor->document()->addResource(QTextDocument::ImageResource, QUrl(url), image);
+    cursor->document()->addResource(QTextDocument::ImageResource, QUrl(url), plot_image.toImage());
 
     QTextImageFormat image_format;
+    image_format.setName(url);
     image_format.setQuality(100);
-    image_format.setName("table" + QString::number(image_n));
 
     cursor->insertImage(image_format);
     cursor->insertBlock();
-
     image_n++;
 }

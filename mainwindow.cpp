@@ -69,6 +69,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->AddVariableButton, SIGNAL(clicked()), this, SLOT(addEmptyVariable()));
     connect(ui->ExportToODFButton, SIGNAL(clicked()), this, SLOT(ExportToODF()));
     connect(ui->errorCheckBox, SIGNAL(clicked()), this, SLOT(ShowError()));
+    connect(ui->lineEdit, SIGNAL(returnPressed()), this, SLOT(AddFormula()));
 }
 
 void MainWindow::ExportToODF() {
@@ -76,7 +77,6 @@ void MainWindow::ExportToODF() {
 }
 
 void MainWindow::ShowError() {
-    qDebug() << ui->errorCheckBox->isChecked();
     if (ui->errorCheckBox->isChecked())
         data_model->show_error = true;
     else
@@ -89,12 +89,26 @@ void MainWindow::ShowError() {
     ui->MainTable->repaint();
 }
 
+enum PageIndex {
+    DataPage = 0, GraphPage = 1, exportPage = 2
+};
+
 void MainWindow::keyPressEvent(QKeyEvent *event) {
     if (event->modifiers() & Qt::ControlModifier) {
-        if (event->key() == Qt::Key_S)
-            saveFile();
-        if (event->key() == Qt::Key_O)
-            loadFile();
+        if (event->key() == Qt::Key_S) {
+            switch (ui->stackedWidget->currentIndex()) {
+                case PageIndex::DataPage:
+                    saveFile();
+                    break;
+                case PageIndex::exportPage:
+                    ExportToODF();
+                    break;
+            }
+        }
+        if (event->key() == Qt::Key_O) {
+            if (ui->stackedWidget->currentIndex() == PageIndex::DataPage)
+                loadFile();
+        }
     }
     QMainWindow::keyPressEvent(event);
 }
@@ -125,8 +139,6 @@ void MainWindow::saveFile() {
         return;
 
     QTextStream out(&csv_file);
-
-    qDebug() << "MainWindow::save(file_name): " << file_name;
 
     if (file_name.endsWith(".csv"))
         out << csv_io.save();
@@ -159,7 +171,6 @@ void MainWindow::AddTableBlock() {
 void MainWindow::AddFormula() {
     try {
         parser.parse(ui->lineEdit->text().toStdString());
-        qInfo() << "finish parsing";
     }
     catch (std::exception &e) {
         error_message.showMessage(e.what());
@@ -195,11 +206,9 @@ void MainWindow::loadFile() {
     try {
         if (ui->ChooseSource->currentText() == "CSV file") {
             file_name = QFileDialog::getOpenFileName(this, tr("Open CSV file"), "~", tr("CSV File (*.csv)"));
-            qDebug() << "MainWindow::loadFile(file_name): " << file_name;
             csv_io.load(file_name);
         } else if (ui->ChooseSource->currentText() == "JSON file") {
             file_name = QFileDialog::getOpenFileName(this, tr("Open JSON file"), "~", tr("JSON file (*.json)"));
-            qDebug() << "MainWindow::loadFile(file_name): " << file_name;
             json_io.load(file_name);
         }
     } catch (std::runtime_error &e) {

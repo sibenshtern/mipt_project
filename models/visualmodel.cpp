@@ -77,7 +77,6 @@ QVariant VisualModel::data(const QModelIndex &index, int role) const {
 QVariant VisualModel::headerData(int section, Qt::Orientation orientation, int role) const {
     if (role == Qt::DisplayRole) {
         if (orientation == Qt::Horizontal) {
-            std::cout << "VisualModel::headerData(section): " << section << "\n";
             switch (section) {
                 case NameOfVariable:
                     return "Name of variable";

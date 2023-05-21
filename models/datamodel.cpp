@@ -30,7 +30,6 @@ QVariant DataModel::data(const QModelIndex &index, int role) const {
 QVariant DataModel::headerData(int section, Qt::Orientation orientation, int role) const {
     if (role == Qt::DisplayRole)
         if (orientation == Qt::Horizontal) {
-            // qInfo() << "DataModel::headerData(section): " << section << "\n";
             if (section < Manager::instance()->variables.size())
                 return Manager::instance()->variables[section].naming.alias;
             else

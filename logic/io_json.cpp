@@ -77,10 +77,8 @@ void IOJSON::load(QString file_name) {
         if (error_type == "Calculated") {
             instrument.error.type = ErrorType::Calculated;
             for (auto &&j : instrument_object["error_value"].toArray()) {
-                qDebug() << "IOJSON::load(j.toDouble()): " << j.toDouble();
                 instrument.error.list.append(j.toDouble());
             }
-            qDebug() << "IOJSON::load(instrument.error.list): " << instrument.error.list;
             if (measurements.size() != instrument.error.list.size())
                 throw std::runtime_error(R"("Field "measurements" and "error_value" must be same size.")");
         } else if (error_type == "Relative") {
@@ -97,10 +95,8 @@ void IOJSON::load(QString file_name) {
             instrument.name = instrument_object["name"].toString();
         }
 
-        qDebug() << "IOJSON::load(instrument.error.list): " << instrument.error.list;
         variable.measurements = measurements;
         variable.instrument = instrument;
-        qDebug() << "IOJSON::load(variable.instrument.error.list): " << variable.instrument.error.list;
         variables.append(variable);
     }
 

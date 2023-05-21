@@ -41,7 +41,6 @@ bool InstrumentModel::setData(const QModelIndex &index, const QVariant &value, i
 QVariant InstrumentModel::headerData(int section, Qt::Orientation orientation, int role) const {
     if (role == Qt::DisplayRole) {
         if (orientation == Qt::Horizontal) {
-            qDebug() << "InstrumentModel::headerData(section): " << section;
             switch (section) {
                 case InstrumentModelColumns::Name:
                     return {"Instrument name"};
@@ -53,7 +52,6 @@ QVariant InstrumentModel::headerData(int section, Qt::Orientation orientation, i
                     return {};
             }
         } else if (orientation == Qt::Vertical) {
-            qDebug() << "InstrumentModel::headerData(variables.size()): " << Manager::instance()->variables.size();
             return {Manager::instance()->variables[section].naming.alias};
         }
     }

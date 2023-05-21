@@ -83,8 +83,6 @@ void Manager::DeleteVariable(size_t index) {
     naming_model->removeRow(static_cast<int>(index));
     visual_model->removeRow(static_cast<int>(index));
 
-    qDebug() << "Manager::DeleteVariable(index): " << index;
-
     if (variables.empty())
         data_model->removeRows(0, measurement_count);
 }

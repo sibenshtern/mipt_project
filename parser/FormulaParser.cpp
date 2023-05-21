@@ -184,7 +184,7 @@ Node FormulaParser::eval(Expression e) {
         },
         [&](const VariableExpression &e) -> Node {
             if (constants.find(e.name) != constants.end()) {
-                return Node(std::vector<double>{constants[e.name]});
+                return Node(std::vector<double>{constants[e.name]}, std::vector<double>{0});
             }
             throw std::runtime_error("Unknown variable");
         },
