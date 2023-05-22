@@ -49,6 +49,8 @@ void Manager::AddVariable(const VariableData &variable) {
 void Manager::AddMeasurement() {
     for (auto &variable : variables) {
         variable.measurements.push_back(0);
+        if (variable.instrument.error.type == ErrorType::Calculated)
+            variable.instrument.error.list.append(0);
     }
 }
 

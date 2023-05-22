@@ -38,7 +38,7 @@ bool NamingModel::setData(const QModelIndex &index, const QVariant &value, int r
 QVariant NamingModel::headerData(int section, Qt::Orientation orientation, int role) const {
     if (role == Qt::DisplayRole) {
         if (orientation == Qt::Horizontal) {
-            switch(section) {s
+            switch(section) {
                 case 0:
                     return "Full name";
                 case 1:

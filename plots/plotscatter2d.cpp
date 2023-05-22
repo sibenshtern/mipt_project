@@ -10,7 +10,7 @@ void PlotScatter2D::draw(QCustomPlot* plot)
     pen.setColor("green");
     pen.setStyle(Qt::SolidLine);
     pen.setWidthF(5);
-    graph->setScatterStyle(QCPScatterStyle::ssNone);
+    graph->setScatterStyle(QCPScatterStyle::ssCross);
     graph->setPen(pen);
     graph->setLineStyle(QCPGraph::LineStyle::lsNone);
 
